@@ -14,7 +14,7 @@ export const ToyCard = ({ toy }: ToyCardProps) => {
 
   return (
     <Card 
-      className="overflow-hidden cursor-pointer group transition-all duration-500 ease-out hover:shadow-[0_25px_60px_-15px_hsl(340_75%_55%/0.35)] hover:-translate-y-2 hover:scale-[1.02] bg-card border-0 shadow-card rounded-2xl"
+      className="overflow-hidden cursor-pointer group transition-all duration-500 ease-out hover:shadow-[0_25px_60px_-15px_hsl(25_55%_35%/0.35)] hover:-translate-y-2 hover:scale-[1.02] bg-card border-0 shadow-card rounded-2xl"
       onClick={() => navigate(`/toy/${toy.id}`)}
     >
       <div className="relative aspect-square overflow-hidden rounded-t-2xl">

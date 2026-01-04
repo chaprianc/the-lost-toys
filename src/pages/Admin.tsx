@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { useToyStore } from '@/store/toyStore';
-import { CATEGORY_LABELS, CONDITION_LABELS, STATUS_LABELS } from '@/types/toy';
+import { CATEGORY_LABELS, STATUS_LABELS } from '@/types/toy';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -30,13 +32,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Trash2, Eye, ShieldCheck } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+
+const ADMIN_PASSWORD = 'admin123';
 
 const Admin = () => {
   const { toys, updateToyStatus, deleteToy } = useToyStore();
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('סיסמה שגויה');
+    }
+  };
 
   const handleStatusChange = (id: string, status: 'available' | 'sold' | 'hidden') => {
     updateToyStatus(id, status);
@@ -47,6 +64,46 @@ const Admin = () => {
     deleteToy(id);
     toast.success('הצעצוע נמחק בהצלחה');
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle">
+        <Header />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-md mx-auto">
+            <div className="bg-card rounded-2xl shadow-card p-8">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-8 h-8 text-primary" />
+                </div>
+                <h1 className="text-2xl font-bold text-foreground">כניסת מנהל</h1>
+                <p className="text-muted-foreground text-sm mt-1">הזן סיסמה כדי להמשיך</p>
+              </div>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password">סיסמה</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="הזן סיסמת מנהל"
+                    className="text-center"
+                  />
+                </div>
+                {error && (
+                  <p className="text-destructive text-sm text-center">{error}</p>
+                )}
+                <Button type="submit" className="w-full">
+                  כניסה
+                </Button>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-subtle">

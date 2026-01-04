@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
-import { useToyStore } from '@/store/toyStore';
-import { Plus, Search, Sparkles, Heart, Shield } from 'lucide-react';
+import { useToys } from '@/hooks/useToys';
+import { Plus, Search, Sparkles, Heart, Shield, Loader2 } from 'lucide-react';
 
 const Index = () => {
-  const { toys } = useToyStore();
+  const { data: toys = [], isLoading } = useToys();
   const recentToys = toys.slice(0, 4);
 
   return (
@@ -92,19 +92,28 @@ const Index = () => {
             </Link>
           </Button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {recentToys.map((toy, index) => (
-            <div 
-              key={toy.id} 
-              className="animate-slide-up"
-              style={{ animationDelay: `${0.1 * index}s` }}
-            >
-              <ToyCard toy={toy} />
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="text-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+          </div>
+        ) : recentToys.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {recentToys.map((toy, index) => (
+              <div 
+                key={toy.id} 
+                className="animate-slide-up"
+                style={{ animationDelay: `${0.1 * index}s` }}
+              >
+                <ToyCard toy={toy} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>עדיין אין צעצועים. היו הראשונים לפרסם!</p>
+          </div>
+        )}
       </section>
-
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8 mt-8">

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Plus, Search } from 'lucide-react';
+import { Home, Plus, Search, ShieldCheck } from 'lucide-react';
 
 export const Header = () => {
   const location = useLocation();
@@ -45,6 +45,15 @@ export const Header = () => {
               <Link to="/publish">
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">פרסום</span>
+              </Link>
+            </Button>
+            <Button
+              variant={location.pathname === '/admin' ? 'default' : 'ghost'}
+              size="sm"
+              asChild
+            >
+              <Link to="/admin">
+                <ShieldCheck className="w-4 h-4" />
               </Link>
             </Button>
           </nav>

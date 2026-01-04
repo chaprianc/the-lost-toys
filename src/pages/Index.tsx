@@ -51,8 +51,7 @@ const Index = () => {
             <div className="flex justify-center">
               <span className="text-7xl md:text-8xl animate-float">🧸</span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">                    צעצועים עם סיפורצעצועים סיפור
- להורים חכמים<br />
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">                       צעצועים סיפור   צעצועים סיפור להורים חכמים<br />
               <span className="text-gradient"> להורים חכמים</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto">

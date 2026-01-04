@@ -1,13 +1,49 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { useToys } from '@/hooks/useToys';
-import { Plus, Search, Sparkles, Heart, Shield, Loader2 } from 'lucide-react';
+import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
+
+const features = [
+  {
+    id: 'simple',
+    icon: Sparkles,
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
+    title: 'פשוט ומהיר',
+    short: 'פרסום צעצוע תוך דקה אחת בלבד',
+    details: 'ללא הרשמה מסובכת, ללא עמלות נסתרות. פשוט מעלים תמונה, ממלאים כמה פרטים בסיסיים ומפרסמים. הצעצוע שלכם מוכן למכירה תוך דקה!',
+  },
+  {
+    id: 'eco',
+    icon: Heart,
+    iconBg: 'bg-success/10',
+    iconColor: 'text-success',
+    title: 'לסביבה ולארנק',
+    short: 'חוסכים כסף ותורמים לכדור הארץ',
+    details: 'במקום לזרוק צעצועים לפח, תנו להם חיים חדשים! חוסכים עד 70% ממחיר צעצוע חדש, ובמקביל מפחיתים פסולת ושומרים על הסביבה לדורות הבאים.',
+  },
+  {
+    id: 'parents',
+    icon: Shield,
+    iconBg: 'bg-secondary',
+    iconColor: 'text-secondary-foreground',
+    title: 'בין הורים',
+    short: 'קהילה של הורים שמבינים הורים',
+    details: 'קהילה בטוחה ואמינה של הורים כמוכם. אנחנו מבינים שצעצועים הם לא רק חפצים - הם זכרונות. כאן תמצאו אנשים שמעריכים את זה.',
+  },
+];
 
 const Index = () => {
   const { data: toys = [], isLoading } = useToys();
   const recentToys = toys.slice(0, 4);
+  const [expandedFeature, setExpandedFeature] = useState<string | null>(null);
+
+  const toggleFeature = (id: string) => {
+    setExpandedFeature(expandedFeature === id ? null : id);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -51,33 +87,36 @@ const Index = () => {
       {/* Features */}
       <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-card rounded-2xl p-6 shadow-card text-center space-y-3 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Sparkles className="w-7 h-7 text-primary" />
+          {features.map((feature, index) => (
+            <div
+              key={feature.id}
+              onClick={() => toggleFeature(feature.id)}
+              className="bg-card rounded-2xl p-6 shadow-card text-center space-y-3 animate-slide-up cursor-pointer transition-all duration-300 hover:shadow-elevated"
+              style={{ animationDelay: `${0.1 * (index + 1)}s` }}
+            >
+              <div className={`w-14 h-14 ${feature.iconBg} rounded-full flex items-center justify-center mx-auto`}>
+                <feature.icon className={`w-7 h-7 ${feature.iconColor}`} />
+              </div>
+              <h3 className="font-semibold text-lg">{feature.title}</h3>
+              <p className="text-muted-foreground text-sm">
+                {feature.short}
+              </p>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  expandedFeature === feature.id ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <p className="text-foreground text-sm pt-3 border-t border-border mt-3">
+                  {feature.details}
+                </p>
+              </div>
+              <ChevronDown
+                className={`w-5 h-5 mx-auto text-muted-foreground transition-transform duration-300 ${
+                  expandedFeature === feature.id ? 'rotate-180' : ''
+                }`}
+              />
             </div>
-            <h3 className="font-semibold text-lg">פשוט ומהיר</h3>
-            <p className="text-muted-foreground text-sm">
-              פרסום צעצוע תוך דקה אחת בלבד
-            </p>
-          </div>
-          <div className="bg-card rounded-2xl p-6 shadow-card text-center space-y-3 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="w-14 h-14 bg-success/10 rounded-full flex items-center justify-center mx-auto">
-              <Heart className="w-7 h-7 text-success" />
-            </div>
-            <h3 className="font-semibold text-lg">לסביבה ולארנק</h3>
-            <p className="text-muted-foreground text-sm">
-              חוסכים כסף ותורמים לכדור הארץ
-            </p>
-          </div>
-          <div className="bg-card rounded-2xl p-6 shadow-card text-center space-y-3 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <div className="w-14 h-14 bg-secondary rounded-full flex items-center justify-center mx-auto">
-              <Shield className="w-7 h-7 text-secondary-foreground" />
-            </div>
-            <h3 className="font-semibold text-lg">בין הורים</h3>
-            <p className="text-muted-foreground text-sm">
-              קהילה של הורים שמבינים הורים
-            </p>
-          </div>
+          ))}
         </div>
       </section>
 

@@ -16,8 +16,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 25 30% 15%;
 
-    /* Warm amber/orange - playful and energetic */
-    --primary: 32 95% 55%;
+    /* Warm rose/pink - playful and energetic */
+    --primary: 340 75% 55%;
     --primary-foreground: 0 0% 100%;
 
     /* Soft teal - trustworthy accent */
@@ -34,9 +34,9 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 32 30% 88%;
-    --input: 32 30% 88%;
-    --ring: 32 95% 55%;
+    --border: 340 30% 88%;
+    --input: 340 30% 88%;
+    --ring: 340 75% 55%;
 
     --radius: 1rem;
 
@@ -48,15 +48,15 @@
     --warning-foreground: 25 30% 15%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(32, 95%, 55%) 0%, hsl(25, 100%, 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(350, 80%, 60%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(45, 100%, 98%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(45, 100%, 98%) 0%, hsl(45, 50%, 95%) 100%);
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(32 30% 50% / 0.15);
-    --shadow-card: 0 8px 30px -8px hsl(32 30% 50% / 0.2);
-    --shadow-elevated: 0 20px 50px -15px hsl(32 30% 50% / 0.25);
-    --shadow-glow: 0 0 40px hsl(32 95% 55% / 0.3);
+    --shadow-soft: 0 4px 20px -4px hsl(340 30% 50% / 0.15);
+    --shadow-card: 0 8px 30px -8px hsl(340 30% 50% / 0.2);
+    --shadow-elevated: 0 20px 50px -15px hsl(340 30% 50% / 0.25);
+    --shadow-glow: 0 0 40px hsl(340 75% 55% / 0.3);
 
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -79,7 +79,7 @@
     --popover: 25 20% 12%;
     --popover-foreground: 45 30% 95%;
 
-    --primary: 32 95% 55%;
+    --primary: 340 75% 55%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 172 30% 15%;
@@ -96,7 +96,7 @@
 
     --border: 25 15% 20%;
     --input: 25 15% 20%;
-    --ring: 32 95% 55%;
+    --ring: 340 75% 55%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;

@@ -105,28 +105,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="bg-gradient-hero rounded-3xl p-8 md:p-12 text-center text-primary-foreground shadow-elevated">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            יש לך צעצועים שלא משחקים בהם?
-          </h2>
-          <p className="text-lg opacity-90 mb-6">
-            תנו להם בית חדש ותרוויחו כסף!
-          </p>
-          <Button 
-            variant="secondary" 
-            size="lg" 
-            asChild
-            className="bg-card text-foreground hover:bg-card/90"
-          >
-            <Link to="/publish">
-              <Plus className="w-5 h-5" />
-              פרסם עכשיו
-            </Link>
-          </Button>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8 mt-8">

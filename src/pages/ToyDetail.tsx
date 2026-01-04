@@ -2,18 +2,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useToyStore } from '@/store/toyStore';
+import { useToy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS } from '@/types/toy';
-import { Phone, MessageCircle, MapPin, ArrowRight, Calendar, Tag } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, ArrowRight, Calendar, Tag, Loader2 } from 'lucide-react';
 
 const ToyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getToyById } = useToyStore();
+  const { data: toy, isLoading, error } = useToy(id || '');
 
-  const toy = getToyById(id || '');
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle">
+        <Header />
+        <div className="container mx-auto px-4 py-16 text-center">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground mt-4">טוען...</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (!toy) {
+  if (error || !toy) {
     return (
       <div className="min-h-screen bg-gradient-subtle">
         <Header />

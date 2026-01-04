@@ -2,20 +2,20 @@ import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
-import { useToyStore } from '@/store/toyStore';
+import { useToys } from '@/hooks/useToys';
 import { ToyCategory } from '@/types/toy';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 const Browse = () => {
-  const { toys } = useToyStore();
+  const { data: toys = [], isLoading } = useToys();
   const [selectedCategory, setSelectedCategory] = useState<ToyCategory | undefined>();
   const [cityFilter, setCityFilter] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high'>('newest');
 
   const filteredToys = useMemo(() => {
-    let result = toys.filter((toy) => toy.status === 'available');
+    let result = [...toys];
 
     if (selectedCategory) {
       result = result.filter((toy) => toy.category === selectedCategory);
@@ -89,7 +89,12 @@ const Browse = () => {
         </div>
 
         {/* Results */}
-        {filteredToys.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16">
+            <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+            <p className="text-muted-foreground mt-4">טוען צעצועים...</p>
+          </div>
+        ) : filteredToys.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredToys.map((toy, index) => (
               <div

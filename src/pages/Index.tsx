@@ -22,7 +22,7 @@ const Index = () => {
               <span className="text-7xl md:text-8xl animate-float">🧸</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              אוצרות עוברים בקופסה
+              אוצרות אבודים
               <br />
               <span className="text-gradient">קונים חכם</span>
             </h1>
@@ -133,7 +133,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-2xl">🧸</span>
-            <span className="font-semibold text-foreground">אוצרות עוברים בקופסה</span>
+            <span className="font-semibold text-foreground">אוצרות אבודים</span>
           </div>
           <p className="text-muted-foreground text-sm">
             הפלטפורמה הפשוטה למכירת צעצועים בין הורים

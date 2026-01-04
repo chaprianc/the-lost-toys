@@ -120,24 +120,26 @@ const ToyDetail = () => {
 
             {/* Contact Buttons */}
             <div className="space-y-3">
-              <Button
-                variant="whatsapp"
-                size="lg"
-                className="w-full"
-                onClick={() => window.open(whatsappLink, '_blank')}
-              >
-                <MessageCircle className="w-5 h-5" />
-                שלח הודעה בוואטסאפ
-              </Button>
-              <Button
-                variant="phone"
-                size="lg"
-                className="w-full"
-                onClick={() => window.location.href = phoneLink}
-              >
-                <Phone className="w-5 h-5" />
-                התקשר למוכר
-              </Button>
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block">
+                <Button
+                  variant="whatsapp"
+                  size="lg"
+                  className="w-full"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  שלח הודעה בוואטסאפ
+                </Button>
+              </a>
+              <a href={phoneLink} className="block">
+                <Button
+                  variant="phone"
+                  size="lg"
+                  className="w-full"
+                >
+                  <Phone className="w-5 h-5" />
+                  התקשר למוכר
+                </Button>
+              </a>
             </div>
 
             {/* Safety Notice */}

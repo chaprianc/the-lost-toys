@@ -99,8 +99,8 @@ const Browse = () => {
             {filteredToys.map((toy, index) => (
               <div
                 key={toy.id}
-                className="animate-slide-up"
-                style={{ animationDelay: `${0.05 * index}s` }}
+                className="animate-card-entrance"
+                style={{ animationDelay: `${0.1 * Math.min(index, 8)}s` }}
               >
                 <ToyCard toy={toy} />
               </div>

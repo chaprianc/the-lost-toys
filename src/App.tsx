@@ -8,6 +8,10 @@ import Browse from "./pages/Browse";
 import Publish from "./pages/Publish";
 import ToyDetail from "./pages/ToyDetail";
 import Admin from "./pages/Admin";
+import FAQ from "./pages/FAQ";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +28,10 @@ const App = () => (
           <Route path="/publish" element={<Publish />} />
           <Route path="/toy/:id" element={<ToyDetail />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

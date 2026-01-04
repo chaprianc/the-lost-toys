@@ -45,7 +45,7 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero opacity-10" />
+        <div className="absolute inset-0 bg-gradient-hero opacity-10 bg-primary-foreground" />
         <div className="container mx-auto px-4 py-12 md:py-20">
           <div className="text-center space-y-6 animate-slide-up bg-[sidebar-accent-foreground] bg-accent">
             <div className="flex justify-center">

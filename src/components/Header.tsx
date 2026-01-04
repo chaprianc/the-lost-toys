@@ -1,19 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
+
 export const Header = () => {
   const location = useLocation();
-  return <header className="sticky top-0 z-50 bg-secondary backdrop-blur-lg border-b border-secondary/80 shadow-soft">
-      <div className="container mx-auto px-4 py-3 bg-primary-foreground">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <span className="text-3xl">🧸</span>
-          </Link>
-
+  return (
+    <header className="sticky top-0 z-50 bg-secondary backdrop-blur-lg border-b border-secondary/80 shadow-soft">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-end">
           <nav className="flex items-center gap-3">
             <Button variant={location.pathname === '/' ? 'default' : 'ghost'} size="sm" asChild className="gap-2">
               <Link to="/">
-                <Home className="w-4 h-4" />
+                <span className="text-lg">🧸</span>
                 <span>בית</span>
               </Link>
             </Button>
@@ -26,5 +24,6 @@ export const Header = () => {
           </nav>
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };

@@ -6,11 +6,8 @@ export const Header = () => {
   return <header className="sticky top-0 z-50 bg-secondary backdrop-blur-lg border-b border-secondary/80 shadow-soft">
       <div className="container mx-auto px-4 py-3 bg-primary-foreground">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center">
             <span className="text-3xl">🧸</span>
-            <span className="text-xl font-bold text-foreground hidden sm:inline">
-              אוצרות אבודים
-            </span>
           </Link>
 
           <nav className="flex items-center gap-3">

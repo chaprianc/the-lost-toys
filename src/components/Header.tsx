@@ -12,7 +12,7 @@ export const Header = () => {
           <Link to="/" className="flex items-center gap-2">
             <span className="text-3xl">🧸</span>
             <span className="text-xl font-bold text-foreground hidden sm:inline">
-              צעצועים יד-שנייה
+              אוצרות עוברים בקופסה
             </span>
           </Link>
 

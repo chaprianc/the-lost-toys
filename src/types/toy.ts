@@ -1,6 +1,6 @@
 export type ToyCategory = 'vehicles' | 'dolls' | 'board-games' | 'outdoor' | 'educational' | 'other';
 export type ToyCondition = 'new' | 'like-new' | 'used';
-export type ToyStatus = 'available' | 'sold';
+export type ToyStatus = 'available' | 'sold' | 'hidden';
 
 export interface Toy {
   id: string;
@@ -37,4 +37,10 @@ export const CATEGORY_ICONS: Record<ToyCategory, string> = {
   'outdoor': '⚽',
   'educational': '📚',
   'other': '🎁',
+};
+
+export const STATUS_LABELS: Record<ToyStatus, string> = {
+  'available': 'זמין',
+  'sold': 'נמכר',
+  'hidden': 'מוסתר',
 };

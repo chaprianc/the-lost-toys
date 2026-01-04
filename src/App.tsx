@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import Publish from "./pages/Publish";
 import ToyDetail from "./pages/ToyDetail";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/browse" element={<Browse />} />
           <Route path="/publish" element={<Publish />} />
           <Route path="/toy/:id" element={<ToyDetail />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

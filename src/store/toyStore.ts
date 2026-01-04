@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Toy, ToyCategory } from '@/types/toy';
+import { Toy, ToyCategory, ToyStatus } from '@/types/toy';
 import { mockToys } from '@/data/mockToys';
 
 interface ToyStore {
@@ -7,6 +7,8 @@ interface ToyStore {
   addToy: (toy: Omit<Toy, 'id' | 'created_at' | 'status'>) => void;
   getToyById: (id: string) => Toy | undefined;
   filterToys: (category?: ToyCategory, city?: string) => Toy[];
+  updateToyStatus: (id: string, status: ToyStatus) => void;
+  deleteToy: (id: string) => void;
 }
 
 export const useToyStore = create<ToyStore>((set, get) => ({
@@ -40,5 +42,19 @@ export const useToyStore = create<ToyStore>((set, get) => ({
     }
     
     return filtered;
+  },
+
+  updateToyStatus: (id, status) => {
+    set((state) => ({
+      toys: state.toys.map((toy) =>
+        toy.id === id ? { ...toy, status } : toy
+      ),
+    }));
+  },
+
+  deleteToy: (id) => {
+    set((state) => ({
+      toys: state.toys.filter((toy) => toy.id !== id),
+    }));
   },
 }));

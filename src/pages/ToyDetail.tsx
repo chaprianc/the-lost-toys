@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ImageGallery } from '@/components/ImageGallery';
 import { useToy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS } from '@/types/toy';
 import { Phone, MessageCircle, MapPin, ArrowRight, Calendar, Tag, Loader2 } from 'lucide-react';
@@ -61,19 +62,15 @@ const ToyDetail = () => {
 
         {/* Main Card */}
         <div className="bg-card rounded-3xl shadow-elevated overflow-hidden animate-slide-up">
-          {/* Image */}
-          <div className="relative aspect-square md:aspect-video">
-            <img
-              src={toy.images[0]}
-              alt={toy.toy_name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-4 right-4">
+          {/* Image Gallery */}
+          <div className="relative">
+            <ImageGallery images={toy.images} altText={toy.toy_name} />
+            <div className="absolute top-4 right-4 z-10">
               <Badge variant="secondary" className="text-xl px-4 py-2 shadow-card">
                 {CATEGORY_ICONS[toy.category]}
               </Badge>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-foreground/70 to-transparent p-6">
+            <div className="absolute bottom-16 left-0 right-0 bg-gradient-to-t from-foreground/70 to-transparent p-6 pointer-events-none">
               <span className="text-4xl font-bold text-primary-foreground">
                 ₪{toy.price}
               </span>

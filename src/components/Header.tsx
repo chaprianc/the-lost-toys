@@ -16,25 +16,27 @@ export const Header = () => {
             </span>
           </Link>
 
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-3">
             <Button
               variant={location.pathname === '/' ? 'default' : 'ghost'}
               size="sm"
               asChild
+              className="gap-2"
             >
               <Link to="/">
                 <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">בית</span>
+                <span>בית</span>
               </Link>
             </Button>
             <Button
               variant={location.pathname === '/admin' ? 'default' : 'ghost'}
               size="sm"
               asChild
+              className="gap-2"
             >
               <Link to="/admin">
                 <ShieldCheck className="w-4 h-4" />
-                <span className="hidden sm:inline">מנהל</span>
+                <span>מנהל</span>
               </Link>
             </Button>
           </nav>

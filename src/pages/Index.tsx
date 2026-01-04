@@ -126,14 +126,33 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8 mt-8">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4">
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-2xl">🧸</span>
             <span className="font-semibold text-foreground">אוצרות אבודים</span>
           </div>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-sm text-center mb-6">
             הפלטפורמה הפשוטה למכירת צעצועים בין הורים
           </p>
+          
+          {/* Footer Links */}
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+            <Link to="/faq" className="text-primary hover:text-primary/80 transition-colors">
+              שאלות נפוצות
+            </Link>
+            <span className="text-border">|</span>
+            <Link to="/terms" className="text-primary hover:text-primary/80 transition-colors">
+              תקנון האתר
+            </Link>
+            <span className="text-border">|</span>
+            <Link to="/privacy" className="text-primary hover:text-primary/80 transition-colors">
+              מדיניות פרטיות
+            </Link>
+            <span className="text-border">|</span>
+            <Link to="/contact" className="text-primary hover:text-primary/80 transition-colors">
+              צור קשר
+            </Link>
+          </div>
         </div>
       </footer>
     </div>;

@@ -115,8 +115,8 @@ const Index = () => {
         {isLoading ? <div className="text-center py-8">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
           </div> : recentToys.length > 0 ? <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {recentToys.map((toy, index) => <div key={toy.id} className="animate-slide-up" style={{
-          animationDelay: `${0.1 * index}s`
+            {recentToys.map((toy, index) => <div key={toy.id} className="animate-card-entrance" style={{
+          animationDelay: `${0.15 * index}s`
         }}>
                 <ToyCard toy={toy} />
               </div>)}

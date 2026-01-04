@@ -51,8 +51,9 @@ const Index = () => {
             <div className="flex justify-center">
               <span className="text-7xl md:text-8xl animate-float">🧸</span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">​<br />
-              <span className="text-gradient"> להורים חכמים</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <span className="text-gradient">צעצועים עם סיפור</span><br />
+              <span className="text-foreground">להורים חכמים</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto">
               המקום הכי פשוט למכור ולקנות צעצועים איכותיים במחירים משתלמים

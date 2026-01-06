@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Mail, MessageCircle } from 'lucide-react';
 
 const Contact = () => {
-  const email = 'contact@otzarot.co.il';
-  const whatsappNumber = '972501234567';
+  const email = 'chaprianc@gmail.com';
+  const whatsappNumber = '972526901137';
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('היי, פניתי מאתר אוצרות אבודים')}`;
 
   return (

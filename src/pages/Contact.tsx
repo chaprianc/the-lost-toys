@@ -31,20 +31,12 @@ const Contact = () => {
               </Button>
             </a>
             
-            <Button
-              variant="whatsapp"
-              size="lg"
-              className="w-full"
-              onClick={() => {
-                const newWindow = window.open(whatsappLink, '_blank', 'noopener,noreferrer');
-                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                  window.location.href = whatsappLink;
-                }
-              }}
-            >
-              <MessageCircle className="w-5 h-5" />
-              שלחו הודעה בוואטסאפ
-            </Button>
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block">
+              <Button variant="whatsapp" size="lg" className="w-full">
+                <MessageCircle className="w-5 h-5" />
+                💬 WhatsApp
+              </Button>
+            </a>
           </div>
           
           <div className="pt-6 border-t border-border text-center">

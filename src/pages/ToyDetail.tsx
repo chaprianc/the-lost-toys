@@ -117,32 +117,18 @@ const ToyDetail = () => {
 
             {/* Contact Buttons */}
             <div className="space-y-3">
-              <Button
-                variant="whatsapp"
-                size="lg"
-                className="w-full"
-                onClick={() => {
-                  const newWindow = window.open(whatsappLink, '_blank', 'noopener,noreferrer');
-                  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                    // Fallback: direct navigation
-                    window.location.href = whatsappLink;
-                  }
-                }}
-              >
-                <MessageCircle className="w-5 h-5" />
-                שלח הודעה בוואטסאפ
-              </Button>
-              <Button
-                variant="phone"
-                size="lg"
-                className="w-full"
-                onClick={() => {
-                  window.location.href = phoneLink;
-                }}
-              >
-                <Phone className="w-5 h-5" />
-                התקשר למוכר
-              </Button>
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="whatsapp" size="lg" className="w-full">
+                  <MessageCircle className="w-5 h-5" />
+                  💬 WhatsApp
+                </Button>
+              </a>
+              <a href={phoneLink} className="block">
+                <Button variant="phone" size="lg" className="w-full">
+                  <Phone className="w-5 h-5" />
+                  התקשר למוכר
+                </Button>
+              </a>
             </div>
 
             {/* Safety Notice */}

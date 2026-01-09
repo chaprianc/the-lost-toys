@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -141,6 +141,21 @@ const Admin = () => {
             </p>
           </div>
         </div>
+
+        {/* Alert banner for pending toys */}
+        {!isLoading && pendingToys.length > 0 && (
+          <div className="bg-warning/20 border border-warning/30 rounded-xl p-4 mb-6 flex items-center gap-3 animate-pulse">
+            <AlertTriangle className="w-6 h-6 text-warning shrink-0" />
+            <div className="flex-1">
+              <p className="font-medium text-foreground">
+                {pendingToys.length} צעצועים ממתינים לאישור תשלום
+              </p>
+              <p className="text-sm text-muted-foreground">
+                יש לאשר את התשלום בביט/פייבוקס לפני פרסום
+              </p>
+            </div>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="text-center py-16">

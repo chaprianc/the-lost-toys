@@ -82,11 +82,11 @@ const Publish = () => {
         images: [imageUrl],
       });
 
-      toast.success('הצעצוע פורסם בהצלחה! 🎉');
+      toast.success('הצעצוע נשלח לאישור! יפורסם לאחר אישור התשלום 🎉');
       navigate('/browse');
     } catch (error) {
       console.error('Error publishing toy:', error);
-      toast.error('שגיאה בפרסום הצעצוע. נסו שוב.');
+      toast.error('שגיאה בשליחת הצעצוע. נסו שוב.');
     } finally {
       setIsSubmitting(false);
     }

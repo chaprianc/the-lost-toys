@@ -32,7 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -111,6 +112,16 @@ const Admin = () => {
     );
   }
 
+  const pendingToys = toys.filter(t => t.status === 'hidden');
+  const approvedToys = toys.filter(t => t.status !== 'hidden');
+
+  const handleApprove = (id: string) => {
+    updateStatus.mutate({ id, status: 'available' }, {
+      onSuccess: () => toast.success('הצעצוע אושר ופורסם!'),
+      onError: () => toast.error('שגיאה באישור הצעצוע'),
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Header />
@@ -122,7 +133,12 @@ const Admin = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">ניהול פלטפורמה</h1>
-            <p className="text-muted-foreground text-sm">{toys.length} צעצועים במערכת</p>
+            <p className="text-muted-foreground text-sm">
+              {pendingToys.length > 0 && (
+                <span className="text-warning font-medium">{pendingToys.length} ממתינים לאישור • </span>
+              )}
+              {toys.length} צעצועים במערכת
+            </p>
           </div>
         </div>
 
@@ -132,107 +148,215 @@ const Admin = () => {
             <p className="text-muted-foreground mt-4">טוען...</p>
           </div>
         ) : (
-          <div className="bg-card rounded-2xl shadow-card overflow-hidden">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-right">תמונה</TableHead>
-                    <TableHead className="text-right">שם</TableHead>
-                    <TableHead className="text-right">קטגוריה</TableHead>
-                    <TableHead className="text-right">מחיר</TableHead>
-                    <TableHead className="text-right">עיר</TableHead>
-                    <TableHead className="text-right">סטטוס</TableHead>
-                    <TableHead className="text-right">פעולות</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {toys.map((toy) => (
-                    <TableRow key={toy.id}>
-                      <TableCell>
-                        <img
-                          src={toy.images[0]}
-                          alt={toy.toy_name}
-                          className="w-12 h-12 object-cover rounded-lg"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">{toy.toy_name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{CATEGORY_LABELS[toy.category]}</Badge>
-                      </TableCell>
-                      <TableCell>₪{toy.price}</TableCell>
-                      <TableCell>{toy.city}</TableCell>
-                      <TableCell>
-                        <Select
-                          value={toy.status}
-                          onValueChange={(v) => handleStatusChange(toy.id, v as 'available' | 'sold' | 'hidden')}
-                        >
-                          <SelectTrigger className="w-28">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="available">
-                              <span className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-success" />
-                                {STATUS_LABELS.available}
-                              </span>
-                            </SelectItem>
-                            <SelectItem value="sold">
-                              <span className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-muted-foreground" />
-                                {STATUS_LABELS.sold}
-                              </span>
-                            </SelectItem>
-                            <SelectItem value="hidden">
-                              <span className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-destructive" />
-                                {STATUS_LABELS.hidden}
-                              </span>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => navigate(`/toy/${toy.id}`)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>למחוק את הצעצוע?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  פעולה זו תמחק את "{toy.toy_name}" לצמיתות. לא ניתן לבטל פעולה זו.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter className="flex-row-reverse gap-2">
-                                <AlertDialogCancel>ביטול</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDelete(toy.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          <Tabs defaultValue="pending" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="pending" className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                ממתינים לאישור
+                {pendingToys.length > 0 && (
+                  <Badge variant="destructive" className="text-xs px-1.5 py-0.5">
+                    {pendingToys.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                כל הצעצועים
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="pending">
+              {pendingToys.length === 0 ? (
+                <div className="bg-card rounded-2xl shadow-card p-12 text-center">
+                  <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
+                  <h3 className="font-semibold text-lg">אין צעצועים ממתינים</h3>
+                  <p className="text-muted-foreground text-sm">כל הפרסומים אושרו</p>
+                </div>
+              ) : (
+                <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-right">תמונה</TableHead>
+                          <TableHead className="text-right">שם</TableHead>
+                          <TableHead className="text-right">מחיר</TableHead>
+                          <TableHead className="text-right">טלפון</TableHead>
+                          <TableHead className="text-right">עיר</TableHead>
+                          <TableHead className="text-right">פעולות</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pendingToys.map((toy) => (
+                          <TableRow key={toy.id} className="bg-warning/5">
+                            <TableCell>
+                              <img
+                                src={toy.images[0]}
+                                alt={toy.toy_name}
+                                className="w-12 h-12 object-cover rounded-lg"
+                              />
+                            </TableCell>
+                            <TableCell className="font-medium">{toy.toy_name}</TableCell>
+                            <TableCell>₪{toy.price}</TableCell>
+                            <TableCell dir="ltr" className="text-right">{toy.seller_phone}</TableCell>
+                            <TableCell>{toy.city}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => handleApprove(toy.id)}
+                                  className="bg-success hover:bg-success/90"
                                 >
-                                  מחק
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  אשר תשלום
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => navigate(`/toy/${toy.id}`)}
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>למחוק את הצעצוע?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        פעולה זו תמחק את "{toy.toy_name}" לצמיתות.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="flex-row-reverse gap-2">
+                                      <AlertDialogCancel>ביטול</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleDelete(toy.id)}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        מחק
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="all">
+              <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-right">תמונה</TableHead>
+                        <TableHead className="text-right">שם</TableHead>
+                        <TableHead className="text-right">קטגוריה</TableHead>
+                        <TableHead className="text-right">מחיר</TableHead>
+                        <TableHead className="text-right">עיר</TableHead>
+                        <TableHead className="text-right">סטטוס</TableHead>
+                        <TableHead className="text-right">פעולות</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {toys.map((toy) => (
+                        <TableRow key={toy.id}>
+                          <TableCell>
+                            <img
+                              src={toy.images[0]}
+                              alt={toy.toy_name}
+                              className="w-12 h-12 object-cover rounded-lg"
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">{toy.toy_name}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{CATEGORY_LABELS[toy.category]}</Badge>
+                          </TableCell>
+                          <TableCell>₪{toy.price}</TableCell>
+                          <TableCell>{toy.city}</TableCell>
+                          <TableCell>
+                            <Select
+                              value={toy.status}
+                              onValueChange={(v) => handleStatusChange(toy.id, v as 'available' | 'sold' | 'hidden')}
+                            >
+                              <SelectTrigger className="w-28">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="available">
+                                  <span className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-success" />
+                                    {STATUS_LABELS.available}
+                                  </span>
+                                </SelectItem>
+                                <SelectItem value="sold">
+                                  <span className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-muted-foreground" />
+                                    {STATUS_LABELS.sold}
+                                  </span>
+                                </SelectItem>
+                                <SelectItem value="hidden">
+                                  <span className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-destructive" />
+                                    {STATUS_LABELS.hidden}
+                                  </span>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => navigate(`/toy/${toy.id}`)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>למחוק את הצעצוע?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      פעולה זו תמחק את "{toy.toy_name}" לצמיתות. לא ניתן לבטל פעולה זו.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter className="flex-row-reverse gap-2">
+                                    <AlertDialogCancel>ביטול</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDelete(toy.id)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      מחק
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         )}
       </main>
     </div>

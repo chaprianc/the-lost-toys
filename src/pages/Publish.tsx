@@ -12,6 +12,7 @@ import { useAddToy, uploadToyImage } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS, ToyCategory, ToyCondition } from '@/types/toy';
 import { toast } from 'sonner';
 import { Camera, Upload, CheckCircle, Info, X, HelpCircle } from 'lucide-react';
+import { validateToySubmission, validateImageFile } from '@/lib/toyValidation';
 
 const Publish = () => {
   const navigate = useNavigate();
@@ -36,6 +37,12 @@ const Publish = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file before accepting
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        toast.error(validation.error);
+        return;
+      }
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
@@ -52,6 +59,7 @@ const Publish = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic presence validation
     if (!formData.toy_name || !formData.category || !formData.condition || !formData.price || !formData.city || !formData.seller_phone) {
       toast.error('נא למלא את כל השדות');
       return;
@@ -70,16 +78,38 @@ const Publish = () => {
     setIsSubmitting(true);
 
     try {
+      // Upload image first
       const imageUrl = await uploadToyImage(imageFile);
       
-      await addToy.mutateAsync({
-        toy_name: formData.toy_name,
+      // Prepare submission data
+      const submissionData = {
+        toy_name: formData.toy_name.trim(),
         category: formData.category,
         condition: formData.condition,
         price: Number(formData.price),
-        city: formData.city,
-        seller_phone: formData.seller_phone,
+        city: formData.city.trim(),
+        seller_phone: formData.seller_phone.replace(/[-\s]/g, ''),
         images: [imageUrl],
+      };
+
+      // Validate with Zod schema before submission
+      const validation = validateToySubmission(submissionData);
+      
+      if (!validation.success) {
+        const firstError = validation.errors?.[0];
+        toast.error(firstError?.message || 'נתונים לא תקינים');
+        setIsSubmitting(false);
+        return;
+      }
+
+      await addToy.mutateAsync({
+        toy_name: validation.data!.toy_name,
+        category: validation.data!.category,
+        condition: validation.data!.condition,
+        price: validation.data!.price,
+        city: validation.data!.city,
+        seller_phone: validation.data!.seller_phone,
+        images: validation.data!.images,
       });
 
       toast.success('הצעצוע נשלח לאישור! יפורסם לאחר אישור התשלום 🎉');

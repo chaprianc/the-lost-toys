@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -163,19 +163,34 @@ const Admin = () => {
       <Header />
 
       <main className="container mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-            <ShieldCheck className="w-6 h-6 text-primary" />
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">ניהול פלטפורמה</h1>
+              <p className="text-muted-foreground text-sm">
+                {pendingToys.length > 0 && (
+                  <span className="text-warning font-medium">{pendingToys.length} ממתינים לאישור • </span>
+                )}
+                {toys.length} צעצועים במערכת
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">ניהול פלטפורמה</h1>
-            <p className="text-muted-foreground text-sm">
-              {pendingToys.length > 0 && (
-                <span className="text-warning font-medium">{pendingToys.length} ממתינים לאישור • </span>
-              )}
-              {toys.length} צעצועים במערכת
-            </p>
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              sessionStorage.removeItem('adminAuthenticated');
+              setIsAuthenticated(false);
+              setPassword('');
+              toast.success('התנתקת בהצלחה');
+            }}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            התנתק
+          </Button>
         </div>
 
         {/* Alert banner for pending toys */}

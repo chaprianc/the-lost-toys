@@ -37,7 +37,7 @@ import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTrian
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const ADMIN_PASSWORD = 'admin123';
+import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
   const { data: toys = [], isLoading } = useAllToys();
@@ -47,16 +47,45 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('סיסמה שגויה');
+    setIsVerifying(true);
+    setError('');
+    
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('verify-admin-password', {
+        body: { password },
+      });
+
+      if (fnError) {
+        setError('שגיאה באימות. נסה שוב.');
+        return;
+      }
+
+      if (data?.success) {
+        setIsAuthenticated(true);
+        // Store session in sessionStorage (cleared when browser closes)
+        sessionStorage.setItem('adminAuthenticated', 'true');
+      } else {
+        setError('סיסמה שגויה');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('שגיאה באימות. נסה שוב.');
+    } finally {
+      setIsVerifying(false);
     }
   };
+
+  // Check session on mount
+  useState(() => {
+    const stored = sessionStorage.getItem('adminAuthenticated');
+    if (stored === 'true') {
+      setIsAuthenticated(true);
+    }
+  });
 
   const handleStatusChange = (id: string, status: 'available' | 'sold' | 'hidden') => {
     updateStatus.mutate({ id, status }, {
@@ -101,8 +130,15 @@ const Admin = () => {
                 {error && (
                   <p className="text-destructive text-sm text-center">{error}</p>
                 )}
-                <Button type="submit" className="w-full">
-                  כניסה
+                <Button type="submit" className="w-full" disabled={isVerifying}>
+                  {isVerifying ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      מאמת...
+                    </>
+                  ) : (
+                    'כניסה'
+                  )}
                 </Button>
               </form>
             </div>

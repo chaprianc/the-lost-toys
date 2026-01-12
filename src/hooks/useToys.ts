@@ -66,6 +66,21 @@ export const useAddToy = () => {
         .single();
       
       if (error) throw error;
+      
+      // Send WhatsApp notification to admin (fire and forget)
+      try {
+        await supabase.functions.invoke('notify-admin-whatsapp', {
+          body: {
+            toyName: toy.toy_name,
+            price: toy.price,
+            city: toy.city,
+            sellerPhone: toy.seller_phone,
+          },
+        });
+      } catch (notifyError) {
+        console.log('WhatsApp notification failed (non-critical):', notifyError);
+      }
+      
       return data;
     },
     onSuccess: () => {

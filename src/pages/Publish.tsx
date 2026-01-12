@@ -160,8 +160,28 @@ const Publish = () => {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    התשלום מתבצע בביט/פייבוקס לאחר אישור הפרסום
+                    העבירו ₪5 לטלפון <span className="font-bold" dir="ltr">052-6901137</span>
                   </p>
+                  
+                  {/* Payment buttons */}
+                  <div className="flex gap-2 mt-3">
+                    <a
+                      href="https://www.payboxapp.com/?d=4MWR2F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-[#00D4AA] hover:bg-[#00C49A] text-white rounded-lg py-2 px-3 text-sm font-medium transition-colors"
+                    >
+                      💳 פייבוקס
+                    </a>
+                    <a
+                      href="https://bitpay.co.il/app/me/chaprianc"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-[#3ECFB2] hover:bg-[#35B89D] text-white rounded-lg py-2 px-3 text-sm font-medium transition-colors"
+                    >
+                      💰 ביט
+                    </a>
+                  </div>
                 </div>
               </div>
               
@@ -176,7 +196,7 @@ const Publish = () => {
                   htmlFor="fee-confirm" 
                   className="text-xs text-muted-foreground cursor-pointer"
                 >
-                  אני מאשר/ת שאעביר את דמי השירות (₪5) בביט/פייבוקס לפני הפרסום
+                  אני מאשר/ת שהעברתי את דמי השירות (₪5) בביט/פייבוקס
                 </Label>
               </div>
             </div>
@@ -208,8 +228,26 @@ const Publish = () => {
                     </div>
                     <div>
                       <p className="font-medium text-sm">העבירו ₪5 בביט או בפייבוקס</p>
-                      <p className="text-xs text-muted-foreground">לטלפון: 050-1234567</p>
+                      <p className="text-xs text-muted-foreground" dir="ltr">לטלפון: 052-6901137</p>
                       <p className="text-xs text-muted-foreground">ציינו בהערה את שם הצעצוע</p>
+                      <div className="flex gap-2 mt-2">
+                        <a
+                          href="https://www.payboxapp.com/?d=4MWR2F"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 bg-[#00D4AA] hover:bg-[#00C49A] text-white rounded-md py-1 px-2 text-xs font-medium transition-colors"
+                        >
+                          פייבוקס
+                        </a>
+                        <a
+                          href="https://bitpay.co.il/app/me/chaprianc"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 bg-[#3ECFB2] hover:bg-[#35B89D] text-white rounded-md py-1 px-2 text-xs font-medium transition-colors"
+                        >
+                          ביט
+                        </a>
+                      </div>
                     </div>
                   </div>
                   

@@ -4,15 +4,20 @@ import { ToyCard } from '@/components/ToyCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
 import { useToys } from '@/hooks/useToys';
 import { ToyCategory } from '@/types/toy';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { SlidersHorizontal, Loader2, MapPin } from 'lucide-react';
 
 const Browse = () => {
   const { data: toys = [], isLoading } = useToys();
   const [selectedCategory, setSelectedCategory] = useState<ToyCategory | undefined>();
-  const [cityFilter, setCityFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState<string | undefined>();
   const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high'>('newest');
+
+  // Get unique cities from toys
+  const cities = useMemo(() => {
+    const uniqueCities = [...new Set(toys.map(toy => toy.city))];
+    return uniqueCities.sort((a, b) => a.localeCompare(b, 'he'));
+  }, [toys]);
 
   const filteredToys = useMemo(() => {
     let result = [...toys];
@@ -22,9 +27,7 @@ const Browse = () => {
     }
 
     if (cityFilter) {
-      result = result.filter((toy) =>
-        toy.city.toLowerCase().includes(cityFilter.toLowerCase())
-      );
+      result = result.filter((toy) => toy.city === cityFilter);
     }
 
     switch (sortBy) {
@@ -65,15 +68,18 @@ const Browse = () => {
           />
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="חיפוש לפי עיר..."
-                value={cityFilter}
-                onChange={(e) => setCityFilter(e.target.value)}
-                className="pr-10 bg-card border-border"
-              />
-            </div>
+            <Select value={cityFilter || "all"} onValueChange={(v) => setCityFilter(v === "all" ? undefined : v)}>
+              <SelectTrigger className="w-full sm:w-48 bg-card border-border">
+                <MapPin className="w-4 h-4 ml-2" />
+                <SelectValue placeholder="כל הערים" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל הערים</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
               <SelectTrigger className="w-full sm:w-48 bg-card border-border">
                 <SlidersHorizontal className="w-4 h-4 ml-2" />

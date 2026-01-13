@@ -28,32 +28,53 @@ const Publish = () => {
     seller_phone: '',
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showFeeDialog, setShowFeeDialog] = useState(false);
   const [feeConfirmed, setFeeConfirmed] = useState(false);
 
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file before accepting
+    const files = Array.from(e.target.files || []);
+    addImages(files);
+  };
+
+  const addImages = (files: File[]) => {
+    const remainingSlots = 3 - imageFiles.length;
+    if (remainingSlots <= 0) {
+      toast.error('ניתן להעלות עד 3 תמונות');
+      return;
+    }
+
+    const filesToAdd = files.slice(0, remainingSlots);
+    const validFiles: File[] = [];
+    const validPreviews: string[] = [];
+
+    for (const file of filesToAdd) {
       const validation = validateImageFile(file);
       if (!validation.valid) {
         toast.error(validation.error);
-        return;
+        continue;
       }
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      validFiles.push(file);
+      validPreviews.push(URL.createObjectURL(file));
+    }
+
+    if (validFiles.length > 0) {
+      setImageFiles(prev => [...prev, ...validFiles]);
+      setImagePreviews(prev => [...prev, ...validPreviews]);
     }
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleCameraCapture = () => {
+    cameraInputRef.current?.click();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,8 +86,8 @@ const Publish = () => {
       return;
     }
 
-    if (!imageFile) {
-      toast.error('נא להעלות תמונה');
+    if (imageFiles.length === 0) {
+      toast.error('נא להעלות לפחות תמונה אחת');
       return;
     }
 
@@ -78,8 +99,10 @@ const Publish = () => {
     setIsSubmitting(true);
 
     try {
-      // Upload image first
-      const imageUrl = await uploadToyImage(imageFile);
+      // Upload all images
+      const imageUrls = await Promise.all(
+        imageFiles.map(file => uploadToyImage(file))
+      );
       
       // Prepare submission data
       const submissionData = {
@@ -89,7 +112,7 @@ const Publish = () => {
         price: Number(formData.price),
         city: formData.city.trim(),
         seller_phone: formData.seller_phone.replace(/[-\s]/g, ''),
-        images: [imageUrl],
+        images: imageUrls,
       };
 
       // Validate with Zod schema before submission
@@ -372,45 +395,75 @@ const Publish = () => {
 
               {/* Image Upload */}
               <div className="space-y-2">
-                <Label>תמונה</Label>
+                <Label>תמונות (עד 3)</Label>
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleImageChange}
                   className="hidden"
                 />
-                {imagePreview ? (
-                  <div className="relative rounded-xl overflow-hidden">
-                    <img
-                      src={imagePreview}
-                      alt="תצוגה מקדימה"
-                      className="w-full h-48 object-cover"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-2"
-                      onClick={removeImage}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-border rounded-xl p-6 text-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                  >
-                    <Camera className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-sm text-muted-foreground mb-2">
-                      לחצו להעלאת תמונה
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      PNG, JPG עד 5MB
-                    </p>
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                
+                {/* Image previews grid */}
+                {imagePreviews.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative rounded-xl overflow-hidden aspect-square">
+                        <img
+                          src={preview}
+                          alt={`תצוגה מקדימה ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-1 right-1 w-6 h-6"
+                          onClick={() => removeImage(index)}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 )}
+
+                {/* Upload/Camera buttons */}
+                {imagePreviews.length < 3 && (
+                  <div className="flex gap-2">
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex-1 border-2 border-dashed border-border rounded-xl p-4 text-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                    >
+                      <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        העלאה מהגלריה
+                      </p>
+                    </div>
+                    <div
+                      onClick={handleCameraCapture}
+                      className="flex-1 border-2 border-dashed border-border rounded-xl p-4 text-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                    >
+                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        צילום
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                <p className="text-xs text-muted-foreground text-center">
+                  PNG, JPG עד 5MB • {imagePreviews.length}/3 תמונות
+                </p>
               </div>
 
               {/* Submit */}

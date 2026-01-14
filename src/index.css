@@ -212,3 +212,66 @@
   animation: card-entrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
+
+/* Accessibility Styles */
+.accessibility-large-text {
+  font-size: 120%;
+}
+
+.accessibility-large-text h1 {
+  font-size: 2.5rem !important;
+}
+
+.accessibility-large-text h2 {
+  font-size: 2rem !important;
+}
+
+.accessibility-large-text h3 {
+  font-size: 1.5rem !important;
+}
+
+.accessibility-large-text p,
+.accessibility-large-text span,
+.accessibility-large-text button,
+.accessibility-large-text a {
+  font-size: 1.15rem !important;
+}
+
+.accessibility-high-contrast {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 20%;
+  --accent: 0 0% 90%;
+  --accent-foreground: 0 0% 0%;
+  --border: 0 0% 0%;
+}
+
+.accessibility-high-contrast.dark {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 80%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 100%;
+}
+
+.accessibility-reduce-motion,
+.accessibility-reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

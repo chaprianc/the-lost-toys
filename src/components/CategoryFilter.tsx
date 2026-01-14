@@ -10,14 +10,16 @@ const categories: ToyCategory[] = ['vehicles', 'dolls', 'board-games', 'outdoor'
 
 export const CategoryFilter = ({ selectedCategory, onSelectCategory }: CategoryFilterProps) => {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+    <nav className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" role="navigation" aria-label="סינון לפי קטגוריה">
       <Button
         variant={!selectedCategory ? 'default' : 'outline'}
         size="sm"
         onClick={() => onSelectCategory(undefined)}
         className="whitespace-nowrap"
+        aria-pressed={!selectedCategory}
+        aria-label="הצג את כל הקטגוריות"
       >
-        🎯 הכל
+        <span aria-hidden="true">🎯</span> הכל
       </Button>
       {categories.map((category) => (
         <Button
@@ -26,10 +28,12 @@ export const CategoryFilter = ({ selectedCategory, onSelectCategory }: CategoryF
           size="sm"
           onClick={() => onSelectCategory(category)}
           className="whitespace-nowrap"
+          aria-pressed={selectedCategory === category}
+          aria-label={`סנן לפי קטגוריה: ${CATEGORY_LABELS[category]}`}
         >
-          {CATEGORY_ICONS[category]} {CATEGORY_LABELS[category]}
+          <span aria-hidden="true">{CATEGORY_ICONS[category]}</span> {CATEGORY_LABELS[category]}
         </Button>
       ))}
-    </div>
+    </nav>
   );
 };

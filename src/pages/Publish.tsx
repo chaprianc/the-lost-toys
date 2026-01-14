@@ -163,9 +163,9 @@ const Publish = () => {
 
           <CardContent>
             {/* Service fee notice */}
-            <div className="bg-secondary/50 rounded-xl p-4 mb-6">
+            <div className="bg-secondary/50 rounded-xl p-4 mb-6" role="region" aria-label="מידע על דמי שירות">
               <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-secondary-foreground mt-0.5 shrink-0" />
+                <Info className="w-5 h-5 text-secondary-foreground mt-0.5 shrink-0" aria-hidden="true" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-secondary-foreground font-medium">
@@ -177,8 +177,9 @@ const Publish = () => {
                       size="sm"
                       className="h-6 px-2 text-xs"
                       onClick={() => setShowFeeDialog(true)}
+                      aria-label="פתח פרטים נוספים על דמי שירות"
                     >
-                      <HelpCircle className="w-4 h-4 mr-1" />
+                      <HelpCircle className="w-4 h-4 mr-1" aria-hidden="true" />
                       פרטים
                     </Button>
                   </div>
@@ -187,22 +188,24 @@ const Publish = () => {
                   </p>
                   
                   {/* Payment buttons */}
-                  <div className="flex gap-2 mt-3">
+                  <div className="flex gap-2 mt-3" role="group" aria-label="אפשרויות תשלום">
                     <a
                       href="https://www.payboxapp.com/?d=4MWR2F"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 inline-flex items-center justify-center gap-2 bg-[#00D4AA] hover:bg-[#00C49A] text-white rounded-lg py-2 px-3 text-sm font-medium transition-colors"
+                      aria-label="תשלום באמצעות פייבוקס, נפתח בחלון חדש"
                     >
-                      💳 פייבוקס
+                      <span aria-hidden="true">💳</span> פייבוקס
                     </a>
                     <a
                       href="https://bitpay.co.il/app/me/chaprianc"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 inline-flex items-center justify-center gap-2 bg-[#3ECFB2] hover:bg-[#35B89D] text-white rounded-lg py-2 px-3 text-sm font-medium transition-colors"
+                      aria-label="תשלום באמצעות ביט, נפתח בחלון חדש"
                     >
-                      💰 ביט
+                      <span aria-hidden="true">💰</span> ביט
                     </a>
                   </div>
                 </div>
@@ -300,7 +303,7 @@ const Publish = () => {
               </DialogContent>
             </Dialog>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5" aria-label="טופס פרסום צעצוע">
               {/* Toy Name */}
               <div className="space-y-2">
                 <Label htmlFor="toy_name">שם הצעצוע</Label>
@@ -310,23 +313,26 @@ const Publish = () => {
                   value={formData.toy_name}
                   onChange={(e) => setFormData({ ...formData, toy_name: e.target.value })}
                   className="bg-background"
+                  aria-required="true"
+                  aria-describedby="toy_name_hint"
                 />
+                <span id="toy_name_hint" className="sr-only">הזינו את שם הצעצוע שברצונכם לפרסם</span>
               </div>
 
               {/* Category */}
               <div className="space-y-2">
-                <Label>קטגוריה</Label>
+                <Label id="category_label">קטגוריה</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(v) => setFormData({ ...formData, category: v as ToyCategory })}
                 >
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background" aria-labelledby="category_label" aria-required="true">
                     <SelectValue placeholder="בחרו קטגוריה" />
                   </SelectTrigger>
                   <SelectContent>
                     {(Object.keys(CATEGORY_LABELS) as ToyCategory[]).map((cat) => (
                       <SelectItem key={cat} value={cat}>
-                        {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
+                        <span aria-hidden="true">{CATEGORY_ICONS[cat]}</span> {CATEGORY_LABELS[cat]}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -335,12 +341,12 @@ const Publish = () => {
 
               {/* Condition */}
               <div className="space-y-2">
-                <Label>מצב הצעצוע</Label>
+                <Label id="condition_label">מצב הצעצוע</Label>
                 <Select
                   value={formData.condition}
                   onValueChange={(v) => setFormData({ ...formData, condition: v as ToyCondition })}
                 >
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background" aria-labelledby="condition_label" aria-required="true">
                     <SelectValue placeholder="בחרו מצב" />
                   </SelectTrigger>
                   <SelectContent>
@@ -364,7 +370,10 @@ const Publish = () => {
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   className="bg-background"
+                  aria-required="true"
+                  aria-describedby="price_hint"
                 />
+                <span id="price_hint" className="sr-only">הזינו את מחיר הצעצוע בשקלים</span>
               </div>
 
               {/* City */}
@@ -376,6 +385,7 @@ const Publish = () => {
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   className="bg-background"
+                  aria-required="true"
                 />
               </div>
 
@@ -390,12 +400,15 @@ const Publish = () => {
                   onChange={(e) => setFormData({ ...formData, seller_phone: e.target.value })}
                   className="bg-background"
                   dir="ltr"
+                  aria-required="true"
+                  aria-describedby="phone_hint"
                 />
+                <span id="phone_hint" className="sr-only">הזינו מספר טלפון נייד ליצירת קשר</span>
               </div>
 
               {/* Image Upload */}
-              <div className="space-y-2">
-                <Label>תמונות (עד 3)</Label>
+              <fieldset className="space-y-2">
+                <legend className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">תמונות (עד 3)</legend>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -403,6 +416,7 @@ const Publish = () => {
                   multiple
                   onChange={handleImageChange}
                   className="hidden"
+                  aria-label="בחר תמונות מהגלריה"
                 />
                 <input
                   ref={cameraInputRef}
@@ -411,16 +425,17 @@ const Publish = () => {
                   capture="environment"
                   onChange={handleImageChange}
                   className="hidden"
+                  aria-label="צלם תמונה במצלמה"
                 />
                 
                 {/* Image previews grid */}
                 {imagePreviews.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="grid grid-cols-3 gap-2 mb-3" role="list" aria-label="תמונות שהועלו">
                     {imagePreviews.map((preview, index) => (
-                      <div key={index} className="relative rounded-xl overflow-hidden aspect-square">
+                      <div key={index} className="relative rounded-xl overflow-hidden aspect-square" role="listitem">
                         <img
                           src={preview}
-                          alt={`תצוגה מקדימה ${index + 1}`}
+                          alt={`תצוגה מקדימה של תמונה ${index + 1} מתוך ${imagePreviews.length}`}
                           className="w-full h-full object-cover"
                         />
                         <Button
@@ -429,8 +444,9 @@ const Publish = () => {
                           size="icon"
                           className="absolute top-1 right-1 w-6 h-6"
                           onClick={() => removeImage(index)}
+                          aria-label={`הסר תמונה ${index + 1}`}
                         >
-                          <X className="w-3 h-3" />
+                          <X className="w-3 h-3" aria-hidden="true" />
                         </Button>
                       </div>
                     ))}
@@ -439,32 +455,36 @@ const Publish = () => {
 
                 {/* Upload/Camera buttons */}
                 {imagePreviews.length < 3 && (
-                  <div className="flex gap-2">
-                    <div
+                  <div className="flex gap-2" role="group" aria-label="אפשרויות העלאת תמונה">
+                    <button
+                      type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="flex-1 border-2 border-dashed border-border rounded-xl p-4 text-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                      aria-label="העלאת תמונות מהגלריה"
                     >
-                      <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" aria-hidden="true" />
                       <p className="text-sm text-muted-foreground">
                         העלאה מהגלריה
                       </p>
-                    </div>
-                    <div
+                    </button>
+                    <button
+                      type="button"
                       onClick={handleCameraCapture}
                       className="flex-1 border-2 border-dashed border-border rounded-xl p-4 text-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                      aria-label="צילום תמונה באמצעות המצלמה"
                     >
-                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" aria-hidden="true" />
                       <p className="text-sm text-muted-foreground">
                         צילום
                       </p>
-                    </div>
+                    </button>
                   </div>
                 )}
                 
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-xs text-muted-foreground text-center" aria-live="polite">
                   PNG, JPG עד 5MB • {imagePreviews.length}/3 תמונות
                 </p>
-              </div>
+              </fieldset>
 
               {/* Submit */}
               <Button
@@ -473,15 +493,17 @@ const Publish = () => {
                 size="lg"
                 className="w-full"
                 disabled={isSubmitting}
+                aria-busy={isSubmitting}
+                aria-describedby="submit_status"
               >
                 {isSubmitting ? (
                   <>
-                    <Upload className="w-5 h-5 animate-pulse" />
-                    מפרסם...
+                    <Upload className="w-5 h-5 animate-pulse" aria-hidden="true" />
+                    <span id="submit_status">מפרסם...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle className="w-5 h-5" />
+                    <CheckCircle className="w-5 h-5" aria-hidden="true" />
                     פרסם צעצוע
                   </>
                 )}

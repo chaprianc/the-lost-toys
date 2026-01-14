@@ -27,9 +27,9 @@ export const ImageGallery = ({ images, altText }: ImageGalleryProps) => {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="region" aria-label="גלריית תמונות">
       {/* Main Image */}
-      <div className="relative aspect-square md:aspect-video overflow-hidden">
+      <div className="relative aspect-square md:aspect-video overflow-hidden" role="img" aria-label={`${altText} - תמונה ${selectedIndex + 1} מתוך ${images.length}`}>
         <img
           src={images[selectedIndex]}
           alt={`${altText} - תמונה ${selectedIndex + 1}`}
@@ -42,21 +42,21 @@ export const ImageGallery = ({ images, altText }: ImageGalleryProps) => {
             <button
               onClick={goToNext}
               className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm shadow-card flex items-center justify-center transition-all hover:bg-background hover:scale-110"
-              aria-label="תמונה הבאה"
+              aria-label="עבור לתמונה הבאה"
             >
-              <ChevronLeft className="w-5 h-5 text-foreground" />
+              <ChevronLeft className="w-5 h-5 text-foreground" aria-hidden="true" />
             </button>
             <button
               onClick={goToPrevious}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm shadow-card flex items-center justify-center transition-all hover:bg-background hover:scale-110"
-              aria-label="תמונה קודמת"
+              aria-label="חזור לתמונה הקודמת"
             >
-              <ChevronRight className="w-5 h-5 text-foreground" />
+              <ChevronRight className="w-5 h-5 text-foreground" aria-hidden="true" />
             </button>
             
             {/* Image Counter */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-foreground shadow-card">
-              {selectedIndex + 1} / {images.length}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-foreground shadow-card" aria-live="polite" aria-atomic="true">
+              <span className="sr-only">תמונה </span>{selectedIndex + 1} / {images.length}
             </div>
           </>
         )}
@@ -64,7 +64,7 @@ export const ImageGallery = ({ images, altText }: ImageGalleryProps) => {
 
       {/* Thumbnails - only show if multiple images */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-2 px-1">
+        <div className="flex gap-2 overflow-x-auto pb-2 px-1" role="tablist" aria-label="תמונות ממוזערות לבחירה">
           {images.map((image, index) => (
             <button
               key={index}
@@ -75,12 +75,16 @@ export const ImageGallery = ({ images, altText }: ImageGalleryProps) => {
                   ? "ring-2 ring-primary ring-offset-2 ring-offset-card scale-105"
                   : "opacity-60 hover:opacity-100"
               )}
-              aria-label={`תמונה ${index + 1}`}
+              role="tab"
+              aria-selected={selectedIndex === index}
+              aria-label={`בחר תמונה ${index + 1} מתוך ${images.length}`}
+              tabIndex={selectedIndex === index ? 0 : -1}
             >
               <img
                 src={image}
-                alt={`${altText} - תמונה ממוזערת ${index + 1}`}
+                alt=""
                 className="w-full h-full object-cover"
+                aria-hidden="true"
               />
             </button>
           ))}

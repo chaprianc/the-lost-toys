@@ -115,7 +115,7 @@ const Admin = () => {
                 <h1 className="text-2xl font-bold text-foreground">כניסת מנהל</h1>
                 <p className="text-muted-foreground text-sm mt-1">הזן סיסמה כדי להמשיך</p>
               </div>
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-4" aria-label="טופס כניסת מנהל">
                 <div className="space-y-2">
                   <Label htmlFor="password">סיסמה</Label>
                   <Input
@@ -125,16 +125,19 @@ const Admin = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="הזן סיסמת מנהל"
                     className="text-center"
+                    aria-required="true"
+                    aria-describedby={error ? "password_error" : undefined}
+                    aria-invalid={error ? "true" : "false"}
                   />
                 </div>
                 {error && (
-                  <p className="text-destructive text-sm text-center">{error}</p>
+                  <p id="password_error" className="text-destructive text-sm text-center" role="alert" aria-live="assertive">{error}</p>
                 )}
-                <Button type="submit" className="w-full" disabled={isVerifying}>
+                <Button type="submit" className="w-full" disabled={isVerifying} aria-busy={isVerifying}>
                   {isVerifying ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                      מאמת...
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" aria-hidden="true" />
+                      <span>מאמת...</span>
                     </>
                   ) : (
                     'כניסה'
@@ -187,16 +190,17 @@ const Admin = () => {
               toast.success('התנתקת בהצלחה');
             }}
             className="flex items-center gap-2"
+            aria-label="התנתקות מממשק הניהול"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4" aria-hidden="true" />
             התנתק
           </Button>
         </div>
 
         {/* Alert banner for pending toys */}
         {!isLoading && pendingToys.length > 0 && (
-          <div className="bg-warning/20 border border-warning/30 rounded-xl p-4 mb-6 flex items-center gap-3 animate-pulse">
-            <AlertTriangle className="w-6 h-6 text-warning shrink-0" />
+          <div className="bg-warning/20 border border-warning/30 rounded-xl p-4 mb-6 flex items-center gap-3 animate-pulse" role="alert" aria-live="polite">
+            <AlertTriangle className="w-6 h-6 text-warning shrink-0" aria-hidden="true" />
             <div className="flex-1">
               <p className="font-medium text-foreground">
                 {pendingToys.length} צעצועים ממתינים לאישור תשלום
@@ -267,27 +271,29 @@ const Admin = () => {
                             <TableCell dir="ltr" className="text-right">{toy.seller_phone}</TableCell>
                             <TableCell>{toy.city}</TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2" role="group" aria-label={`פעולות עבור ${toy.toy_name}`}>
                                 <Button
                                   variant="default"
                                   size="sm"
                                   onClick={() => handleApprove(toy.id)}
                                   className="bg-success hover:bg-success/90"
+                                  aria-label={`אשר תשלום עבור ${toy.toy_name}`}
                                 >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  <CheckCircle className="w-4 h-4 mr-1" aria-hidden="true" />
                                   אשר תשלום
                                 </Button>
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => navigate(`/toy/${toy.id}`)}
+                                  aria-label={`צפה בפרטי ${toy.toy_name}`}
                                 >
-                                  <Eye className="w-4 h-4" />
+                                  <Eye className="w-4 h-4" aria-hidden="true" />
                                 </Button>
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                                      <Trash2 className="w-4 h-4" />
+                                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" aria-label={`מחק את ${toy.toy_name}`}>
+                                      <Trash2 className="w-4 h-4" aria-hidden="true" />
                                     </Button>
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
@@ -381,18 +387,19 @@ const Admin = () => {
                             </Select>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2" role="group" aria-label={`פעולות עבור ${toy.toy_name}`}>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => navigate(`/toy/${toy.id}`)}
+                                aria-label={`צפה בפרטי ${toy.toy_name}`}
                               >
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-4 h-4" aria-hidden="true" />
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                                    <Trash2 className="w-4 h-4" />
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" aria-label={`מחק את ${toy.toy_name}`}>
+                                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>

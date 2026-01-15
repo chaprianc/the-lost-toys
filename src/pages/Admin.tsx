@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { useAllToys, useUpdateToyStatus, useDeleteToy } from '@/hooks/useToys';
+import { useBlockedPhones, useBlockPhone, useUnblockPhone } from '@/hooks/useBlockedPhones';
 import { CATEGORY_LABELS, STATUS_LABELS } from '@/types/toy';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -41,6 +42,9 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
   const { data: toys = [], isLoading } = useAllToys();
+  const { data: blockedPhones = [], isLoading: isLoadingBlocked } = useBlockedPhones();
+  const blockPhone = useBlockPhone();
+  const unblockPhone = useUnblockPhone();
   const updateStatus = useUpdateToyStatus();
   const deleteToy = useDeleteToy();
   const navigate = useNavigate();
@@ -48,6 +52,8 @@ const Admin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [newBlockPhone, setNewBlockPhone] = useState('');
+  const [newBlockReason, setNewBlockReason] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,6 +238,15 @@ const Admin = () => {
               <TabsTrigger value="all" className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4" />
                 כל הצעצועים
+              </TabsTrigger>
+              <TabsTrigger value="blocked" className="flex items-center gap-2">
+                <Ban className="w-4 h-4" />
+                חסומים
+                {blockedPhones.length > 0 && (
+                  <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                    {blockedPhones.length}
+                  </Badge>
+                )}
               </TabsTrigger>
             </TabsList>
 
@@ -428,6 +443,154 @@ const Admin = () => {
                   </Table>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="blocked">
+              <div className="bg-card rounded-2xl shadow-card p-6 mb-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Plus className="w-5 h-5" />
+                  חסום מספר טלפון
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1">
+                    <Label htmlFor="block-phone">מספר טלפון</Label>
+                    <Input
+                      id="block-phone"
+                      type="tel"
+                      value={newBlockPhone}
+                      onChange={(e) => setNewBlockPhone(e.target.value)}
+                      placeholder="05X-XXXXXXX"
+                      dir="ltr"
+                      className="text-right"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="block-reason">סיבה (אופציונלי)</Label>
+                    <Input
+                      id="block-reason"
+                      type="text"
+                      value={newBlockReason}
+                      onChange={(e) => setNewBlockReason(e.target.value)}
+                      placeholder="סיבת החסימה"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button
+                      onClick={() => {
+                        if (!newBlockPhone.trim()) {
+                          toast.error('יש להזין מספר טלפון');
+                          return;
+                        }
+                        blockPhone.mutate(
+                          { phone: newBlockPhone.trim(), reason: newBlockReason.trim() || undefined },
+                          {
+                            onSuccess: () => {
+                              toast.success('המספר נחסם בהצלחה');
+                              setNewBlockPhone('');
+                              setNewBlockReason('');
+                            },
+                            onError: (err: any) => {
+                              if (err.code === '23505') {
+                                toast.error('מספר זה כבר חסום');
+                              } else {
+                                toast.error('שגיאה בחסימת המספר');
+                              }
+                            },
+                          }
+                        );
+                      }}
+                      disabled={blockPhone.isPending}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      {blockPhone.isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <Ban className="w-4 h-4 mr-2" />
+                          חסום
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {isLoadingBlocked ? (
+                <div className="text-center py-8">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+                </div>
+              ) : blockedPhones.length === 0 ? (
+                <div className="bg-card rounded-2xl shadow-card p-12 text-center">
+                  <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
+                  <h3 className="font-semibold text-lg">אין מספרים חסומים</h3>
+                  <p className="text-muted-foreground text-sm">הפלטפורמה פתוחה לכולם</p>
+                </div>
+              ) : (
+                <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-right">מספר טלפון</TableHead>
+                          <TableHead className="text-right">סיבה</TableHead>
+                          <TableHead className="text-right">תאריך חסימה</TableHead>
+                          <TableHead className="text-right">פעולות</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {blockedPhones.map((blocked) => (
+                          <TableRow key={blocked.id}>
+                            <TableCell dir="ltr" className="text-right font-mono">
+                              {blocked.phone}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {blocked.reason || '—'}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(blocked.blocked_at).toLocaleDateString('he-IL')}
+                            </TableCell>
+                            <TableCell>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="text-success hover:text-success"
+                                  >
+                                    <UserX className="w-4 h-4 mr-1" />
+                                    בטל חסימה
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>לבטל חסימה?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      המספר {blocked.phone} יוכל שוב לפרסם מודעות בפלטפורמה.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter className="flex-row-reverse gap-2">
+                                    <AlertDialogCancel>ביטול</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => {
+                                        unblockPhone.mutate(blocked.id, {
+                                          onSuccess: () => toast.success('החסימה בוטלה'),
+                                          onError: () => toast.error('שגיאה בביטול החסימה'),
+                                        });
+                                      }}
+                                    >
+                                      בטל חסימה
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         )}

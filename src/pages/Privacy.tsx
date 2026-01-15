@@ -52,6 +52,15 @@ const Privacy = () => {
               נטפל בבקשות תוך זמן סביר.
             </p>
           </section>
+          
+          <section className="border-t border-border pt-6">
+            <h2 className="text-xl font-semibold mb-3 text-destructive">חסימת משתמשים</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              משתמשים שאינם מכבדים את כללי הפלטפורמה, לרבות פרסום תוכן פוגעני, הטעייה, 
+              או התנהגות בלתי הולמת - יחסמו לצמיתות ולא יוכלו לפרסם מודעות נוספות. 
+              החסימה מתבצעת לפי מספר הטלפון ואינה ניתנת לערעור.
+            </p>
+          </section>
         </div>
       </main>
     </div>

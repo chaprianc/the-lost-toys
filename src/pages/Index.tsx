@@ -7,44 +7,40 @@ import { useToys } from '@/hooks/useToys';
 import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
 
 // Confetti piece component
-const ConfettiPiece = ({ delay, left, color, size, duration }: { 
-  delay: number; 
-  left: number; 
-  color: string; 
+const ConfettiPiece = ({
+  delay,
+  left,
+  color,
+  size,
+  duration
+}: {
+  delay: number;
+  left: number;
+  color: string;
   size: number;
   duration: number;
-}) => (
-  <div
-    className="absolute top-0 animate-confetti-fall"
-    style={{
-      left: `${left}%`,
-      animationDelay: `${delay}s`,
-      animationDuration: `${duration}s`,
-    }}
-  >
-    <div
-      className="rounded-sm animate-confetti-spin"
-      style={{
-        width: `${size}px`,
-        height: `${size * 0.6}px`,
-        backgroundColor: color,
-        animationDelay: `${delay}s`,
-      }}
-    />
-  </div>
-);
-
-const confettiColors = [
-  'hsl(var(--primary))',
-  'hsl(var(--secondary))',
-  'hsl(var(--accent))',
-  '#FFD93D', // yellow
-  '#6BCB77', // green
-  '#FF6B6B', // coral
-  '#4D96FF', // blue
-  '#C9B1FF', // lavender
+}) => <div className="absolute top-0 animate-confetti-fall" style={{
+  left: `${left}%`,
+  animationDelay: `${delay}s`,
+  animationDuration: `${duration}s`
+}}>
+    <div className="rounded-sm animate-confetti-spin" style={{
+    width: `${size}px`,
+    height: `${size * 0.6}px`,
+    backgroundColor: color,
+    animationDelay: `${delay}s`
+  }} />
+  </div>;
+const confettiColors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#FFD93D',
+// yellow
+'#6BCB77',
+// green
+'#FF6B6B',
+// coral
+'#4D96FF',
+// blue
+'#C9B1FF' // lavender
 ];
-
 const features = [{
   id: 'simple',
   icon: Sparkles,
@@ -85,20 +81,21 @@ const Index = () => {
     size: number;
     duration: number;
   }>>([]);
-
   const toggleFeature = (id: string) => {
     setExpandedFeature(expandedFeature === id ? null : id);
   };
 
   // Generate confetti continuously
   useEffect(() => {
-    const generatePieces = () => Array.from({ length: 30 }, (_, i) => ({
+    const generatePieces = () => Array.from({
+      length: 30
+    }, (_, i) => ({
       id: Date.now() + i,
       delay: Math.random() * 2,
       left: Math.random() * 100,
       color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
       size: 8 + Math.random() * 8,
-      duration: 5 + Math.random() * 4,
+      duration: 5 + Math.random() * 4
     }));
 
     // Initial pieces
@@ -112,23 +109,12 @@ const Index = () => {
         return [...prev.slice(-30), ...newPieces];
       });
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
-
   return <div className="min-h-screen bg-gradient-subtle relative overflow-hidden">
       {/* Confetti Animation */}
       <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-        {confettiPieces.map((piece) => (
-          <ConfettiPiece
-            key={piece.id}
-            delay={piece.delay}
-            left={piece.left}
-            color={piece.color}
-            size={piece.size}
-            duration={piece.duration}
-          />
-        ))}
+        {confettiPieces.map(piece => <ConfettiPiece key={piece.id} delay={piece.delay} left={piece.left} color={piece.color} size={piece.size} duration={piece.duration} />)}
       </div>
       <Header />
       
@@ -136,7 +122,7 @@ const Index = () => {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-10 bg-primary-foreground" />
         <div className="container mx-auto px-4 py-12 md:py-20">
-          <div className="text-center space-y-6 animate-slide-up bg-[sidebar-accent-foreground] bg-primary-foreground">
+          <div className="text-center space-y-6 animate-slide-up bg-[sidebar-accent-foreground] bg-input">
             <div className="flex justify-center">
               <span className="text-7xl md:text-8xl animate-float">🧸</span>
             </div>

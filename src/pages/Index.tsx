@@ -1,10 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { useToys } from '@/hooks/useToys';
 import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
+
+// Confetti piece component
+const ConfettiPiece = ({ delay, left, color, size, duration }: { 
+  delay: number; 
+  left: number; 
+  color: string; 
+  size: number;
+  duration: number;
+}) => (
+  <div
+    className="absolute top-0 animate-confetti-fall"
+    style={{
+      left: `${left}%`,
+      animationDelay: `${delay}s`,
+      animationDuration: `${duration}s`,
+    }}
+  >
+    <div
+      className="rounded-sm animate-confetti-spin"
+      style={{
+        width: `${size}px`,
+        height: `${size * 0.6}px`,
+        backgroundColor: color,
+        animationDelay: `${delay}s`,
+      }}
+    />
+  </div>
+);
+
+const confettiColors = [
+  'hsl(var(--primary))',
+  'hsl(var(--secondary))',
+  'hsl(var(--accent))',
+  '#FFD93D', // yellow
+  '#6BCB77', // green
+  '#FF6B6B', // coral
+  '#4D96FF', // blue
+  '#C9B1FF', // lavender
+];
+
 const features = [{
   id: 'simple',
   icon: Sparkles,
@@ -37,10 +77,46 @@ const Index = () => {
   } = useToys();
   const recentToys = toys.slice(0, 4);
   const [expandedFeature, setExpandedFeature] = useState<string | null>(null);
+  const [confettiPieces, setConfettiPieces] = useState<Array<{
+    id: number;
+    delay: number;
+    left: number;
+    color: string;
+    size: number;
+    duration: number;
+  }>>([]);
+
   const toggleFeature = (id: string) => {
     setExpandedFeature(expandedFeature === id ? null : id);
   };
-  return <div className="min-h-screen bg-gradient-subtle">
+
+  // Generate confetti on mount
+  useEffect(() => {
+    const pieces = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      delay: Math.random() * 5,
+      left: Math.random() * 100,
+      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+      size: 8 + Math.random() * 8,
+      duration: 4 + Math.random() * 4,
+    }));
+    setConfettiPieces(pieces);
+  }, []);
+
+  return <div className="min-h-screen bg-gradient-subtle relative overflow-hidden">
+      {/* Confetti Animation */}
+      <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+        {confettiPieces.map((piece) => (
+          <ConfettiPiece
+            key={piece.id}
+            delay={piece.delay}
+            left={piece.left}
+            color={piece.color}
+            size={piece.size}
+            duration={piece.duration}
+          />
+        ))}
+      </div>
       <Header />
       
       {/* Hero Section */}

@@ -90,17 +90,30 @@ const Index = () => {
     setExpandedFeature(expandedFeature === id ? null : id);
   };
 
-  // Generate confetti on mount
+  // Generate confetti continuously
   useEffect(() => {
-    const pieces = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      delay: Math.random() * 5,
+    const generatePieces = () => Array.from({ length: 30 }, (_, i) => ({
+      id: Date.now() + i,
+      delay: Math.random() * 2,
       left: Math.random() * 100,
       color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
       size: 8 + Math.random() * 8,
-      duration: 4 + Math.random() * 4,
+      duration: 5 + Math.random() * 4,
     }));
-    setConfettiPieces(pieces);
+
+    // Initial pieces
+    setConfettiPieces(generatePieces());
+
+    // Add new pieces every 3 seconds for continuous effect
+    const interval = setInterval(() => {
+      setConfettiPieces(prev => {
+        // Keep only recent pieces (last 60) to prevent memory issues
+        const newPieces = generatePieces();
+        return [...prev.slice(-30), ...newPieces];
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return <div className="min-h-screen bg-gradient-subtle relative overflow-hidden">

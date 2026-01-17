@@ -38,6 +38,33 @@ export type Database = {
         }
         Relationships: []
       }
+      seller_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewer_name: string
+          seller_phone: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewer_name: string
+          seller_phone: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewer_name?: string
+          seller_phone?: string
+        }
+        Relationships: []
+      }
       toys: {
         Row: {
           category: Database["public"]["Enums"]["toy_category"]

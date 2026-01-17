@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -5,12 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { ImageGallery } from '@/components/ImageGallery';
 import { useToy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS } from '@/types/toy';
-import { Phone, MessageCircle, MapPin, ArrowRight, Calendar, Tag, Loader2 } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, ArrowRight, Calendar, Tag, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import SellerRating from '@/components/SellerRating';
+import ReviewForm from '@/components/ReviewForm';
+import ReviewsList from '@/components/ReviewsList';
 
 const ToyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: toy, isLoading, error } = useToy(id || '');
+  const [showReviews, setShowReviews] = useState(false);
 
   if (isLoading) {
     return (
@@ -113,6 +118,11 @@ const ToyDetail = () => {
                 <Calendar className="w-5 h-5 text-muted-foreground" />
                 <span>פורסם ב-{new Date(toy.created_at).toLocaleDateString('he-IL')}</span>
               </div>
+              {/* Seller Rating */}
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">דירוג המוכר:</span>
+                <SellerRating sellerPhone={toy.seller_phone} size="md" />
+              </div>
             </div>
 
             {/* Contact Buttons */}
@@ -136,6 +146,28 @@ const ToyDetail = () => {
               <p className="text-sm text-muted-foreground">
                 💡 טיפ: תמיד פגשו במקום ציבורי ובדקו את הצעצוע לפני הרכישה
               </p>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="pt-4 border-t border-border">
+              <button
+                onClick={() => setShowReviews(!showReviews)}
+                className="w-full flex items-center justify-between py-2 text-foreground hover:text-primary transition-colors"
+              >
+                <span className="font-semibold">דירוגים וביקורות</span>
+                {showReviews ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
+              </button>
+              
+              {showReviews && (
+                <div className="space-y-6 mt-4 animate-slide-up">
+                  <ReviewForm sellerPhone={toy.seller_phone} />
+                  <ReviewsList sellerPhone={toy.seller_phone} />
+                </div>
+              )}
             </div>
           </div>
         </div>

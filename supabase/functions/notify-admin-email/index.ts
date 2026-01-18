@@ -65,8 +65,15 @@ serve(async (req) => {
               <p style="margin: 10px 0;"><strong>📞 טלפון מוכר:</strong> ${sellerPhone}</p>
             </div>
             
-            <p style="margin-top: 20px; color: #6b7280;">
-              👉 היכנס לממשק הניהול כדי לאשר או לדחות את הצעצוע.
+            <div style="margin-top: 24px; text-align: center;">
+              <a href="https://shnirtoys.lovable.app/admin" 
+                 style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                👉 היכנס לממשק הניהול
+              </a>
+            </div>
+            
+            <p style="margin-top: 16px; color: #9ca3af; font-size: 12px; text-align: center;">
+              לחץ על הכפתור למעלה כדי לאשר או לדחות את הצעצוע.
             </p>
           </div>
         `,

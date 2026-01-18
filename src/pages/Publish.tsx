@@ -136,19 +136,26 @@ const Publish = () => {
         images: validation.data!.images,
       });
 
-      // Send WhatsApp notification to admin (non-blocking)
-      try {
-        await supabase.functions.invoke('notify-admin-whatsapp', {
-          body: {
-            toyName: validation.data!.toy_name,
-            price: validation.data!.price,
-            city: validation.data!.city,
-            sellerPhone: validation.data!.seller_phone,
-          },
+      // Send notifications to admin (non-blocking)
+      const notificationBody = {
+        toyName: validation.data!.toy_name,
+        price: validation.data!.price,
+        city: validation.data!.city,
+        sellerPhone: validation.data!.seller_phone,
+      };
+
+      // Send both WhatsApp and Email notifications in parallel
+      Promise.allSettled([
+        supabase.functions.invoke('notify-admin-whatsapp', { body: notificationBody }),
+        supabase.functions.invoke('notify-admin-email', { body: notificationBody }),
+      ]).then((results) => {
+        results.forEach((result, index) => {
+          const channel = index === 0 ? 'WhatsApp' : 'Email';
+          if (result.status === 'rejected') {
+            console.log(`${channel} notification failed (optional):`, result.reason);
+          }
         });
-      } catch (notifyError) {
-        console.log('WhatsApp notification failed (optional):', notifyError);
-      }
+      });
 
       toast.success('הצעצוע נשלח לאישור! יפורסם לאחר אישור התשלום 🎉');
       navigate('/browse');

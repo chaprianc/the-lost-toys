@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -54,6 +54,12 @@ const Admin = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [newBlockPhone, setNewBlockPhone] = useState('');
   const [newBlockReason, setNewBlockReason] = useState('');
+  
+  // Settings state
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -247,6 +253,10 @@ const Admin = () => {
                     {blockedPhones.length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                הגדרות
               </TabsTrigger>
             </TabsList>
 
@@ -591,6 +601,160 @@ const Admin = () => {
                   </div>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="settings">
+              <div className="space-y-6">
+                {/* Change Admin Email */}
+                <div className="bg-card rounded-2xl shadow-card p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Mail className="w-5 h-5" />
+                    שנה מייל מנהל
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    מייל זה ישמש לקבלת התראות על צעצועים חדשים
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <Label htmlFor="admin-email">כתובת מייל חדשה</Label>
+                      <Input
+                        id="admin-email"
+                        type="email"
+                        value={newAdminEmail}
+                        onChange={(e) => setNewAdminEmail(e.target.value)}
+                        placeholder="admin@example.com"
+                        dir="ltr"
+                        className="text-left"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={async () => {
+                          if (!newAdminEmail.trim() || !newAdminEmail.includes('@')) {
+                            toast.error('יש להזין כתובת מייל תקינה');
+                            return;
+                          }
+                          setIsSavingSettings(true);
+                          try {
+                            const { data, error } = await supabase.functions.invoke('update-admin-settings', {
+                              body: { type: 'email', value: newAdminEmail.trim() },
+                            });
+                            if (error) throw error;
+                            toast.success('מייל המנהל עודכן בהצלחה');
+                            setNewAdminEmail('');
+                          } catch (err) {
+                            console.error('Error updating email:', err);
+                            toast.error('שגיאה בעדכון המייל');
+                          } finally {
+                            setIsSavingSettings(false);
+                          }
+                        }}
+                        disabled={isSavingSettings || !newAdminEmail.trim()}
+                      >
+                        {isSavingSettings ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 mr-2" />
+                            שמור
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Change Admin Password */}
+                <div className="bg-card rounded-2xl shadow-card p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <KeyRound className="w-5 h-5" />
+                    שנה סיסמת מנהל
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    סיסמה זו תשמש לכניסה לממשק הניהול
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <div className="flex-1">
+                        <Label htmlFor="new-password">סיסמה חדשה</Label>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          value={newAdminPassword}
+                          onChange={(e) => setNewAdminPassword(e.target.value)}
+                          placeholder="הזן סיסמה חדשה"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label htmlFor="confirm-password">אימות סיסמה</Label>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="הזן שוב את הסיסמה"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={async () => {
+                          if (!newAdminPassword.trim()) {
+                            toast.error('יש להזין סיסמה חדשה');
+                            return;
+                          }
+                          if (newAdminPassword.length < 6) {
+                            toast.error('הסיסמה חייבת להכיל לפחות 6 תווים');
+                            return;
+                          }
+                          if (newAdminPassword !== confirmPassword) {
+                            toast.error('הסיסמאות לא תואמות');
+                            return;
+                          }
+                          setIsSavingSettings(true);
+                          try {
+                            const { data, error } = await supabase.functions.invoke('update-admin-settings', {
+                              body: { type: 'password', value: newAdminPassword },
+                            });
+                            if (error) throw error;
+                            toast.success('סיסמת המנהל עודכנה בהצלחה');
+                            setNewAdminPassword('');
+                            setConfirmPassword('');
+                          } catch (err) {
+                            console.error('Error updating password:', err);
+                            toast.error('שגיאה בעדכון הסיסמה');
+                          } finally {
+                            setIsSavingSettings(false);
+                          }
+                        }}
+                        disabled={isSavingSettings || !newAdminPassword.trim() || !confirmPassword.trim()}
+                      >
+                        {isSavingSettings ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 mr-2" />
+                            עדכן סיסמה
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info Card */}
+                <div className="bg-muted/50 rounded-xl p-4 border border-border">
+                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-warning" />
+                    שים לב
+                  </h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>שינוי הסיסמה יכנס לתוקף מיידית</li>
+                    <li>לאחר שינוי סיסמה תצטרך להתחבר מחדש</li>
+                    <li>ודא שאתה זוכר את הסיסמה החדשה</li>
+                  </ul>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         )}

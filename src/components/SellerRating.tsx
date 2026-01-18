@@ -1,13 +1,15 @@
-import { Star } from "lucide-react";
+import { Star, Award } from "lucide-react";
 import { useSellerAverageRating } from "@/hooks/useSellerReviews";
+import { Badge } from "@/components/ui/badge";
 
 interface SellerRatingProps {
   sellerPhone: string;
   showCount?: boolean;
+  showBadge?: boolean;
   size?: "sm" | "md" | "lg";
 }
 
-const SellerRating = ({ sellerPhone, showCount = true, size = "md" }: SellerRatingProps) => {
+const SellerRating = ({ sellerPhone, showCount = true, showBadge = true, size = "md" }: SellerRatingProps) => {
   const { data, isLoading } = useSellerAverageRating(sellerPhone);
 
   if (isLoading) {
@@ -34,24 +36,34 @@ const SellerRating = ({ sellerPhone, showCount = true, size = "md" }: SellerRati
     lg: "text-base",
   };
 
+  const isRecommended = data.average >= 4 && data.count >= 1;
+
   return (
-    <div className="flex items-center gap-1">
-      <div className="flex">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`${sizeClasses[size]} ${
-              star <= Math.round(data.average)
-                ? "fill-yellow-400 text-yellow-400"
-                : "fill-muted text-muted"
-            }`}
-          />
-        ))}
+    <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-1">
+        <div className="flex">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`${sizeClasses[size]} ${
+                star <= Math.round(data.average)
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "fill-muted text-muted"
+              }`}
+            />
+          ))}
+        </div>
+        {showCount && (
+          <span className={`text-muted-foreground ${textClasses[size]}`}>
+            ({data.count})
+          </span>
+        )}
       </div>
-      {showCount && (
-        <span className={`text-muted-foreground ${textClasses[size]}`}>
-          ({data.count})
-        </span>
+      {showBadge && isRecommended && (
+        <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 gap-1">
+          <Award className="w-3 h-3" />
+          מוכר מומלץ
+        </Badge>
       )}
     </div>
   );

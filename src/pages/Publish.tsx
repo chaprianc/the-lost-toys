@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAddToy, uploadToyImage } from '@/hooks/useToys';
+import { supabase } from '@/integrations/supabase/client';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS, ToyCategory, ToyCondition } from '@/types/toy';
 import { toast } from 'sonner';
 import { Camera, Upload, CheckCircle, Info, X, HelpCircle } from 'lucide-react';
@@ -134,6 +135,20 @@ const Publish = () => {
         seller_phone: validation.data!.seller_phone,
         images: validation.data!.images,
       });
+
+      // Send WhatsApp notification to admin (non-blocking)
+      try {
+        await supabase.functions.invoke('notify-admin-whatsapp', {
+          body: {
+            toyName: validation.data!.toy_name,
+            price: validation.data!.price,
+            city: validation.data!.city,
+            sellerPhone: validation.data!.seller_phone,
+          },
+        });
+      } catch (notifyError) {
+        console.log('WhatsApp notification failed (optional):', notifyError);
+      }
 
       toast.success('הצעצוע נשלח לאישור! יפורסם לאחר אישור התשלום 🎉');
       navigate('/browse');

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 
@@ -24,7 +25,6 @@ serve(async (req) => {
     const { toyName, price, city, sellerPhone }: NotifyRequest = await req.json();
 
     const apiKey = Deno.env.get("RESEND_API_KEY");
-    const adminEmail = Deno.env.get("ADMIN_EMAIL");
 
     if (!apiKey) {
       console.log("Resend API key not configured, skipping email notification");
@@ -32,6 +32,28 @@ serve(async (req) => {
         JSON.stringify({ success: false, message: "Email notifications not configured" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Create Supabase client with service role to read settings
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Try to get email from database first
+    const { data: dbEmail, error: dbError } = await supabase
+      .from('admin_settings')
+      .select('setting_value')
+      .eq('setting_key', 'admin_email')
+      .single();
+
+    let adminEmail: string | null = null;
+
+    // If email exists in database and is not empty, use it
+    if (!dbError && dbEmail?.setting_value) {
+      adminEmail = dbEmail.setting_value;
+    } else {
+      // Fallback to environment variable
+      adminEmail = Deno.env.get("ADMIN_EMAIL") || null;
     }
 
     if (!adminEmail) {

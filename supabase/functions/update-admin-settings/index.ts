@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,14 +29,7 @@ serve(async (req) => {
       );
     }
 
-    // Note: In a production environment, you would update the secrets programmatically
-    // For now, we'll just validate and return success
-    // The actual secret update would need to be done through the Supabase dashboard or CLI
-    
-    console.log(`Request to update ${type === 'email' ? 'ADMIN_EMAIL' : 'ADMIN_PASSWORD'}`);
-    console.log(`New value: ${type === 'email' ? value : '[REDACTED]'}`);
-
-    // For email updates, we can verify the format
+    // For email updates, verify the format
     if (type === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(value)) {
@@ -56,15 +50,36 @@ serve(async (req) => {
       }
     }
 
-    // In a real implementation, you would use Supabase Management API to update secrets
-    // For now, we log the request and inform the admin to update manually
-    console.log(`Admin setting update requested: ${type}`);
+    // Create Supabase client with service role for database updates
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Determine the setting key
+    const settingKey = type === 'email' ? 'admin_email' : 'admin_password';
+
+    // Update or insert the setting in the database
+    const { error: upsertError } = await supabase
+      .from('admin_settings')
+      .upsert(
+        { setting_key: settingKey, setting_value: value, updated_at: new Date().toISOString() },
+        { onConflict: 'setting_key' }
+      );
+
+    if (upsertError) {
+      console.error('Database error:', upsertError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to save setting' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin setting updated: ${type}`);
     
-    // Return success - in production this would actually update the secret
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `${type === 'email' ? 'Email' : 'Password'} update request received. Please update the ${type === 'email' ? 'ADMIN_EMAIL' : 'ADMIN_PASSWORD'} secret manually in the backend settings.`
+        message: `${type === 'email' ? 'Email' : 'Password'} updated successfully`
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

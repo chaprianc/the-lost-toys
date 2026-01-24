@@ -743,15 +743,15 @@ const Admin = () => {
                 </div>
 
                 {/* Info Card */}
-                <div className="bg-muted/50 rounded-xl p-4 border border-border">
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-warning" />
-                    שים לב
+                <div className="bg-success/10 rounded-xl p-4 border border-success/30">
+                  <h4 className="font-medium mb-2 flex items-center gap-2 text-success">
+                    <CheckCircle className="w-4 h-4" />
+                    ההגדרות נשמרות אוטומטית
                   </h4>
                   <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>שינויים נשמרים ישירות במאגר הנתונים</li>
                     <li>שינוי הסיסמה יכנס לתוקף מיידית</li>
                     <li>לאחר שינוי סיסמה תצטרך להתחבר מחדש</li>
-                    <li>ודא שאתה זוכר את הסיסמה החדשה</li>
                   </ul>
                 </div>
               </div>

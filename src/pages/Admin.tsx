@@ -255,6 +255,10 @@ const Admin = () => {
                   </Badge>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                אנליטיקס
+              </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="w-4 h-4" />
                 הגדרות

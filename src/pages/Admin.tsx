@@ -34,7 +34,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save, BarChart3 } from 'lucide-react';
+import AdminAnalytics from '@/components/AdminAnalytics';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 

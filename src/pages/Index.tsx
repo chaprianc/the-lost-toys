@@ -6,17 +6,19 @@ import { ToyCard } from '@/components/ToyCard';
 import { useToys } from '@/hooks/useToys';
 import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
 
-// Confetti piece component
-const ConfettiPiece = ({
+// Falling toy icons
+const TOY_EMOJIS = ['🧸', '🎲', '🚗', '🪀', '🎯', '🧩', '🪁', '🎨', '⚽', '🏎️', '🪆', '🎪'];
+
+const FallingToy = ({
   delay,
   left,
-  color,
+  emoji,
   size,
   duration
 }: {
   delay: number;
   left: number;
-  color: string;
+  emoji: string;
   size: number;
   duration: number;
 }) => <div className="absolute top-0 animate-confetti-fall" style={{
@@ -24,23 +26,14 @@ const ConfettiPiece = ({
   animationDelay: `${delay}s`,
   animationDuration: `${duration}s`
 }}>
-    <div className="rounded-sm animate-confetti-spin" style={{
-    width: `${size}px`,
-    height: `${size * 0.6}px`,
-    backgroundColor: color,
-    animationDelay: `${delay}s`
-  }} />
+    <div className="animate-confetti-spin select-none" style={{
+    fontSize: `${size}px`,
+    animationDelay: `${delay}s`,
+    opacity: 0.7,
+  }}>
+      {emoji}
+    </div>
   </div>;
-const confettiColors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#FFD93D',
-// yellow
-'#6BCB77',
-// green
-'#FF6B6B',
-// coral
-'#4D96FF',
-// blue
-'#C9B1FF' // lavender
-];
 const features = [{
   id: 'simple',
   icon: Sparkles,
@@ -77,7 +70,7 @@ const Index = () => {
     id: number;
     delay: number;
     left: number;
-    color: string;
+    emoji: string;
     size: number;
     duration: number;
   }>>([]);
@@ -85,17 +78,17 @@ const Index = () => {
     setExpandedFeature(expandedFeature === id ? null : id);
   };
 
-  // Generate confetti continuously
+  // Generate falling toys continuously
   useEffect(() => {
     const generatePieces = () => Array.from({
-      length: 30
+      length: 15
     }, (_, i) => ({
       id: Date.now() + i,
-      delay: Math.random() * 2,
+      delay: Math.random() * 3,
       left: Math.random() * 100,
-      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-      size: 8 + Math.random() * 8,
-      duration: 5 + Math.random() * 4
+      emoji: TOY_EMOJIS[Math.floor(Math.random() * TOY_EMOJIS.length)],
+      size: 16 + Math.random() * 14,
+      duration: 6 + Math.random() * 5
     }));
 
     // Initial pieces
@@ -112,9 +105,9 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
   return <div className="min-h-screen bg-gradient-subtle relative overflow-hidden">
-      {/* Confetti Animation */}
+      {/* Falling Toys Animation */}
       <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-        {confettiPieces.map(piece => <ConfettiPiece key={piece.id} delay={piece.delay} left={piece.left} color={piece.color} size={piece.size} duration={piece.duration} />)}
+        {confettiPieces.map(piece => <FallingToy key={piece.id} delay={piece.delay} left={piece.left} emoji={piece.emoji} size={piece.size} duration={piece.duration} />)}
       </div>
       <Header />
       

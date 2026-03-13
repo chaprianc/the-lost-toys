@@ -12,6 +12,7 @@ import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import Favorites from "./pages/Favorites";
 import NotFound from "./pages/NotFound";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <AccessibilityPanel />

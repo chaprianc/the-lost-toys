@@ -2,8 +2,9 @@ import { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS } from '@/types/toy';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin } from 'lucide-react';
+import { MapPin, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface ToyCardProps {
   toy: Toy;
@@ -11,6 +12,7 @@ interface ToyCardProps {
 
 export const ToyCard = ({ toy }: ToyCardProps) => {
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   return (
     <article 
@@ -33,6 +35,13 @@ export const ToyCard = ({ toy }: ToyCardProps) => {
             {CATEGORY_ICONS[toy.category]}
           </Badge>
         </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleFavorite(toy.id); }}
+          className="absolute top-3 left-3 p-2 rounded-full bg-card/80 backdrop-blur-sm shadow-soft hover:scale-110 transition-all duration-200 z-10"
+          aria-label={isFavorite(toy.id) ? 'הסר ממועדפים' : 'הוסף למועדפים'}
+        >
+          <Heart className={`w-5 h-5 transition-colors ${isFavorite(toy.id) ? 'text-destructive fill-destructive' : 'text-muted-foreground'}`} />
+        </button>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent p-4 transition-all duration-300 group-hover:from-foreground/80" aria-hidden="true">
           <span className="text-2xl font-bold text-primary-foreground drop-shadow-lg transition-transform duration-300 inline-block group-hover:scale-105">
             ₪{toy.price}

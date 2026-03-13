@@ -12,6 +12,7 @@ import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import Favorites from "./pages/Favorites";
 import NotFound from "./pages/NotFound";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
 

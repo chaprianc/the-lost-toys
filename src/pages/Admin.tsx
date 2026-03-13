@@ -34,7 +34,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save, BarChart3 } from 'lucide-react';
+import AdminAnalytics from '@/components/AdminAnalytics';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -253,6 +254,10 @@ const Admin = () => {
                     {blockedPhones.length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                אנליטיקס
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="w-4 h-4" />
@@ -601,6 +606,10 @@ const Admin = () => {
                   </div>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <AdminAnalytics toys={toys} />
             </TabsContent>
 
             <TabsContent value="settings">

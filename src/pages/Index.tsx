@@ -6,17 +6,19 @@ import { ToyCard } from '@/components/ToyCard';
 import { useToys } from '@/hooks/useToys';
 import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
 
-// Confetti piece component
-const ConfettiPiece = ({
+// Falling toy icons
+const TOY_EMOJIS = ['🧸', '🎲', '🚗', '🪀', '🎯', '🧩', '🪁', '🎨', '⚽', '🏎️', '🪆', '🎪'];
+
+const FallingToy = ({
   delay,
   left,
-  color,
+  emoji,
   size,
   duration
 }: {
   delay: number;
   left: number;
-  color: string;
+  emoji: string;
   size: number;
   duration: number;
 }) => <div className="absolute top-0 animate-confetti-fall" style={{
@@ -24,12 +26,13 @@ const ConfettiPiece = ({
   animationDelay: `${delay}s`,
   animationDuration: `${duration}s`
 }}>
-    <div className="rounded-sm animate-confetti-spin" style={{
-    width: `${size}px`,
-    height: `${size * 0.6}px`,
-    backgroundColor: color,
-    animationDelay: `${delay}s`
-  }} />
+    <div className="animate-confetti-spin select-none" style={{
+    fontSize: `${size}px`,
+    animationDelay: `${delay}s`,
+    opacity: 0.7,
+  }}>
+      {emoji}
+    </div>
   </div>;
 const confettiColors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#FFD93D',
 // yellow

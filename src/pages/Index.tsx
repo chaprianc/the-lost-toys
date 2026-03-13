@@ -70,7 +70,7 @@ const Index = () => {
     id: number;
     delay: number;
     left: number;
-    color: string;
+    emoji: string;
     size: number;
     duration: number;
   }>>([]);
@@ -78,17 +78,17 @@ const Index = () => {
     setExpandedFeature(expandedFeature === id ? null : id);
   };
 
-  // Generate confetti continuously
+  // Generate falling toys continuously
   useEffect(() => {
     const generatePieces = () => Array.from({
-      length: 30
+      length: 15
     }, (_, i) => ({
       id: Date.now() + i,
-      delay: Math.random() * 2,
+      delay: Math.random() * 3,
       left: Math.random() * 100,
-      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-      size: 8 + Math.random() * 8,
-      duration: 5 + Math.random() * 4
+      emoji: TOY_EMOJIS[Math.floor(Math.random() * TOY_EMOJIS.length)],
+      size: 16 + Math.random() * 14,
+      duration: 6 + Math.random() * 5
     }));
 
     // Initial pieces

@@ -2,8 +2,9 @@ import { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS } from '@/types/toy';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin } from 'lucide-react';
+import { MapPin, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface ToyCardProps {
   toy: Toy;
@@ -11,6 +12,7 @@ interface ToyCardProps {
 
 export const ToyCard = ({ toy }: ToyCardProps) => {
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   return (
     <article 

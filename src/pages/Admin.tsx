@@ -608,6 +608,10 @@ const Admin = () => {
               )}
             </TabsContent>
 
+            <TabsContent value="analytics">
+              <AdminAnalytics toys={toys} />
+            </TabsContent>
+
             <TabsContent value="settings">
               <div className="space-y-6">
                 {/* Change Admin Email */}

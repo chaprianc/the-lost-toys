@@ -105,9 +105,9 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
   return <div className="min-h-screen bg-gradient-subtle relative overflow-hidden">
-      {/* Confetti Animation */}
+      {/* Falling Toys Animation */}
       <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-        {confettiPieces.map(piece => <ConfettiPiece key={piece.id} delay={piece.delay} left={piece.left} color={piece.color} size={piece.size} duration={piece.duration} />)}
+        {confettiPieces.map(piece => <FallingToy key={piece.id} delay={piece.delay} left={piece.left} emoji={piece.emoji} size={piece.size} duration={piece.duration} />)}
       </div>
       <Header />
       

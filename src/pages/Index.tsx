@@ -34,16 +34,6 @@ const FallingToy = ({
       {emoji}
     </div>
   </div>;
-const confettiColors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#FFD93D',
-// yellow
-'#6BCB77',
-// green
-'#FF6B6B',
-// coral
-'#4D96FF',
-// blue
-'#C9B1FF' // lavender
-];
 const features = [{
   id: 'simple',
   icon: Sparkles,

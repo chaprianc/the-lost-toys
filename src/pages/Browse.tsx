@@ -2,10 +2,11 @@ import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
+import { Input } from '@/components/ui/input';
 import { useToys } from '@/hooks/useToys';
 import { ToyCategory } from '@/types/toy';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SlidersHorizontal, Loader2, MapPin } from 'lucide-react';
+import { SlidersHorizontal, Loader2, MapPin, Search } from 'lucide-react';
 
 const Browse = () => {
   const { data: toys = [], isLoading } = useToys();

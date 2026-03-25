@@ -12,6 +12,7 @@ const Browse = () => {
   const { data: toys = [], isLoading } = useToys();
   const [selectedCategory, setSelectedCategory] = useState<ToyCategory | undefined>();
   const [cityFilter, setCityFilter] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high'>('newest');
 
   // Get unique cities from toys

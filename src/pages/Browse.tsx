@@ -72,6 +72,16 @@ const Browse = () => {
 
         {/* Filters */}
         <div className="space-y-4 mb-6">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="חיפוש לפי שם צעצוע או עיר..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 bg-card border-border text-right"
+            />
+          </div>
+
           <CategoryFilter
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}

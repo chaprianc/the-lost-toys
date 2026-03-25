@@ -24,6 +24,14 @@ const Browse = () => {
   const filteredToys = useMemo(() => {
     let result = [...toys];
 
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      result = result.filter((toy) =>
+        toy.toy_name.toLowerCase().includes(query) ||
+        toy.city.toLowerCase().includes(query)
+      );
+    }
+
     if (selectedCategory) {
       result = result.filter((toy) => toy.category === selectedCategory);
     }

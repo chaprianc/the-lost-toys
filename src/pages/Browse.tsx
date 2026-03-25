@@ -2,15 +2,17 @@ import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
+import { Input } from '@/components/ui/input';
 import { useToys } from '@/hooks/useToys';
 import { ToyCategory } from '@/types/toy';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SlidersHorizontal, Loader2, MapPin } from 'lucide-react';
+import { SlidersHorizontal, Loader2, MapPin, Search } from 'lucide-react';
 
 const Browse = () => {
   const { data: toys = [], isLoading } = useToys();
   const [selectedCategory, setSelectedCategory] = useState<ToyCategory | undefined>();
   const [cityFilter, setCityFilter] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high'>('newest');
 
   // Get unique cities from toys
@@ -21,6 +23,14 @@ const Browse = () => {
 
   const filteredToys = useMemo(() => {
     let result = [...toys];
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      result = result.filter((toy) =>
+        toy.toy_name.toLowerCase().includes(query) ||
+        toy.city.toLowerCase().includes(query)
+      );
+    }
 
     if (selectedCategory) {
       result = result.filter((toy) => toy.category === selectedCategory);
@@ -45,7 +55,7 @@ const Browse = () => {
     }
 
     return result;
-  }, [toys, selectedCategory, cityFilter, sortBy]);
+  }, [toys, selectedCategory, cityFilter, searchQuery, sortBy]);
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -62,6 +72,16 @@ const Browse = () => {
 
         {/* Filters */}
         <div className="space-y-4 mb-6">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="חיפוש לפי שם צעצוע או עיר..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 bg-card border-border text-right"
+            />
+          </div>
+
           <CategoryFilter
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}

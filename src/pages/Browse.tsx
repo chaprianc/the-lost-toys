@@ -55,7 +55,7 @@ const Browse = () => {
     }
 
     return result;
-  }, [toys, selectedCategory, cityFilter, sortBy]);
+  }, [toys, selectedCategory, cityFilter, searchQuery, sortBy]);
 
   return (
     <div className="min-h-screen bg-gradient-subtle">

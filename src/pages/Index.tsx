@@ -141,6 +141,12 @@ const Index = () => {
                 </Link>
               </Button>
             </div>
+
+            <div className="pt-4 flex justify-center">
+              <Button variant="secondary" size="lg" asChild>
+                <Link to="/store3d">🏪 כניסה לחנות התלת-ממדית (בטא)</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

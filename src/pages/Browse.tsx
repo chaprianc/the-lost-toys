@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
@@ -68,6 +70,9 @@ const Browse = () => {
           <p className="text-muted-foreground">
             {filteredToys.length} צעצועים זמינים
           </p>
+          <Button variant="secondary" size="lg" className="mt-4" asChild>
+            <Link to="/store3d">🏪 כניסה לחנות התלת-ממדית (בטא)</Link>
+          </Button>
         </div>
 
         {/* Filters */}

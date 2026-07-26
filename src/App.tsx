@@ -13,6 +13,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import Favorites from "./pages/Favorites";
+import Store3D from "./pages/Store3D";
 import NotFound from "./pages/NotFound";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/store3d" element={<Store3D />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <AccessibilityPanel />

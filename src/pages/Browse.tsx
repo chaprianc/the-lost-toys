@@ -68,6 +68,9 @@ const Browse = () => {
           <p className="text-muted-foreground">
             {filteredToys.length} צעצועים זמינים
           </p>
+          <Button variant="secondary" size="lg" className="mt-4" asChild>
+            <Link to="/store3d">🏪 כניסה לחנות התלת-ממדית (בטא)</Link>
+          </Button>
         </div>
 
         {/* Filters */}

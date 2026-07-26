@@ -38,7 +38,7 @@ export const Joystick = ({ onChange }: JoystickProps) => {
   return (
     <div
       ref={baseRef}
-      className="rounded-full bg-card/70 backdrop-blur-sm shadow-card border border-border touch-none select-none"
+      className="relative rounded-full bg-card/70 backdrop-blur-sm shadow-card border border-border touch-none select-none"
       style={{ width: SIZE, height: SIZE }}
       onPointerDown={(e) => {
         pointerId.current = e.pointerId;
@@ -58,7 +58,7 @@ export const Joystick = ({ onChange }: JoystickProps) => {
       aria-label="ג'ויסטיק תנועה"
     >
       <div
-        className="rounded-full bg-primary shadow-soft"
+        className="absolute top-0 left-0 rounded-full bg-primary shadow-soft"
         style={{
           width: KNOB,
           height: KNOB,

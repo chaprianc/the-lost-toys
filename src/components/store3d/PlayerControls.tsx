@@ -30,7 +30,7 @@ const EYE_HEIGHT = 1.6;
 
 export const PlayerControls = ({ joystick, colliders, bounds, enabled = true }: PlayerControlsProps) => {
   const { camera, gl } = useThree();
-  const yaw = useRef(Math.PI);
+  const yaw = useRef(0);
   const pitch = useRef(0);
   const keys = useRef<Record<string, boolean>>({});
   const position = useRef(new THREE.Vector3(0, EYE_HEIGHT, 10));

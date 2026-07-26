@@ -36,6 +36,7 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/store3d" element={<Store3D />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <AccessibilityPanel />

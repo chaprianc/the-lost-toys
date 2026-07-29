@@ -4,6 +4,8 @@ import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
+import { ToyCar } from './ToyCar';
+
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
 
@@ -35,7 +37,9 @@ export const COLLIDERS: Collider[] = [
     minZ: COUNTER.z - COUNTER.d / 2,
     maxZ: COUNTER.z + COUNTER.d / 2,
   },
+  { minX: 1.9, maxX: 3.5, minZ: 7.3, maxZ: 9.9 },
 ];
+
 
 interface StoreSceneProps {
   toys: Toy[];
@@ -108,29 +112,37 @@ export const StoreScene = ({
         <meshStandardMaterial color="#d8f0f5" />
       </mesh>
 
-      {/* Store sign near the entrance wall */}
-      <Html position={[0, 2.85, ROOM.minZ + 0.25]} center distanceFactor={11} occlude={false}>
-        <div
-          style={{
-            direction: 'rtl',
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            background: 'linear-gradient(135deg, #6b4423, #8b5a2b)',
-            color: '#fff7ec',
-            padding: '14px 42px',
-            border: '5px solid #f7b267',
-            borderRadius: 22,
-            boxShadow: '0 10px 26px rgba(0,0,0,0.3)',
-          }}
-        >
-          <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.2 }}>
-            🧸 צעצועים עם סיפור 🚗
+      {/* Big store sign mounted on the wall ahead of the entrance */}
+      <group position={[0, 2.6, ROOM.minZ + 0.12]}>
+        <mesh castShadow>
+          <boxGeometry args={[7.4, 1.35, 0.16]} />
+          <meshStandardMaterial color="#6b4423" />
+        </mesh>
+        <mesh position={[0, 0, 0.1]}>
+          <boxGeometry args={[7, 1.05, 0.06]} />
+          <meshStandardMaterial color="#f7b267" />
+        </mesh>
+        <Html position={[0, 0, 0.16]} transform scale={0.34} occlude={false}>
+          <div
+            style={{
+              direction: 'rtl',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              color: '#4a2c14',
+              textShadow: '0 2px 0 rgba(255,255,255,0.5)',
+            }}
+          >
+            <div style={{ fontSize: 40, fontWeight: 900, lineHeight: 1.1 }}>
+              🧸 צעצועים עם סיפור 🚗
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 2 }}>להורים חכמים</div>
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#ffd6a5', marginTop: 4 }}>
-            להורים חכמים
-          </div>
-        </div>
-      </Html>
+        </Html>
+      </group>
+
+      {/* Toy car greeting visitors at the entrance */}
+      <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />
+
 
       {SHELVES.map((shelf, i) => (
         <ShelfUnit

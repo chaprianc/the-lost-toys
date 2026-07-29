@@ -1,3 +1,4 @@
+import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { ToyBox } from './ToyBox';
 
@@ -8,6 +9,8 @@ export interface ShelfUnitProps {
   onSelect: (toy: Toy) => void;
   isInCart: (id: string) => boolean;
   color?: string;
+  label?: string;
+  icon?: string;
 }
 
 const LEVELS = [0.95, 1.75];
@@ -20,6 +23,8 @@ export const ShelfUnit = ({
   onSelect,
   isInCart,
   color = '#f7b267',
+  label,
+  icon,
 }: ShelfUnitProps) => {
   const slots: { x: number; y: number }[] = [];
   LEVELS.forEach((y) => COLUMNS.forEach((x) => slots.push({ x, y })));
@@ -45,6 +50,30 @@ export const ShelfUnit = ({
           <meshStandardMaterial color="#fff4e4" />
         </mesh>
       ))}
+
+      {/* Category sign above the shelf */}
+      {label && (
+        <Html position={[0, 2.75, 0.3]} center distanceFactor={9} occlude={false}>
+          <div
+            style={{
+              direction: 'rtl',
+              whiteSpace: 'nowrap',
+              background: color,
+              color: '#4a2c14',
+              border: '3px solid #fff7ec',
+              padding: '8px 22px',
+              borderRadius: 14,
+              fontSize: 20,
+              fontWeight: 800,
+              boxShadow: '0 6px 16px rgba(0,0,0,0.22)',
+            }}
+          >
+            {icon} {label}
+          </div>
+        </Html>
+      )}
+
+
 
       {toys.slice(0, slots.length).map((toy, i) => (
         <ToyBox

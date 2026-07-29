@@ -1,17 +1,24 @@
 import { Canvas } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
+import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
 
-const SHELVES: { position: [number, number, number]; rotationY: number; color: string }[] = [
-  { position: [-4.5, 0, -6], rotationY: Math.PI / 2, color: '#f7b267' },
-  { position: [-4.5, 0, 1], rotationY: Math.PI / 2, color: '#8ecae6' },
-  { position: [4.5, 0, -6], rotationY: -Math.PI / 2, color: '#c8e6a0' },
-  { position: [4.5, 0, 1], rotationY: -Math.PI / 2, color: '#ffadad' },
+const SHELVES: {
+  position: [number, number, number];
+  rotationY: number;
+  color: string;
+  category: ToyCategory;
+}[] = [
+  { position: [-4.5, 0, -6], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
+  { position: [-4.5, 0, 1], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
+  { position: [4.5, 0, -6], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
+  { position: [4.5, 0, 1], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
 ];
+
 
 const COUNTER = { x: 0, z: -10.5, w: 3.4, d: 1.2 };
 
@@ -49,6 +56,17 @@ export const StoreScene = ({
 }: StoreSceneProps) => {
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
+
+  const shelfCategories = SHELVES.map((s) => s.category) as string[];
+  // Toys from categories without a dedicated shelf are spread across the shelves
+  const leftovers = toys.filter((t) => !shelfCategories.includes(t.category));
+  const byCategory = (category: ToyCategory) => {
+    const index = shelfCategories.indexOf(category);
+    const own = toys.filter((t) => t.category === category);
+    const extra = leftovers.filter((_, i) => i % SHELVES.length === index);
+    return [...own, ...extra].slice(0, 4);
+  };
+
 
   return (
     <Canvas shadows camera={{ fov: 70, near: 0.1, far: 100 }} dpr={[1, 1.5]}>
@@ -91,35 +109,43 @@ export const StoreScene = ({
       </mesh>
 
       {/* Store sign near the entrance wall */}
-      <Html position={[0, 2.8, ROOM.minZ + 0.2]} center distanceFactor={9} occlude={false}>
+      <Html position={[0, 2.85, ROOM.minZ + 0.25]} center distanceFactor={11} occlude={false}>
         <div
           style={{
             direction: 'rtl',
+            textAlign: 'center',
             whiteSpace: 'nowrap',
-            background: '#6b4423',
+            background: 'linear-gradient(135deg, #6b4423, #8b5a2b)',
             color: '#fff7ec',
-            padding: '10px 26px',
-            borderRadius: 16,
-            fontSize: 22,
-            fontWeight: 800,
-            boxShadow: '0 6px 18px rgba(0,0,0,0.25)',
+            padding: '14px 42px',
+            border: '5px solid #f7b267',
+            borderRadius: 22,
+            boxShadow: '0 10px 26px rgba(0,0,0,0.3)',
           }}
         >
-          🧸 חנות הצעצועים 🚗
+          <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.2 }}>
+            🧸 צעצועים עם סיפור 🚗
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#ffd6a5', marginTop: 4 }}>
+            להורים חכמים
+          </div>
         </div>
       </Html>
 
       {SHELVES.map((shelf, i) => (
         <ShelfUnit
-          key={i}
+          key={shelf.category}
           position={shelf.position}
           rotationY={shelf.rotationY}
           color={shelf.color}
-          toys={toys.slice(i * 4, i * 4 + 4)}
+          label={CATEGORY_LABELS[shelf.category]}
+          icon={CATEGORY_ICONS[shelf.category]}
+          toys={byCategory(shelf.category)}
           onSelect={onSelectToy}
           isInCart={isInCart}
         />
       ))}
+
 
       {/* Checkout counter */}
       <group

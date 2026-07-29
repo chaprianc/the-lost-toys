@@ -51,6 +51,30 @@ export const ShelfUnit = ({
         </mesh>
       ))}
 
+      {/* Category sign above the shelf */}
+      {label && (
+        <Html position={[0, 2.75, 0.3]} center distanceFactor={9} occlude={false}>
+          <div
+            style={{
+              direction: 'rtl',
+              whiteSpace: 'nowrap',
+              background: color,
+              color: '#4a2c14',
+              border: '3px solid #fff7ec',
+              padding: '8px 22px',
+              borderRadius: 14,
+              fontSize: 20,
+              fontWeight: 800,
+              boxShadow: '0 6px 16px rgba(0,0,0,0.22)',
+            }}
+          >
+            {icon} {label}
+          </div>
+        </Html>
+      )}
+
+
+
       {toys.slice(0, slots.length).map((toy, i) => (
         <ToyBox
           key={toy.id}

@@ -37,7 +37,9 @@ export const COLLIDERS: Collider[] = [
     minZ: COUNTER.z - COUNTER.d / 2,
     maxZ: COUNTER.z + COUNTER.d / 2,
   },
+  { minX: 1.9, maxX: 3.5, minZ: 7.3, maxZ: 9.9 },
 ];
+
 
 interface StoreSceneProps {
   toys: Toy[];

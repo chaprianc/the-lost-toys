@@ -1,17 +1,24 @@
 import { Canvas } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
+import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
 
-const SHELVES: { position: [number, number, number]; rotationY: number; color: string }[] = [
-  { position: [-4.5, 0, -6], rotationY: Math.PI / 2, color: '#f7b267' },
-  { position: [-4.5, 0, 1], rotationY: Math.PI / 2, color: '#8ecae6' },
-  { position: [4.5, 0, -6], rotationY: -Math.PI / 2, color: '#c8e6a0' },
-  { position: [4.5, 0, 1], rotationY: -Math.PI / 2, color: '#ffadad' },
+const SHELVES: {
+  position: [number, number, number];
+  rotationY: number;
+  color: string;
+  category: ToyCategory;
+}[] = [
+  { position: [-4.5, 0, -6], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
+  { position: [-4.5, 0, 1], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
+  { position: [4.5, 0, -6], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
+  { position: [4.5, 0, 1], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
 ];
+
 
 const COUNTER = { x: 0, z: -10.5, w: 3.4, d: 1.2 };
 

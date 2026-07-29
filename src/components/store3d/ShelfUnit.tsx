@@ -1,3 +1,4 @@
+import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { ToyBox } from './ToyBox';
 
@@ -8,6 +9,8 @@ export interface ShelfUnitProps {
   onSelect: (toy: Toy) => void;
   isInCart: (id: string) => boolean;
   color?: string;
+  label?: string;
+  icon?: string;
 }
 
 const LEVELS = [0.95, 1.75];

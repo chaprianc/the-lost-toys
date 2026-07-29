@@ -91,35 +91,43 @@ export const StoreScene = ({
       </mesh>
 
       {/* Store sign near the entrance wall */}
-      <Html position={[0, 2.8, ROOM.minZ + 0.2]} center distanceFactor={9} occlude={false}>
+      <Html position={[0, 2.85, ROOM.minZ + 0.25]} center distanceFactor={11} occlude={false}>
         <div
           style={{
             direction: 'rtl',
+            textAlign: 'center',
             whiteSpace: 'nowrap',
-            background: '#6b4423',
+            background: 'linear-gradient(135deg, #6b4423, #8b5a2b)',
             color: '#fff7ec',
-            padding: '10px 26px',
-            borderRadius: 16,
-            fontSize: 22,
-            fontWeight: 800,
-            boxShadow: '0 6px 18px rgba(0,0,0,0.25)',
+            padding: '14px 42px',
+            border: '5px solid #f7b267',
+            borderRadius: 22,
+            boxShadow: '0 10px 26px rgba(0,0,0,0.3)',
           }}
         >
-          🧸 חנות הצעצועים 🚗
+          <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.2 }}>
+            🧸 צעצועים עם סיפור 🚗
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#ffd6a5', marginTop: 4 }}>
+            להורים חכמים
+          </div>
         </div>
       </Html>
 
       {SHELVES.map((shelf, i) => (
         <ShelfUnit
-          key={i}
+          key={shelf.category}
           position={shelf.position}
           rotationY={shelf.rotationY}
           color={shelf.color}
-          toys={toys.slice(i * 4, i * 4 + 4)}
+          label={CATEGORY_LABELS[shelf.category]}
+          icon={CATEGORY_ICONS[shelf.category]}
+          toys={byCategory(shelf.category)}
           onSelect={onSelectToy}
           isInCart={isInCart}
         />
       ))}
+
 
       {/* Checkout counter */}
       <group

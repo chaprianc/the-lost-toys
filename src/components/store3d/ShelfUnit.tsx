@@ -23,6 +23,8 @@ export const ShelfUnit = ({
   onSelect,
   isInCart,
   color = '#f7b267',
+  label,
+  icon,
 }: ShelfUnitProps) => {
   const slots: { x: number; y: number }[] = [];
   LEVELS.forEach((y) => COLUMNS.forEach((x) => slots.push({ x, y })));

@@ -57,6 +57,17 @@ export const StoreScene = ({
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
 
+  const shelfCategories = SHELVES.map((s) => s.category) as string[];
+  // Toys from categories without a dedicated shelf are spread across the shelves
+  const leftovers = toys.filter((t) => !shelfCategories.includes(t.category));
+  const byCategory = (category: ToyCategory) => {
+    const index = shelfCategories.indexOf(category);
+    const own = toys.filter((t) => t.category === category);
+    const extra = leftovers.filter((_, i) => i % SHELVES.length === index);
+    return [...own, ...extra].slice(0, 4);
+  };
+
+
   return (
     <Canvas shadows camera={{ fov: 70, near: 0.1, far: 100 }} dpr={[1, 1.5]}>
       <color attach="background" args={['#fdf6ec']} />

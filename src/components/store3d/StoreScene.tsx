@@ -4,6 +4,8 @@ import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
+import { ToyCar } from './ToyCar';
+
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
 

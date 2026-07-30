@@ -48,6 +48,8 @@ interface StoreSceneProps {
   onCheckout: () => void;
   isInCart: (id: string) => boolean;
   paused: boolean;
+  activeCategory: ToyCategory | null;
+  onSelectCategory: (category: ToyCategory) => void;
 }
 
 export const StoreScene = ({
@@ -57,6 +59,8 @@ export const StoreScene = ({
   onCheckout,
   isInCart,
   paused,
+  activeCategory,
+  onSelectCategory,
 }: StoreSceneProps) => {
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
@@ -65,11 +69,13 @@ export const StoreScene = ({
   // Toys from categories without a dedicated shelf are spread across the shelves
   const leftovers = toys.filter((t) => !shelfCategories.includes(t.category));
   const byCategory = (category: ToyCategory) => {
+    if (activeCategory && activeCategory !== category) return [];
     const index = shelfCategories.indexOf(category);
     const own = toys.filter((t) => t.category === category);
     const extra = leftovers.filter((_, i) => i % SHELVES.length === index);
     return [...own, ...extra].slice(0, 4);
   };
+
 
 
   return (
@@ -155,7 +161,7 @@ export const StoreScene = ({
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />
 
 
-      {SHELVES.map((shelf, i) => (
+      {SHELVES.map((shelf) => (
         <ShelfUnit
           key={shelf.category}
           position={shelf.position}
@@ -166,6 +172,9 @@ export const StoreScene = ({
           toys={byCategory(shelf.category)}
           onSelect={onSelectToy}
           isInCart={isInCart}
+          active={activeCategory === shelf.category}
+          dimmed={!!activeCategory && activeCategory !== shelf.category}
+          onSignClick={() => onSelectCategory(shelf.category)}
         />
       ))}
 

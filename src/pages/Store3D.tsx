@@ -1,6 +1,7 @@
 import { Suspense, lazy, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToys, type Toy } from '@/hooks/useToys';
+import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight } from 'lucide-react';
@@ -33,6 +34,7 @@ const Store3D = () => {
   const [entered, setEntered] = useState(false);
   const [selectedToy, setSelectedToy] = useState<Toy | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<ToyCategory | null>(null);
 
   const webgl = useMemo(supportsWebGL, []);
   const displayToys = useMemo(() => toys.slice(0, 16), [toys]);
@@ -89,6 +91,10 @@ const Store3D = () => {
               onCheckout={() => setCheckoutOpen(true)}
               isInCart={inCart}
               paused={!!selectedToy || checkoutOpen || !entered}
+              activeCategory={activeCategory}
+              onSelectCategory={(category) =>
+                setActiveCategory((prev) => (prev === category ? null : category))
+              }
             />
           )}
         </Suspense>
@@ -109,6 +115,20 @@ const Store3D = () => {
           <CartButton count={items.length} onClick={() => setCheckoutOpen(true)} />
         </div>
       </div>
+
+      {/* Active category filter chip */}
+      {activeCategory && entered && (
+        <div className="absolute top-16 inset-x-0 flex justify-center pointer-events-none">
+          <Button
+            variant="default"
+            size="sm"
+            className="pointer-events-auto shadow-card rounded-full"
+            onClick={() => setActiveCategory(null)}
+          >
+            {CATEGORY_ICONS[activeCategory]} מציג: {CATEGORY_LABELS[activeCategory]} · הצג הכל ✕
+          </Button>
+        </div>
+      )}
 
       {/* Joystick */}
       <div className="absolute bottom-6 right-6">

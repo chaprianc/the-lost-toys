@@ -66,26 +66,40 @@ export const ShelfUnit = ({
         </group>
       ))}
 
-      {/* Category sign above the shelf */}
+      {/* Category sign physically mounted on top of the shelf */}
       {label && (
-        <Html position={[0, 2.75, 0.3]} center distanceFactor={9} occlude={false}>
-          <div
-            style={{
-              direction: 'rtl',
-              whiteSpace: 'nowrap',
-              background: color,
-              color: '#4a2c14',
-              border: '3px solid #fff7ec',
-              padding: '8px 22px',
-              borderRadius: 14,
-              fontSize: 20,
-              fontWeight: 800,
-              boxShadow: '0 6px 16px rgba(0,0,0,0.22)',
-            }}
-          >
-            {icon} {label}
-          </div>
-        </Html>
+        <group position={[0, 2.72, 0.1]}>
+          {/* Mounting posts */}
+          {[-1.2, 1.2].map((x) => (
+            <mesh key={x} position={[x, -0.32, 0]} castShadow>
+              <boxGeometry args={[0.08, 0.5, 0.08]} />
+              <meshStandardMaterial color="#6b4423" />
+            </mesh>
+          ))}
+          {/* Board */}
+          <mesh castShadow>
+            <boxGeometry args={[3.6, 0.62, 0.1]} />
+            <meshStandardMaterial color="#6b4423" />
+          </mesh>
+          <mesh position={[0, 0, 0.06]}>
+            <boxGeometry args={[3.35, 0.44, 0.04]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          <Html position={[0, 0, 0.1]} transform scale={0.2} occlude={false}>
+            <div
+              style={{
+                direction: 'rtl',
+                whiteSpace: 'nowrap',
+                color: '#3b2410',
+                fontSize: 34,
+                fontWeight: 900,
+                textShadow: '0 1px 0 rgba(255,255,255,0.5)',
+              }}
+            >
+              {icon} {label}
+            </div>
+          </Html>
+        </group>
       )}
 
 

@@ -43,12 +43,27 @@ export const ShelfUnit = ({
           <meshStandardMaterial color={color} />
         </mesh>
       ))}
+      {/* Bright inner backing so toys pop against the shelf */}
+      <mesh position={[0, 1.25, -0.38]}>
+        <boxGeometry args={[5.7, 2.2, 0.04]} />
+        <meshStandardMaterial color="#fffdf8" />
+      </mesh>
       {/* Shelf boards */}
       {[0.5, 1.3, 2.1].map((y) => (
         <mesh key={y} position={[0, y, 0]} receiveShadow castShadow>
           <boxGeometry args={[6, 0.12, 1]} />
-          <meshStandardMaterial color="#fff4e4" />
+          <meshStandardMaterial color="#ffffff" />
         </mesh>
+      ))}
+      {/* Under-shelf strip lights */}
+      {[1.3, 2.1].map((y) => (
+        <group key={`strip-${y}`}>
+          <mesh position={[0, y - 0.09, 0.42]}>
+            <boxGeometry args={[5.6, 0.05, 0.05]} />
+            <meshStandardMaterial color="#fffbe8" emissive="#fff3cf" emissiveIntensity={1.4} />
+          </mesh>
+          <pointLight position={[0, y - 0.2, 0.55]} intensity={6} color="#fff6e0" distance={3.2} />
+        </group>
       ))}
 
       {/* Category sign above the shelf */}

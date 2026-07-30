@@ -1,6 +1,7 @@
 import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { ToyBox } from './ToyBox';
+import { dragState } from './PlayerControls';
 
 export interface ShelfUnitProps {
   position: [number, number, number];
@@ -11,6 +12,9 @@ export interface ShelfUnitProps {
   color?: string;
   label?: string;
   icon?: string;
+  active?: boolean;
+  dimmed?: boolean;
+  onSignClick?: () => void;
 }
 
 const LEVELS = [0.95, 1.75];
@@ -25,9 +29,13 @@ export const ShelfUnit = ({
   color = '#f7b267',
   label,
   icon,
+  active = false,
+  dimmed = false,
+  onSignClick,
 }: ShelfUnitProps) => {
   const slots: { x: number; y: number }[] = [];
   LEVELS.forEach((y) => COLUMNS.forEach((x) => slots.push({ x, y })));
+
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>

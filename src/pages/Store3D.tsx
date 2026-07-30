@@ -116,6 +116,20 @@ const Store3D = () => {
         </div>
       </div>
 
+      {/* Active category filter chip */}
+      {activeCategory && entered && (
+        <div className="absolute top-16 inset-x-0 flex justify-center pointer-events-none">
+          <Button
+            variant="default"
+            size="sm"
+            className="pointer-events-auto shadow-card rounded-full"
+            onClick={() => setActiveCategory(null)}
+          >
+            {CATEGORY_ICONS[activeCategory]} מציג: {CATEGORY_LABELS[activeCategory]} · הצג הכל ✕
+          </Button>
+        </div>
+      )}
+
       {/* Joystick */}
       <div className="absolute bottom-6 right-6">
         <Joystick

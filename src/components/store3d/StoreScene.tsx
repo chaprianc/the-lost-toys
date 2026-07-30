@@ -77,11 +77,22 @@ export const StoreScene = ({
       <color attach="background" args={['#fdf6ec']} />
       <fog attach="fog" args={['#fdf6ec', 18, 40]} />
 
-      <ambientLight intensity={0.85} />
-      <hemisphereLight args={['#fff3e0', '#d9c5aa', 0.6]} />
-      <directionalLight position={[6, 10, 6]} intensity={0.9} castShadow />
-      <pointLight position={[0, 4, -6]} intensity={20} color="#ffd6a5" distance={18} />
-      <pointLight position={[0, 4, 4]} intensity={20} color="#ffd6a5" distance={18} />
+      <ambientLight intensity={1.15} />
+      <hemisphereLight args={['#ffffff', '#e8d8c0', 0.9]} />
+      <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow />
+      <directionalLight position={[-6, 8, 6]} intensity={0.5} />
+      <pointLight position={[0, 3.2, -6]} intensity={26} color="#fff1dd" distance={20} />
+      <pointLight position={[0, 3.2, 4]} intensity={26} color="#fff1dd" distance={20} />
+      {/* Shelf wash lights so toy images stay bright and readable */}
+      {SHELVES.map((shelf) => (
+        <pointLight
+          key={`light-${shelf.category}`}
+          position={[shelf.position[0] * 0.62, 2.4, shelf.position[2]]}
+          intensity={18}
+          color="#ffffff"
+          distance={9}
+        />
+      ))}
 
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>

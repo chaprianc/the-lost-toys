@@ -56,25 +56,41 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
 
       {/* Label */}
       <Html
-        position={[0, -0.58, 0.1]}
+        position={[0, -0.56, 0.14]}
         center
-        distanceFactor={6}
+        distanceFactor={5}
         occlude={false}
         style={{ pointerEvents: 'none', direction: 'rtl' }}
       >
         <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
             whiteSpace: 'nowrap',
-            background: 'rgba(255,255,255,0.92)',
+            background: '#fffdf8',
+            border: '2px solid #6b4423',
             borderRadius: 999,
-            padding: '4px 10px',
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#3b2a1e',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            padding: '5px 12px',
+            fontSize: 17,
+            fontWeight: 800,
+            color: '#2a1c11',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
           }}
         >
-          {toy.toy_name} · ₪{toy.price}
+          <span>{toy.toy_name}</span>
+          <span
+            style={{
+              background: '#2e7d32',
+              color: '#fff',
+              borderRadius: 999,
+              padding: '2px 10px',
+              fontSize: 16,
+              fontWeight: 900,
+            }}
+          >
+            ₪{toy.price}
+          </span>
         </div>
       </Html>
 

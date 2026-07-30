@@ -161,7 +161,7 @@ export const StoreScene = ({
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />
 
 
-      {SHELVES.map((shelf, i) => (
+      {SHELVES.map((shelf) => (
         <ShelfUnit
           key={shelf.category}
           position={shelf.position}
@@ -172,6 +172,9 @@ export const StoreScene = ({
           toys={byCategory(shelf.category)}
           onSelect={onSelectToy}
           isInCart={isInCart}
+          active={activeCategory === shelf.category}
+          dimmed={!!activeCategory && activeCategory !== shelf.category}
+          onSignClick={() => onSelectCategory(shelf.category)}
         />
       ))}
 

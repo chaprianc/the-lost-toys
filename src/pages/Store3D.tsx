@@ -1,6 +1,7 @@
 import { Suspense, lazy, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToys, type Toy } from '@/hooks/useToys';
+import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight } from 'lucide-react';
@@ -33,6 +34,7 @@ const Store3D = () => {
   const [entered, setEntered] = useState(false);
   const [selectedToy, setSelectedToy] = useState<Toy | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<ToyCategory | null>(null);
 
   const webgl = useMemo(supportsWebGL, []);
   const displayToys = useMemo(() => toys.slice(0, 16), [toys]);
@@ -89,6 +91,10 @@ const Store3D = () => {
               onCheckout={() => setCheckoutOpen(true)}
               isInCart={inCart}
               paused={!!selectedToy || checkoutOpen || !entered}
+              activeCategory={activeCategory}
+              onSelectCategory={(category) =>
+                setActiveCategory((prev) => (prev === category ? null : category))
+              }
             />
           )}
         </Suspense>

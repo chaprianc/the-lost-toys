@@ -54,45 +54,45 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
         <Fallback />
       )}
 
-      {/* Label */}
-      <Html
-        position={[0, -0.56, 0.14]}
-        center
-        distanceFactor={5}
-        occlude={false}
-        style={{ pointerEvents: 'none', direction: 'rtl' }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            whiteSpace: 'nowrap',
-            background: '#fffdf8',
-            border: '2px solid #6b4423',
-            borderRadius: 999,
-            padding: '5px 12px',
-            fontSize: 17,
-            fontWeight: 800,
-            color: '#2a1c11',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
-          }}
-        >
-          <span>{toy.toy_name}</span>
-          <span
+      {/* Price tag physically clipped to the shelf edge below the toy */}
+      <group position={[0, -0.42, 0.32]}>
+        <mesh castShadow>
+          <boxGeometry args={[1.05, 0.26, 0.04]} />
+          <meshStandardMaterial color="#fffdf8" />
+        </mesh>
+        <mesh position={[0, 0, -0.021]}>
+          <boxGeometry args={[1.12, 0.32, 0.02]} />
+          <meshStandardMaterial color="#6b4423" />
+        </mesh>
+        <Html position={[0, 0, 0.025]} transform scale={0.09} occlude={false}>
+          <div
             style={{
-              background: '#2e7d32',
-              color: '#fff',
-              borderRadius: 999,
-              padding: '2px 10px',
-              fontSize: 16,
-              fontWeight: 900,
+              direction: 'rtl',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              whiteSpace: 'nowrap',
+              fontSize: 22,
+              fontWeight: 800,
+              color: '#2a1c11',
+              pointerEvents: 'none',
             }}
           >
-            ₪{toy.price}
-          </span>
-        </div>
-      </Html>
+            <span>{toy.toy_name}</span>
+            <span
+              style={{
+                background: '#2e7d32',
+                color: '#fff',
+                borderRadius: 999,
+                padding: '1px 8px',
+                fontWeight: 900,
+              }}
+            >
+              ₪{toy.price}
+            </span>
+          </div>
+        </Html>
+      </group>
 
       {hovered && (
         <Html position={[0, 0.62, 0.1]} center distanceFactor={6} style={{ pointerEvents: 'none' }}>

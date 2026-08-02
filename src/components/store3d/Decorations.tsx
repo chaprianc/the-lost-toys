@@ -158,7 +158,7 @@ export const Decorations = ({ room }: DecorationsProps) => {
       const ix = Math.round((x - room.minX) / step);
       const iz = Math.round((z - room.minZ) / step);
       if ((ix + iz) % 2 === 0) continue;
-      tiles.push({ x, z, color: (ix + iz) % 4 === 1 ? '#ffe0e9' : '#dff3ff' });
+      tiles.push({ x, z, color: (ix + iz) % 4 === 1 ? '#ffc9d8' : '#bfe6f7' });
     }
   }
 
@@ -175,7 +175,7 @@ export const Decorations = ({ room }: DecorationsProps) => {
       {/* Central welcome rug */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 6]}>
         <circleGeometry args={[2.2, 40]} />
-        <meshStandardMaterial color="#ffb4a2" />
+        <meshStandardMaterial color="#ff9e8a" />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 6]}>
         <ringGeometry args={[1.3, 1.6, 40]} />
@@ -189,13 +189,13 @@ export const Decorations = ({ room }: DecorationsProps) => {
           <group key={`stripe-${i}`}>
             <mesh position={[room.minX + 0.05, 1.7, z]} rotation={[0, Math.PI / 2, 0]}>
               <planeGeometry args={[1.4, 3.4]} />
-              <meshStandardMaterial color={CANDY[i % CANDY.length]} opacity={0.35} transparent />
+              <meshStandardMaterial color={CANDY[i % CANDY.length]} opacity={0.8} transparent />
             </mesh>
             <mesh position={[room.maxX - 0.05, 1.7, z]} rotation={[0, -Math.PI / 2, 0]}>
               <planeGeometry args={[1.4, 3.4]} />
               <meshStandardMaterial
                 color={CANDY[(i + 3) % CANDY.length]}
-                opacity={0.35}
+                opacity={0.8}
                 transparent
               />
             </mesh>
@@ -226,8 +226,10 @@ export const Decorations = ({ room }: DecorationsProps) => {
       ))}
 
       {/* Ceiling mobiles */}
-      <CeilingMobile position={[0, 2.65, -1]} />
-      <CeilingMobile position={[0, 2.65, 6.5]} />
+      <group scale={0.62}>
+        <CeilingMobile position={[-9.7, 4.3, 3]} />
+        <CeilingMobile position={[9.7, 4.3, -5]} />
+      </group>
 
       {/* Corner props */}
       <BlockStack position={[-6.6, 0, 8.4]} />

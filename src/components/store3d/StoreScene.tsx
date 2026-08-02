@@ -84,9 +84,9 @@ export const StoreScene = ({
       <color attach="background" args={['#fdf6ec']} />
       <fog attach="fog" args={['#fdf6ec', 18, 40]} />
 
-      <ambientLight intensity={1.15} />
-      <hemisphereLight args={['#ffffff', '#e8d8c0', 0.9]} />
-      <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow />
+      <ambientLight intensity={0.62} />
+      <hemisphereLight args={['#ffffff', '#ffd6a5', 0.45]} />
+      <directionalLight position={[6, 10, 6]} intensity={0.85} castShadow />
       <directionalLight position={[-6, 8, 6]} intensity={0.5} />
       <pointLight position={[0, 3.2, -6]} intensity={26} color="#fff1dd" distance={20} />
       <pointLight position={[0, 3.2, 4]} intensity={26} color="#fff1dd" distance={20} />
@@ -108,7 +108,7 @@ export const StoreScene = ({
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[width, depth]} />
-        <meshStandardMaterial color="#fff6ea" />
+        <meshStandardMaterial color="#ffeccf" />
       </mesh>
       {/* Ceiling */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 3.4, 0]}>

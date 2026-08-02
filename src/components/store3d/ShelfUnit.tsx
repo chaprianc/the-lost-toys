@@ -65,7 +65,20 @@ export const ShelfUnit = ({
       ))}
       {/* Shelf unit name crest across the top front */}
       {label && (
-        <group position={[0, 2.52, 0.52]}>
+        <group
+          position={[0, 2.2, 0.52]}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (dragState.dragging) return;
+            onSignClick?.();
+          }}
+          onPointerOver={() => {
+            document.body.style.cursor = 'pointer';
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = 'auto';
+          }}
+        >
           <mesh position={[0, 0, -0.02]} castShadow receiveShadow>
             <boxGeometry args={[5.6, 0.7, 0.12]} />
             <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
@@ -92,6 +105,7 @@ export const ShelfUnit = ({
           </Html>
         </group>
       )}
+
 
       {/* Under-shelf strip lights */}
       {[1.3, 2.1].map((y) => (

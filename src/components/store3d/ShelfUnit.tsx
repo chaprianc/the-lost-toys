@@ -119,61 +119,6 @@ export const ShelfUnit = ({
       ))}
 
 
-      {/* Category sign physically mounted on top of the shelf — click to filter */}
-      {label && (
-        <group
-          position={[0, 2.72, 0.1]}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (dragState.dragging) return;
-            onSignClick?.();
-          }}
-          onPointerOver={() => {
-            document.body.style.cursor = 'pointer';
-          }}
-          onPointerOut={() => {
-            document.body.style.cursor = 'auto';
-          }}
-        >
-          {/* Mounting posts */}
-          {[-1.2, 1.2].map((x) => (
-            <mesh key={x} position={[x, -0.32, 0]} castShadow>
-              <boxGeometry args={[0.08, 0.5, 0.08]} />
-              <meshStandardMaterial color="#6b4423" />
-            </mesh>
-          ))}
-          {/* Board */}
-          <mesh castShadow>
-            <boxGeometry args={[3.6, 0.62, 0.1]} />
-            <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
-          </mesh>
-          <mesh position={[0, 0, 0.06]}>
-            <boxGeometry args={[3.35, 0.44, 0.04]} />
-            <meshStandardMaterial
-              color={color}
-              emissive={active ? color : '#000000'}
-              emissiveIntensity={active ? 0.5 : 0}
-            />
-          </mesh>
-          <Html position={[0, 0, 0.1]} transform scale={0.2} occlude={false}>
-            <div
-              style={{
-                direction: 'rtl',
-                whiteSpace: 'nowrap',
-                color: '#3b2410',
-                fontSize: 34,
-                fontWeight: 900,
-                textShadow: '0 1px 0 rgba(255,255,255,0.5)',
-                opacity: dimmed ? 0.55 : 1,
-              }}
-            >
-              {icon} {label}
-            </div>
-          </Html>
-        </group>
-      )}
-
-
 
       {toys.slice(0, slots.length).map((toy, i) => (
         <ToyBox

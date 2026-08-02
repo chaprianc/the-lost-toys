@@ -5,6 +5,7 @@ import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
+import { Decorations } from './Decorations';
 
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
@@ -83,12 +84,16 @@ export const StoreScene = ({
       <color attach="background" args={['#fdf6ec']} />
       <fog attach="fog" args={['#fdf6ec', 18, 40]} />
 
-      <ambientLight intensity={1.15} />
-      <hemisphereLight args={['#ffffff', '#e8d8c0', 0.9]} />
-      <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow />
+      <ambientLight intensity={0.62} />
+      <hemisphereLight args={['#ffffff', '#ffd6a5', 0.45]} />
+      <directionalLight position={[6, 10, 6]} intensity={0.85} castShadow />
       <directionalLight position={[-6, 8, 6]} intensity={0.5} />
       <pointLight position={[0, 3.2, -6]} intensity={26} color="#fff1dd" distance={20} />
       <pointLight position={[0, 3.2, 4]} intensity={26} color="#fff1dd" distance={20} />
+      {/* Playful colored accent lights */}
+      <pointLight position={[-6, 2.6, 8]} intensity={14} color="#ffb3c1" distance={12} />
+      <pointLight position={[6, 2.6, 8]} intensity={14} color="#8ecae6" distance={12} />
+      <pointLight position={[0, 2.8, -10]} intensity={16} color="#ffe066" distance={12} />
       {/* Shelf wash lights so toy images stay bright and readable */}
       {SHELVES.map((shelf) => (
         <pointLight
@@ -103,7 +108,7 @@ export const StoreScene = ({
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[width, depth]} />
-        <meshStandardMaterial color="#f2e2cd" />
+        <meshStandardMaterial color="#ffeccf" />
       </mesh>
       {/* Ceiling */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 3.4, 0]}>
@@ -114,19 +119,19 @@ export const StoreScene = ({
       {/* Walls */}
       <mesh position={[0, 1.7, ROOM.minZ]}>
         <planeGeometry args={[width, 3.4]} />
-        <meshStandardMaterial color="#ffe3c2" />
+        <meshStandardMaterial color="#ffd9a8" />
       </mesh>
       <mesh position={[0, 1.7, ROOM.maxZ]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[width, 3.4]} />
-        <meshStandardMaterial color="#ffe3c2" />
+        <meshStandardMaterial color="#ffd9a8" />
       </mesh>
       <mesh position={[ROOM.minX, 1.7, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[depth, 3.4]} />
-        <meshStandardMaterial color="#d8f0f5" />
+        <meshStandardMaterial color="#cdeef7" />
       </mesh>
       <mesh position={[ROOM.maxX, 1.7, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[depth, 3.4]} />
-        <meshStandardMaterial color="#d8f0f5" />
+        <meshStandardMaterial color="#cdeef7" />
       </mesh>
 
       {/* Big store sign mounted on the wall ahead of the entrance */}
@@ -156,6 +161,8 @@ export const StoreScene = ({
           </div>
         </Html>
       </group>
+
+      <Decorations room={ROOM} />
 
       {/* Toy car greeting visitors at the entrance */}
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />

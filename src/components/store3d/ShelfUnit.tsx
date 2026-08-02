@@ -63,54 +63,10 @@ export const ShelfUnit = ({
           <meshStandardMaterial color="#ffffff" />
         </mesh>
       ))}
-      {/* Front edge category labels */}
-      {label && (
-        <group position={[0, 0.2, 0.52]}>
-          {[0.5, 1.3, 2.1].map((y, idx) => (
-            <group key={`edge-${y}`} position={[0, y, 0]}>
-              <mesh position={[0, 0, -0.01]}>
-                <boxGeometry args={[4.2, 0.22, 0.04]} />
-                <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
-              </mesh>
-              <mesh position={[0, 0, 0.02]}>
-                <boxGeometry args={[4.0, 0.18, 0.02]} />
-                <meshStandardMaterial color="#fffdf8" />
-              </mesh>
-              <Html position={[0, 0, 0.04]} transform scale={0.13} occlude={false}>
-                <div
-                  style={{
-                    direction: 'rtl',
-                    textAlign: 'center',
-                    whiteSpace: 'nowrap',
-                    color: '#3b2410',
-                    fontSize: 28,
-                    fontWeight: 900,
-                    opacity: dimmed ? 0.5 : 1,
-                  }}
-                >
-                  {idx === 1 ? icon : null} {label}
-                </div>
-              </Html>
-            </group>
-          ))}
-        </group>
-      )}
-      {/* Under-shelf strip lights */}
-      {[1.3, 2.1].map((y) => (
-        <group key={`strip-${y}`}>
-          <mesh position={[0, y - 0.09, 0.42]}>
-            <boxGeometry args={[5.6, 0.05, 0.05]} />
-            <meshStandardMaterial color="#fffbe8" emissive="#fff3cf" emissiveIntensity={1.4} />
-          </mesh>
-          <pointLight position={[0, y - 0.2, 0.55]} intensity={6} color="#fff6e0" distance={3.2} />
-        </group>
-      ))}
-
-
-      {/* Category sign physically mounted on top of the shelf — click to filter */}
+      {/* Shelf unit name crest across the top front */}
       {label && (
         <group
-          position={[0, 2.72, 0.1]}
+          position={[0, 2.2, 0.52]}
           onClick={(e) => {
             e.stopPropagation();
             if (dragState.dragging) return;
@@ -123,36 +79,25 @@ export const ShelfUnit = ({
             document.body.style.cursor = 'auto';
           }}
         >
-          {/* Mounting posts */}
-          {[-1.2, 1.2].map((x) => (
-            <mesh key={x} position={[x, -0.32, 0]} castShadow>
-              <boxGeometry args={[0.08, 0.5, 0.08]} />
-              <meshStandardMaterial color="#6b4423" />
-            </mesh>
-          ))}
-          {/* Board */}
-          <mesh castShadow>
-            <boxGeometry args={[3.6, 0.62, 0.1]} />
+          <mesh position={[0, 0, -0.02]} castShadow receiveShadow>
+            <boxGeometry args={[5.6, 0.7, 0.12]} />
             <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
           </mesh>
-          <mesh position={[0, 0, 0.06]}>
-            <boxGeometry args={[3.35, 0.44, 0.04]} />
-            <meshStandardMaterial
-              color={color}
-              emissive={active ? color : '#000000'}
-              emissiveIntensity={active ? 0.5 : 0}
-            />
+          <mesh position={[0, 0, 0.04]} castShadow>
+            <boxGeometry args={[5.35, 0.52, 0.06]} />
+            <meshStandardMaterial color="#fffdf8" />
           </mesh>
-          <Html position={[0, 0, 0.1]} transform scale={0.2} occlude={false}>
+          <Html position={[0, 0, 0.08]} transform scale={0.22} occlude={false}>
             <div
               style={{
                 direction: 'rtl',
+                textAlign: 'center',
                 whiteSpace: 'nowrap',
                 color: '#3b2410',
-                fontSize: 34,
+                fontSize: 36,
                 fontWeight: 900,
-                textShadow: '0 1px 0 rgba(255,255,255,0.5)',
-                opacity: dimmed ? 0.55 : 1,
+                textShadow: '0 1px 0 rgba(255,255,255,0.6)',
+                opacity: dimmed ? 0.5 : 1,
               }}
             >
               {icon} {label}
@@ -160,6 +105,18 @@ export const ShelfUnit = ({
           </Html>
         </group>
       )}
+
+
+      {/* Under-shelf strip lights */}
+      {[1.3, 2.1].map((y) => (
+        <group key={`strip-${y}`}>
+          <mesh position={[0, y - 0.09, 0.42]}>
+            <boxGeometry args={[5.6, 0.05, 0.05]} />
+            <meshStandardMaterial color="#fffbe8" emissive="#fff3cf" emissiveIntensity={1.4} />
+          </mesh>
+          <pointLight position={[0, y - 0.2, 0.55]} intensity={6} color="#fff6e0" distance={3.2} />
+        </group>
+      ))}
 
 
 

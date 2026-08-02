@@ -63,6 +63,38 @@ export const ShelfUnit = ({
           <meshStandardMaterial color="#ffffff" />
         </mesh>
       ))}
+      {/* Front edge category labels */}
+      {label && (
+        <group position={[0, 0.2, 0.52]}>
+          {[0.5, 1.3, 2.1].map((y, idx) => (
+            <group key={`edge-${y}`} position={[0, y, 0]}>
+              <mesh position={[0, 0, -0.01]}>
+                <boxGeometry args={[4.2, 0.22, 0.04]} />
+                <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
+              </mesh>
+              <mesh position={[0, 0, 0.02]}>
+                <boxGeometry args={[4.0, 0.18, 0.02]} />
+                <meshStandardMaterial color="#fffdf8" />
+              </mesh>
+              <Html position={[0, 0, 0.04]} transform scale={0.13} occlude={false}>
+                <div
+                  style={{
+                    direction: 'rtl',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    color: '#3b2410',
+                    fontSize: 28,
+                    fontWeight: 900,
+                    opacity: dimmed ? 0.5 : 1,
+                  }}
+                >
+                  {idx === 1 ? icon : null} {label}
+                </div>
+              </Html>
+            </group>
+          ))}
+        </group>
+      )}
       {/* Under-shelf strip lights */}
       {[1.3, 2.1].map((y) => (
         <group key={`strip-${y}`}>
@@ -73,6 +105,7 @@ export const ShelfUnit = ({
           <pointLight position={[0, y - 0.2, 0.55]} intensity={6} color="#fff6e0" distance={3.2} />
         </group>
       ))}
+
 
       {/* Category sign physically mounted on top of the shelf — click to filter */}
       {label && (

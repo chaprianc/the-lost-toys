@@ -90,7 +90,7 @@ export const ShelfUnit = ({
             <meshStandardMaterial color="#fffdf8" />
           </mesh>
           <TextPlate
-            lines={[`${label} ${icon ?? ''}`.trim()]}
+            lines={[label]}
             width={5.2}
             height={0.46}
             position={[0, 0, 0.08]}

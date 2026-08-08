@@ -147,7 +147,7 @@ export const StoreScene = ({
           <meshStandardMaterial color="#f7b267" />
         </mesh>
         <TextPlate
-          lines={['🧸 צעצועים עם סיפור 🚗', 'להורים חכמים']}
+          lines={['צעצועים עם סיפור', 'להורים חכמים']}
           width={6.8}
           height={0.95}
           position={[0, 0, 0.15]}

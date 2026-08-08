@@ -11,6 +11,9 @@ import { ToyPreviewDialog } from '@/components/store3d/ToyPreviewDialog';
 import { CheckoutDialog } from '@/components/store3d/CheckoutDialog';
 import type { JoystickVector } from '@/components/store3d/PlayerControls';
 import { toast } from 'sonner';
+import { useAvatar } from '@/hooks/useAvatar';
+import { AvatarCreator } from '@/components/AvatarCreator';
+
 
 const StoreScene = lazy(() =>
   import('@/components/store3d/StoreScene').then((m) => ({ default: m.StoreScene }))
@@ -35,6 +38,9 @@ const Store3D = () => {
   const [selectedToy, setSelectedToy] = useState<Toy | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<ToyCategory | null>(null);
+  const { avatar } = useAvatar();
+  const [avatarEditorOpen, setAvatarEditorOpen] = useState(false);
+
 
   const webgl = useMemo(supportsWebGL, []);
   const displayToys = useMemo(() => toys.slice(0, 16), [toys]);
@@ -95,7 +101,9 @@ const Store3D = () => {
               onSelectCategory={(category) =>
                 setActiveCategory((prev) => (prev === category ? null : category))
               }
+              avatar={avatar}
             />
+
           )}
         </Suspense>
       </div>
@@ -152,6 +160,16 @@ const Store3D = () => {
               <p>🧸 לחצו על צעצוע כדי לראות פרטים ולהוסיף לסל.</p>
               <p>💳 בסוף המעבר נמצאת הקופה.</p>
             </div>
+            <div className="bg-secondary/40 rounded-2xl p-3 space-y-2">
+              <p className="text-sm font-semibold text-foreground">
+                {avatar
+                  ? `${avatar.gender === 'boy' ? '👦' : '👧'} הדמות שלכם${avatar.name ? ` — ${avatar.name}` : ''} מחכה בכניסה`
+                  : 'עוד לא יצרתם דמות שתסתובב בחנות'}
+              </p>
+              <Button variant="outline" size="sm" onClick={() => setAvatarEditorOpen(true)}>
+                {avatar ? 'שינוי דמות' : 'יצירת דמות'}
+              </Button>
+            </div>
             {isLoading ? (
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <Loader2 className="w-5 h-5 animate-spin" /> טוען צעצועים...
@@ -164,6 +182,7 @@ const Store3D = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate('/browse')}>
               לתצוגה הרגילה
             </Button>
+
           </div>
         </div>
       )}
@@ -184,6 +203,9 @@ const Store3D = () => {
         onRemove={removeItem}
         onClear={clearCart}
       />
+
+      <AvatarCreator open={avatarEditorOpen} onOpenChange={setAvatarEditorOpen} />
+
     </div>
   );
 };

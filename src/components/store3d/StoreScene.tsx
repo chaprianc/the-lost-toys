@@ -8,6 +8,9 @@ import { TextPlate } from './TextPlate';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
+import { Avatar3D } from './Avatar3D';
+import type { AvatarProfile } from '@/hooks/useAvatar';
+
 
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
@@ -53,6 +56,7 @@ interface StoreSceneProps {
   paused: boolean;
   activeCategory: ToyCategory | null;
   onSelectCategory: (category: ToyCategory) => void;
+  avatar: AvatarProfile | null;
 }
 
 export const StoreScene = ({
@@ -64,7 +68,9 @@ export const StoreScene = ({
   paused,
   activeCategory,
   onSelectCategory,
+  avatar,
 }: StoreSceneProps) => {
+
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
 
@@ -217,12 +223,16 @@ export const StoreScene = ({
         </Html>
       </group>
 
+      {avatar && <Avatar3D avatar={avatar} />}
+
       <PlayerControls
         joystick={joystick}
         colliders={COLLIDERS}
         bounds={ROOM}
         enabled={!paused}
+        cameraDistance={avatar ? 2.7 : 0}
       />
     </Canvas>
   );
 };
+

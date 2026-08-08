@@ -1,4 +1,4 @@
-import { Html } from '@react-three/drei';
+// removed unused Html import
 import type { Toy } from '@/hooks/useToys';
 import { ToyBox } from './ToyBox';
 import { TextPlate } from './TextPlate';

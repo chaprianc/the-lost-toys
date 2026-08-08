@@ -1,7 +1,9 @@
-import { Html } from '@react-three/drei';
+// removed unused Html import
 import type { Toy } from '@/hooks/useToys';
 import { ToyBox } from './ToyBox';
+import { TextPlate } from './TextPlate';
 import { dragState } from './PlayerControls';
+
 
 export interface ShelfUnitProps {
   position: [number, number, number];
@@ -87,24 +89,16 @@ export const ShelfUnit = ({
             <boxGeometry args={[5.35, 0.52, 0.06]} />
             <meshStandardMaterial color="#fffdf8" />
           </mesh>
-          <Html position={[0, 0, 0.08]} transform scale={0.22} occlude={false}>
-            <div
-              style={{
-                direction: 'rtl',
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                color: '#3b2410',
-                fontSize: 36,
-                fontWeight: 900,
-                textShadow: '0 1px 0 rgba(255,255,255,0.6)',
-                opacity: dimmed ? 0.5 : 1,
-              }}
-            >
-              {icon} {label}
-            </div>
-          </Html>
+          <TextPlate
+            lines={[label]}
+            width={5.2}
+            height={0.46}
+            position={[0, 0, 0.08]}
+            opacity={dimmed ? 0.55 : 1}
+          />
         </group>
       )}
+
 
 
       {/* Under-shelf strip lights */}

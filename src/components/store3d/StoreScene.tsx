@@ -3,6 +3,8 @@ import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
+import { TextPlate } from './TextPlate';
+
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
@@ -144,22 +146,15 @@ export const StoreScene = ({
           <boxGeometry args={[7, 1.05, 0.06]} />
           <meshStandardMaterial color="#f7b267" />
         </mesh>
-        <Html position={[0, 0, 0.16]} transform scale={0.34} occlude={false}>
-          <div
-            style={{
-              direction: 'rtl',
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-              color: '#4a2c14',
-              textShadow: '0 2px 0 rgba(255,255,255,0.5)',
-            }}
-          >
-            <div style={{ fontSize: 40, fontWeight: 900, lineHeight: 1.1 }}>
-              🧸 צעצועים עם סיפור 🚗
-            </div>
-            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 2 }}>להורים חכמים</div>
-          </div>
-        </Html>
+        <TextPlate
+          lines={['צעצועים עם סיפור', 'להורים חכמים']}
+          width={6.8}
+          height={0.95}
+          position={[0, 0, 0.15]}
+          bg="#f7b267"
+          color="#4a2c14"
+        />
+
       </group>
 
       <Decorations room={ROOM} />

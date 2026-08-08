@@ -53,6 +53,7 @@ interface StoreSceneProps {
   paused: boolean;
   activeCategory: ToyCategory | null;
   onSelectCategory: (category: ToyCategory) => void;
+  avatar: AvatarProfile | null;
 }
 
 export const StoreScene = ({
@@ -64,7 +65,9 @@ export const StoreScene = ({
   paused,
   activeCategory,
   onSelectCategory,
+  avatar,
 }: StoreSceneProps) => {
+
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
 

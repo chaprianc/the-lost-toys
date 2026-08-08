@@ -11,6 +11,9 @@ import { ToyPreviewDialog } from '@/components/store3d/ToyPreviewDialog';
 import { CheckoutDialog } from '@/components/store3d/CheckoutDialog';
 import type { JoystickVector } from '@/components/store3d/PlayerControls';
 import { toast } from 'sonner';
+import { useAvatar } from '@/hooks/useAvatar';
+import { AvatarCreator } from '@/components/AvatarCreator';
+
 
 const StoreScene = lazy(() =>
   import('@/components/store3d/StoreScene').then((m) => ({ default: m.StoreScene }))

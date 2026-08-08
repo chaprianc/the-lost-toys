@@ -119,7 +119,8 @@ export const PlayerControls = ({ joystick, colliders, bounds, enabled = true, ca
     forward += -joystick.current.y;
     strafe += joystick.current.x;
 
-    if (enabled && (forward !== 0 || strafe !== 0)) {
+    const moving = enabled && (forward !== 0 || strafe !== 0);
+    if (moving) {
       const len = Math.hypot(forward, strafe) || 1;
       const nf = (forward / len) * SPEED * dt;
       const ns = (strafe / len) * SPEED * dt;
@@ -134,9 +135,25 @@ export const PlayerControls = ({ joystick, colliders, bounds, enabled = true, ca
       if (!blocked(p.x, p.z + dz)) p.z += dz;
     }
 
-    camera.position.copy(position.current);
+    playerState.x = position.current.x;
+    playerState.z = position.current.z;
+    playerState.yaw = yaw.current;
+    playerState.moving = moving;
+
+    if (cameraDistance > 0) {
+      const sin = Math.sin(yaw.current);
+      const cos = Math.cos(yaw.current);
+      camera.position.set(
+        position.current.x + sin * cameraDistance,
+        EYE_HEIGHT + 0.35,
+        position.current.z + cos * cameraDistance
+      );
+    } else {
+      camera.position.copy(position.current);
+    }
     camera.rotation.set(pitch.current, yaw.current, 0, 'YXZ');
   });
+
 
   return null;
 };

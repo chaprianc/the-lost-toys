@@ -203,6 +203,9 @@ const Store3D = () => {
         onRemove={removeItem}
         onClear={clearCart}
       />
+
+      <AvatarCreator open={avatarEditorOpen} onOpenChange={setAvatarEditorOpen} />
+
     </div>
   );
 };

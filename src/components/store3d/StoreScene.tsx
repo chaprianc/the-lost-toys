@@ -8,6 +8,9 @@ import { TextPlate } from './TextPlate';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
+import { Avatar3D } from './Avatar3D';
+import type { AvatarProfile } from '@/hooks/useAvatar';
+
 
 
 export const ROOM = { minX: -8, maxX: 8, minZ: -12, maxZ: 12 };
@@ -220,12 +223,16 @@ export const StoreScene = ({
         </Html>
       </group>
 
+      {avatar && <Avatar3D avatar={avatar} />}
+
       <PlayerControls
         joystick={joystick}
         colliders={COLLIDERS}
         bounds={ROOM}
         enabled={!paused}
+        cameraDistance={avatar ? 2.7 : 0}
       />
     </Canvas>
   );
 };
+

@@ -16,6 +16,8 @@ import Favorites from "./pages/Favorites";
 import Store3D from "./pages/Store3D";
 import NotFound from "./pages/NotFound";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
+import { AvatarOnboarding } from "./components/AvatarCreator";
+
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
         <AccessibilityPanel />
+        <AvatarOnboarding />
+
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

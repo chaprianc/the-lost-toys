@@ -3,6 +3,8 @@ import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
+import { TextPlate } from './TextPlate';
+
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';

@@ -17,16 +17,22 @@ export interface JoystickVector {
 /** Shared drag state so toy clicks are ignored while the user is looking around. */
 export const dragState = { dragging: false };
 
+/** Shared player transform so the third-person avatar can follow the camera. */
+export const playerState = { x: 0, z: 10, yaw: 0, moving: false };
+
 interface PlayerControlsProps {
   joystick: React.MutableRefObject<JoystickVector>;
   colliders: Collider[];
   bounds: { minX: number; maxX: number; minZ: number; maxZ: number };
   enabled?: boolean;
+  /** Distance the camera sits behind the player (0 = first person). */
+  cameraDistance?: number;
 }
 
 const SPEED = 3.2;
 const RADIUS = 0.45;
 const EYE_HEIGHT = 1.6;
+
 
 export const PlayerControls = ({ joystick, colliders, bounds, enabled = true }: PlayerControlsProps) => {
   const { camera, gl } = useThree();

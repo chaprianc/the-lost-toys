@@ -34,7 +34,7 @@ const RADIUS = 0.45;
 const EYE_HEIGHT = 1.6;
 
 
-export const PlayerControls = ({ joystick, colliders, bounds, enabled = true }: PlayerControlsProps) => {
+export const PlayerControls = ({ joystick, colliders, bounds, enabled = true, cameraDistance = 0 }: PlayerControlsProps) => {
   const { camera, gl } = useThree();
   const yaw = useRef(0);
   const pitch = useRef(0);

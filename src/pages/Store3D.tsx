@@ -38,6 +38,9 @@ const Store3D = () => {
   const [selectedToy, setSelectedToy] = useState<Toy | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<ToyCategory | null>(null);
+  const { avatar } = useAvatar();
+  const [avatarEditorOpen, setAvatarEditorOpen] = useState(false);
+
 
   const webgl = useMemo(supportsWebGL, []);
   const displayToys = useMemo(() => toys.slice(0, 16), [toys]);

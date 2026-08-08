@@ -1,5 +1,7 @@
 import { Suspense, useState } from 'react';
 import { Html, Image } from '@react-three/drei';
+import { TextPlate } from './TextPlate';
+
 import type { Toy } from '@/hooks/useToys';
 import { dragState } from './PlayerControls';
 

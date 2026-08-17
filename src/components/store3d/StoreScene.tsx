@@ -8,7 +8,9 @@ import { TextPlate } from './TextPlate';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
+import { Entrance } from './Entrance';
 import { Avatar3D } from './Avatar3D';
+
 import type { AvatarProfile } from '@/hooks/useAvatar';
 
 
@@ -102,7 +104,10 @@ export const StoreScene = ({
       <pointLight position={[-6, 2.6, 8]} intensity={14} color="#ffb3c1" distance={12} />
       <pointLight position={[6, 2.6, 8]} intensity={14} color="#8ecae6" distance={12} />
       <pointLight position={[0, 2.8, -10]} intensity={16} color="#ffe066" distance={12} />
+      {/* Entrance glow so the shop front reads clearly */}
+      <pointLight position={[0, 2.8, 10.2]} intensity={22} color="#fff3e0" distance={14} />
       {/* Shelf wash lights so toy images stay bright and readable */}
+
       {SHELVES.map((shelf) => (
         <pointLight
           key={`light-${shelf.category}`}
@@ -164,6 +169,8 @@ export const StoreScene = ({
       </group>
 
       <Decorations room={ROOM} />
+      <Entrance room={ROOM} />
+
 
       {/* Toy car greeting visitors at the entrance */}
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />

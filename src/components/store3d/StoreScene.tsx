@@ -8,7 +8,9 @@ import { TextPlate } from './TextPlate';
 import { PlayerControls, type Collider, type JoystickVector, dragState } from './PlayerControls';
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
+import { Entrance } from './Entrance';
 import { Avatar3D } from './Avatar3D';
+
 import type { AvatarProfile } from '@/hooks/useAvatar';
 
 

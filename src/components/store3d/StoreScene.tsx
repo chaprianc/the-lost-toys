@@ -166,6 +166,8 @@ export const StoreScene = ({
       </group>
 
       <Decorations room={ROOM} />
+      <Entrance room={ROOM} />
+
 
       {/* Toy car greeting visitors at the entrance */}
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />

@@ -29,7 +29,10 @@ interface PlayerControlsProps {
   cameraDistance?: number;
 }
 
-const SPEED = 3.2;
+const SPEED = 3.4;
+const SPRINT = 5.2;
+const ACCEL = 12;
+const DAMP = 10;
 const RADIUS = 0.45;
 const EYE_HEIGHT = 1.6;
 
@@ -40,6 +43,10 @@ export const PlayerControls = ({ joystick, colliders, bounds, enabled = true, ca
   const pitch = useRef(0);
   const keys = useRef<Record<string, boolean>>({});
   const position = useRef(new THREE.Vector3(0, EYE_HEIGHT, 10));
+  const velocity = useRef(new THREE.Vector2(0, 0));
+  const bob = useRef(0);
+  const camPos = useRef(new THREE.Vector3(0, EYE_HEIGHT, 10 + 2.7));
+
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => { keys.current[e.code] = true; };

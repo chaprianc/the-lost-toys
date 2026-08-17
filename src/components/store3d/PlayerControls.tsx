@@ -123,43 +123,79 @@ export const PlayerControls = ({ joystick, colliders, bounds, enabled = true, ca
     if (k['KeyD'] || k['ArrowRight']) strafe += 1;
     if (k['KeyA'] || k['ArrowLeft']) strafe -= 1;
 
-    forward += -joystick.current.y;
-    strafe += joystick.current.x;
+    forward = THREE.MathUtils.clamp(forward - joystick.current.y, -1, 1);
+    strafe = THREE.MathUtils.clamp(strafe + joystick.current.x, -1, 1);
 
-    const moving = enabled && (forward !== 0 || strafe !== 0);
-    if (moving) {
-      const len = Math.hypot(forward, strafe) || 1;
-      const nf = (forward / len) * SPEED * dt;
-      const ns = (strafe / len) * SPEED * dt;
+    const inputLen = Math.hypot(forward, strafe);
+    const hasInput = enabled && inputLen > 0.05;
+    const sprinting = !!(k['ShiftLeft'] || k['ShiftRight']);
+    const maxSpeed = (sprinting ? SPRINT : SPEED) * Math.min(inputLen, 1);
+
+    // Smooth acceleration / deceleration for a less jerky walk
+    const target = new THREE.Vector2(0, 0);
+    if (hasInput) {
+      target.set((strafe / inputLen) * maxSpeed, (forward / inputLen) * maxSpeed);
+    }
+    const rate = hasInput ? ACCEL : DAMP;
+    velocity.current.lerp(target, 1 - Math.exp(-rate * dt));
+    if (velocity.current.length() < 0.02) velocity.current.set(0, 0);
+
+    const speed = velocity.current.length();
+    if (speed > 0) {
       const sin = Math.sin(yaw.current);
       const cos = Math.cos(yaw.current);
+      const vx = -velocity.current.y * sin + velocity.current.x * cos;
+      const vz = -velocity.current.y * cos - velocity.current.x * sin;
 
-      const dx = -nf * sin + ns * cos;
-      const dz = -nf * cos - ns * sin;
-
+      // sub-step so fast movement never tunnels through shelves
+      const steps = Math.max(1, Math.ceil((speed * dt) / 0.12));
+      const sdt = dt / steps;
       const p = position.current;
-      if (!blocked(p.x + dx, p.z)) p.x += dx;
-      if (!blocked(p.x, p.z + dz)) p.z += dz;
+      for (let i = 0; i < steps; i++) {
+        const dx = vx * sdt;
+        const dz = vz * sdt;
+        if (!blocked(p.x + dx, p.z)) p.x += dx;
+        else velocity.current.x *= 0.5;
+        if (!blocked(p.x, p.z + dz)) p.z += dz;
+        else velocity.current.y *= 0.5;
+      }
+      bob.current += dt * speed * 2.2;
+    } else {
+      bob.current += dt * 0.6;
     }
 
     playerState.x = position.current.x;
     playerState.z = position.current.z;
     playerState.yaw = yaw.current;
-    playerState.moving = moving;
+    playerState.moving = speed > 0.3;
+
+    const bobY = Math.sin(bob.current * 2) * (cameraDistance > 0 ? 0.015 : 0.035) * Math.min(speed, 1);
 
     if (cameraDistance > 0) {
       const sin = Math.sin(yaw.current);
       const cos = Math.cos(yaw.current);
-      camera.position.set(
-        position.current.x + sin * cameraDistance,
-        EYE_HEIGHT + 0.35,
-        position.current.z + cos * cameraDistance
+      // shorten the boom if a wall/shelf sits behind the player
+      let dist = cameraDistance;
+      while (
+        dist > 0.6 &&
+        blocked(position.current.x + sin * dist, position.current.z + cos * dist)
+      ) {
+        dist -= 0.2;
+      }
+      const desired = new THREE.Vector3(
+        position.current.x + sin * dist,
+        EYE_HEIGHT + 0.35 + bobY,
+        position.current.z + cos * dist
       );
+      camPos.current.lerp(desired, 1 - Math.exp(-12 * dt));
+      camera.position.copy(camPos.current);
     } else {
-      camera.position.copy(position.current);
+      camera.position.set(position.current.x, EYE_HEIGHT + bobY, position.current.z);
+      camPos.current.copy(camera.position);
     }
     camera.rotation.set(pitch.current, yaw.current, 0, 'YXZ');
   });
+
 
 
   return null;

@@ -104,7 +104,10 @@ export const StoreScene = ({
       <pointLight position={[-6, 2.6, 8]} intensity={14} color="#ffb3c1" distance={12} />
       <pointLight position={[6, 2.6, 8]} intensity={14} color="#8ecae6" distance={12} />
       <pointLight position={[0, 2.8, -10]} intensity={16} color="#ffe066" distance={12} />
+      {/* Entrance glow so the shop front reads clearly */}
+      <pointLight position={[0, 2.8, 10.2]} intensity={22} color="#fff3e0" distance={14} />
       {/* Shelf wash lights so toy images stay bright and readable */}
+
       {SHELVES.map((shelf) => (
         <pointLight
           key={`light-${shelf.category}`}

@@ -70,12 +70,14 @@ export const StoreScene = ({
   joystick,
   onSelectToy,
   onCheckout,
+  onPublish,
   isInCart,
   paused,
   activeCategory,
   onSelectCategory,
   avatar,
 }: StoreSceneProps) => {
+
 
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;

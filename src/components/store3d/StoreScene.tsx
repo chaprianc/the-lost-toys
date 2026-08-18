@@ -48,8 +48,8 @@ export const COLLIDERS: Collider[] = [
     maxZ: COUNTER.z + COUNTER.d / 2,
   },
   { minX: 1.9, maxX: 3.5, minZ: 7.3, maxZ: 9.9 },
-  // publish kiosk at the entrance
-  { minX: -3.7, maxX: -2.1, minZ: 7.8, maxZ: 8.7 },
+  // publish kiosk moved to the left side of the entrance
+  { minX: -7.3, maxX: -5.7, minZ: 8.4, maxZ: 9.6 },
 ];
 
 

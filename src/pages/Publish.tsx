@@ -574,6 +574,7 @@ const Publish = () => {
             </form>
           </CardContent>
         </Card>
+        )}
       </main>
     </div>
   );

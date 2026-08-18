@@ -95,6 +95,8 @@ const Store3D = () => {
               joystick={joystick}
               onSelectToy={setSelectedToy}
               onCheckout={() => setCheckoutOpen(true)}
+              onPublish={() => navigate('/publish')}
+
               isInCart={inCart}
               paused={!!selectedToy || checkoutOpen || !entered}
               activeCategory={activeCategory}

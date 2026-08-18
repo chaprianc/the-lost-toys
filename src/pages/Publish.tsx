@@ -12,7 +12,7 @@ import { useAddToy, uploadToyImage } from '@/hooks/useToys';
 import { supabase } from '@/integrations/supabase/client';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS, ToyCategory, ToyCondition } from '@/types/toy';
 import { toast } from 'sonner';
-import { Camera, Upload, CheckCircle, Info, X, HelpCircle } from 'lucide-react';
+import { Camera, Upload, CheckCircle, Info, X, HelpCircle, Store, ArrowLeft, PartyPopper } from 'lucide-react';
 import { validateToySubmission, validateImageFile } from '@/lib/toyValidation';
 
 const Publish = () => {

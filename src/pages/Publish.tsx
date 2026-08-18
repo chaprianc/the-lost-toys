@@ -172,16 +172,57 @@ const Publish = () => {
       <Header />
 
       <main className="container mx-auto px-4 py-6 max-w-lg">
-        <Card className="shadow-elevated border-0 animate-slide-up">
-          <CardHeader className="text-center pb-2">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-3xl">🎁</span>
-            </div>
-            <CardTitle className="text-2xl">פרסום צעצוע</CardTitle>
-            <p className="text-muted-foreground text-sm mt-1">
-              מלאו את הפרטים ותנו לצעצוע בית חדש
-            </p>
-          </CardHeader>
+        {submitted ? (
+          <Card className="shadow-elevated border-0 animate-slide-up text-center">
+            <CardHeader className="pb-2">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <PartyPopper className="w-10 h-10 text-primary" aria-hidden="true" />
+              </div>
+              <CardTitle className="text-2xl">תודה על הפרסום!</CardTitle>
+              <p className="text-muted-foreground text-sm mt-2">
+                הצעצוע נשלח לאישור. לאחר אישור התשלום הוא יופיע בחנות.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-secondary/50 rounded-xl p-4">
+                <p className="text-sm text-secondary-foreground">
+                  רוצים להמשיך לסייר?
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  חזרו לחנות התלת-ממדית וגלו עוד צעצועים.
+                </p>
+              </div>
+              <Button
+                variant="hero"
+                size="lg"
+                className="w-full"
+                onClick={() => navigate('/store3d')}
+              >
+                <Store className="w-5 h-5 ml-2" aria-hidden="true" />
+                חזרה לחנות
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={() => navigate('/browse')}
+              >
+                <ArrowLeft className="w-5 h-5 ml-2" aria-hidden="true" />
+                לרשימת הצעצועים
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="shadow-elevated border-0 animate-slide-up">
+            <CardHeader className="text-center pb-2">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-3xl">🎁</span>
+              </div>
+              <CardTitle className="text-2xl">פרסום צעצוע</CardTitle>
+              <p className="text-muted-foreground text-sm mt-1">
+                מלאו את הפרטים ותנו לצעצוע בית חדש
+              </p>
+            </CardHeader>
 
           <CardContent>
             {/* Service fee notice */}

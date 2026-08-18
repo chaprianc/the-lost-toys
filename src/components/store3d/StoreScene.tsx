@@ -9,6 +9,8 @@ import { PlayerControls, type Collider, type JoystickVector, dragState } from '.
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
 import { Entrance } from './Entrance';
+import { PublishKiosk } from './PublishKiosk';
+
 import { Avatar3D } from './Avatar3D';
 
 import type { AvatarProfile } from '@/hooks/useAvatar';

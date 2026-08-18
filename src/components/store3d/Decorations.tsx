@@ -207,11 +207,11 @@ export const Decorations = ({ room }: DecorationsProps) => {
       <Bunting fromX={room.minX + 0.5} toX={room.maxX - 0.5} z={4} y={3.05} />
       <Bunting fromX={room.minX + 0.5} toX={room.maxX - 0.5} z={-3} y={3.05} />
 
-      {/* Balloon bunches at the entrance */}
+      {/* Balloon bunches floating up near the ceiling */}
       {[-3.4, -2.7, -3.1].map((x, i) => (
         <Balloon
           key={i}
-          position={[x, 2.1 + i * 0.25, 8.4 + i * 0.3]}
+          position={[x, 2.95 + i * 0.2, 8.4 + i * 0.3]}
           color={CANDY[i]}
           phase={i * 1.7}
         />
@@ -219,9 +219,18 @@ export const Decorations = ({ room }: DecorationsProps) => {
       {[6.6, 7.2].map((x, i) => (
         <Balloon
           key={`b2-${i}`}
-          position={[x - 0.6, 2.2 + i * 0.2, -8]}
+          position={[x - 0.6, 3.05 + i * 0.15, -8]}
           color={CANDY[i + 3]}
           phase={i * 2.3}
+        />
+      ))}
+      {/* Extra ceiling balloons along the middle of the store */}
+      {[-3.2, 0, 3.2].map((x, i) => (
+        <Balloon
+          key={`b3-${i}`}
+          position={[x, 3.0 + i * 0.12, 0.5 + i * 0.4]}
+          color={CANDY[(i + 2) % CANDY.length]}
+          phase={i * 2.7}
         />
       ))}
 

@@ -177,6 +177,10 @@ export const StoreScene = ({
       <Decorations room={ROOM} />
       <Entrance room={ROOM} />
 
+      {/* Publish-your-toy kiosk right at the entrance */}
+      <PublishKiosk position={[-2.9, 0, 8.25]} onPublish={onPublish} />
+
+
 
       {/* Toy car greeting visitors at the entrance */}
       <ToyCar position={[2.7, 0, 8.6]} rotationY={-Math.PI / 2} />

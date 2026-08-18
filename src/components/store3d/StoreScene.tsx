@@ -9,6 +9,8 @@ import { PlayerControls, type Collider, type JoystickVector, dragState } from '.
 import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
 import { Entrance } from './Entrance';
+import { PublishKiosk } from './PublishKiosk';
+
 import { Avatar3D } from './Avatar3D';
 
 import type { AvatarProfile } from '@/hooks/useAvatar';
@@ -46,6 +48,8 @@ export const COLLIDERS: Collider[] = [
     maxZ: COUNTER.z + COUNTER.d / 2,
   },
   { minX: 1.9, maxX: 3.5, minZ: 7.3, maxZ: 9.9 },
+  // publish kiosk at the entrance
+  { minX: -3.7, maxX: -2.1, minZ: 7.8, maxZ: 8.7 },
 ];
 
 
@@ -54,6 +58,7 @@ interface StoreSceneProps {
   joystick: React.MutableRefObject<JoystickVector>;
   onSelectToy: (toy: Toy) => void;
   onCheckout: () => void;
+  onPublish: () => void;
   isInCart: (id: string) => boolean;
   paused: boolean;
   activeCategory: ToyCategory | null;
@@ -61,17 +66,20 @@ interface StoreSceneProps {
   avatar: AvatarProfile | null;
 }
 
+
 export const StoreScene = ({
   toys,
   joystick,
   onSelectToy,
   onCheckout,
+  onPublish,
   isInCart,
   paused,
   activeCategory,
   onSelectCategory,
   avatar,
 }: StoreSceneProps) => {
+
 
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
@@ -170,6 +178,10 @@ export const StoreScene = ({
 
       <Decorations room={ROOM} />
       <Entrance room={ROOM} />
+
+      {/* Publish-your-toy kiosk right at the entrance */}
+      <PublishKiosk position={[-2.9, 0, 8.25]} onPublish={onPublish} />
+
 
 
       {/* Toy car greeting visitors at the entrance */}

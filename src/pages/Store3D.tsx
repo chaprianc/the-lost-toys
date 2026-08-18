@@ -95,6 +95,8 @@ const Store3D = () => {
               joystick={joystick}
               onSelectToy={setSelectedToy}
               onCheckout={() => setCheckoutOpen(true)}
+              onPublish={() => navigate('/publish')}
+
               isInCart={inCart}
               paused={!!selectedToy || checkoutOpen || !entered}
               activeCategory={activeCategory}
@@ -159,6 +161,8 @@ const Store3D = () => {
               <p>💻 במחשב: WASD או החצים להליכה, Shift לריצה, גרירת עכבר להסתכלות.</p>
               <p>🧸 לחצו על צעצוע כדי לראות פרטים ולהוסיף לסל.</p>
               <p>💳 בסוף המעבר נמצאת הקופה.</p>
+              <p>📢 בכניסה יש עמדת "פרסום צעצוע" — לחצו עליה כדי לפרסם צעצוע משלכם.</p>
+
             </div>
             <div className="bg-secondary/40 rounded-2xl p-3 space-y-2">
               <p className="text-sm font-semibold text-foreground">

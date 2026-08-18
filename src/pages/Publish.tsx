@@ -34,6 +34,7 @@ const Publish = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showFeeDialog, setShowFeeDialog] = useState(false);
   const [feeConfirmed, setFeeConfirmed] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
 

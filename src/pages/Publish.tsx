@@ -158,8 +158,7 @@ const Publish = () => {
         });
       });
 
-      toast.success('הצעצוע נשלח לאישור! יפורסם לאחר אישור התשלום 🎉');
-      navigate('/browse');
+      setSubmitted(true);
     } catch (error) {
       console.error('Error publishing toy:', error);
       toast.error('שגיאה בשליחת הצעצוע. נסו שוב.');

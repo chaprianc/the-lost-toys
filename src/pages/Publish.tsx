@@ -167,6 +167,22 @@ const Publish = () => {
     }
   };
 
+  const handlePublishAnother = () => {
+    setFormData((prev) => ({
+      toy_name: '',
+      category: '' as ToyCategory,
+      condition: '' as ToyCondition,
+      price: '',
+      city: prev.city,
+      seller_phone: prev.seller_phone,
+    }));
+    setImageFiles([]);
+    setImagePreviews([]);
+    setFeeConfirmed(false);
+    setSubmitted(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Header />
@@ -186,12 +202,22 @@ const Publish = () => {
             <CardContent className="space-y-4">
               <div className="bg-secondary/50 rounded-xl p-4">
                 <p className="text-sm text-secondary-foreground">
-                  רוצים להמשיך לסייר?
+                  יש עוד צעצועים לפרסם?
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  חזרו לחנות התלת-ממדית וגלו עוד צעצועים.
+                  אפשר לפרסם צעצוע נוסף מיד — העיר והטלפון יישמרו עבורכם.
                 </p>
               </div>
+              <Button
+                variant="default"
+                size="lg"
+                className="w-full"
+                onClick={handlePublishAnother}
+              >
+                <span className="text-lg ml-2" aria-hidden="true">🎁</span>
+                פרסום צעצוע נוסף
+              </Button>
+
               <Button
                 variant="hero"
                 size="lg"

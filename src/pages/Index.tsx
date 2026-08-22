@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { ToyCard } from '@/components/ToyCard';
 import { useToys } from '@/hooks/useToys';
+import { InstallAppCard } from '@/components/InstallAppCard';
 import { Plus, Search, Sparkles, Heart, Shield, Loader2, ChevronDown } from 'lucide-react';
 
 // Falling toy icons
@@ -150,6 +151,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Install app */}
+      <InstallAppCard />
 
       {/* Features */}
       <section className="container mx-auto px-4 py-12">

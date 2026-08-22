@@ -167,6 +167,22 @@ const Publish = () => {
     }
   };
 
+  const handlePublishAnother = () => {
+    setFormData((prev) => ({
+      toy_name: '',
+      category: '' as ToyCategory,
+      condition: '' as ToyCondition,
+      price: '',
+      city: prev.city,
+      seller_phone: prev.seller_phone,
+    }));
+    setImageFiles([]);
+    setImagePreviews([]);
+    setFeeConfirmed(false);
+    setSubmitted(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Header />

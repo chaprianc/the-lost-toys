@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
@@ -13,7 +14,7 @@ import { PublishKiosk } from './PublishKiosk';
 
 import { Avatar3D } from './Avatar3D';
 
-import type { AvatarProfile } from '@/hooks/useAvatar';
+import { SHIRT_COLORS, type AvatarProfile } from '@/hooks/useAvatar';
 
 
 
@@ -33,6 +34,13 @@ const SHELVES: {
 
 
 const COUNTER = { x: 0, z: -10.5, w: 3.4, d: 1.2 };
+
+const VISITOR_PATHS = [
+  { from: [0, -7] as [number, number], to: [0, 6] as [number, number], speed: 0.22 },
+  { from: [-2.8, -1] as [number, number], to: [2.8, -1] as [number, number], speed: 0.28 },
+  { from: [-6.3, -7] as [number, number], to: [-6.3, 6] as [number, number], speed: 0.18 },
+  { from: [6.3, -7] as [number, number], to: [6.3, 6] as [number, number], speed: 0.2 },
+];
 
 export const COLLIDERS: Collider[] = [
   ...SHELVES.map(({ position }) => ({
@@ -83,6 +91,19 @@ export const StoreScene = ({
 
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
+  const visitors = useMemo(
+    () =>
+      VISITOR_PATHS.map((path, index) => ({
+        id: `visitor-${index}`,
+        avatar: {
+          gender: Math.random() > 0.5 ? ('girl' as const) : ('boy' as const),
+          name: '',
+          shirt: SHIRT_COLORS[Math.floor(Math.random() * SHIRT_COLORS.length)],
+        },
+        path: { ...path, offset: Math.random() * Math.PI * 2 },
+      })),
+    []
+  );
 
   const shelfCategories = SHELVES.map((s) => s.category) as string[];
   // Toys from categories without a dedicated shelf are spread across the shelves
@@ -244,6 +265,9 @@ export const StoreScene = ({
         </Html>
       </group>
 
+      {visitors.map((visitor) => (
+        <Avatar3D key={visitor.id} avatar={visitor.avatar} path={visitor.path} />
+      ))}
       {avatar && <Avatar3D avatar={avatar} />}
 
       <PlayerControls

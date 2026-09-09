@@ -19,8 +19,8 @@ export interface ShelfUnitProps {
   onSignClick?: () => void;
 }
 
-const LEVELS = [0.95, 1.75];
-const COLUMNS = [-1.6, 1.6];
+const LEVELS = [0.93, 1.73];
+const COLUMNS = [-1.55, 1.55];
 
 export const ShelfUnit = ({
   position,

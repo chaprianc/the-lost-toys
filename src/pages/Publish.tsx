@@ -8,16 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useAddToy, uploadToyImage } from '@/hooks/useToys';
+import { useCreateManagedToy, uploadToyImage } from '@/hooks/useToys';
 import { supabase } from '@/integrations/supabase/client';
 import { CATEGORY_LABELS, CONDITION_LABELS, CATEGORY_ICONS, ToyCategory, ToyCondition } from '@/types/toy';
 import { toast } from 'sonner';
-import { Camera, Upload, CheckCircle, Info, X, HelpCircle, Store, ArrowLeft, PartyPopper } from 'lucide-react';
+import { Camera, Upload, CheckCircle, Info, X, HelpCircle, Store, ArrowLeft, PartyPopper, Copy, ExternalLink, MessageCircle, KeyRound } from 'lucide-react';
 import { validateToySubmission, validateImageFile } from '@/lib/toyValidation';
 
 const Publish = () => {
   const navigate = useNavigate();
-  const addToy = useAddToy();
+  const createToy = useCreateManagedToy();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
@@ -35,6 +35,7 @@ const Publish = () => {
   const [showFeeDialog, setShowFeeDialog] = useState(false);
   const [feeConfirmed, setFeeConfirmed] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [managementUrl, setManagementUrl] = useState('');
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -127,7 +128,7 @@ const Publish = () => {
         return;
       }
 
-      await addToy.mutateAsync({
+      const { toy, managementToken } = await createToy.mutateAsync({
         toy_name: validation.data!.toy_name,
         category: validation.data!.category,
         condition: validation.data!.condition,
@@ -136,6 +137,13 @@ const Publish = () => {
         seller_phone: validation.data!.seller_phone,
         images: validation.data!.images,
       });
+
+      const privateManagementUrl = `${window.location.origin}/manage/${managementToken}`;
+      setManagementUrl(privateManagementUrl);
+      localStorage.setItem(
+        `toy-management-${toy.id}`,
+        JSON.stringify({ toyName: toy.toy_name, url: privateManagementUrl }),
+      );
 
       // Send notifications to admin (non-blocking)
       const notificationBody = {
@@ -180,6 +188,7 @@ const Publish = () => {
     setImagePreviews([]);
     setFeeConfirmed(false);
     setSubmitted(false);
+    setManagementUrl('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -200,6 +209,49 @@ const Publish = () => {
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
+              {managementUrl && (
+                <div className="rounded-xl border border-primary/25 bg-primary/5 p-4 text-right">
+                  <div className="mb-2 flex items-center gap-2">
+                    <KeyRound className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <p className="font-semibold">קישור פרטי לניהול המודעה</p>
+                  </div>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    שמרו את הקישור. באמצעותו תוכלו לשנות מחיר, לסמן שהצעצוע נמכר או למחוק את המודעה — ללא חשבון.
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(managementUrl);
+                        toast.success('קישור הניהול הועתק');
+                      }}
+                    >
+                      <Copy className="ml-2 h-4 w-4" aria-hidden="true" />
+                      העתקת הקישור
+                    </Button>
+                    <Button type="button" asChild>
+                      <a href={managementUrl}>
+                        <ExternalLink className="ml-2 h-4 w-4" aria-hidden="true" />
+                        פתיחת הניהול
+                      </a>
+                    </Button>
+                  </div>
+                  <Button type="button" variant="outline" className="mt-2 w-full" asChild>
+                    <a
+                      href={`https://wa.me/?text=${encodeURIComponent(`קישור פרטי לניהול המודעה "${formData.toy_name}": ${managementUrl}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MessageCircle className="ml-2 h-4 w-4" aria-hidden="true" />
+                      שליחה לעצמי ב‑WhatsApp
+                    </a>
+                  </Button>
+                  <p className="mt-2 text-xs font-medium text-destructive">
+                    אל תעבירו את הקישור לאדם אחר — הוא מאפשר לשנות את המודעה.
+                  </p>
+                </div>
+              )}
               <div className="bg-secondary/50 rounded-xl p-4">
                 <p className="text-sm text-secondary-foreground">
                   יש עוד צעצועים לפרסם?

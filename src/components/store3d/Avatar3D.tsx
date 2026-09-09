@@ -6,12 +6,20 @@ import { playerState } from './PlayerControls';
 import type { AvatarProfile } from '@/hooks/useAvatar';
 import { TextPlate } from './TextPlate';
 
+interface VisitorPath {
+  from: [number, number];
+  to: [number, number];
+  speed: number;
+  offset: number;
+}
+
 interface Avatar3DProps {
   avatar: AvatarProfile;
+  path?: VisitorPath;
 }
 
 /** Cute cartoon third-person character that walks around the store with the player. */
-export const Avatar3D = ({ avatar }: Avatar3DProps) => {
+export const Avatar3D = ({ avatar, path }: Avatar3DProps) => {
   const root = useRef<Group>(null);
   const head = useRef<Group>(null);
   const legL = useRef<THREE.Group>(null);
@@ -27,26 +35,41 @@ export const Avatar3D = ({ avatar }: Avatar3DProps) => {
   const shoes = isGirl ? '#ff5c8a' : '#2f6fd0';
   const pants = isGirl ? '#6c4bd1' : '#3d5a80';
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const g = root.current;
     if (!g) return;
-    g.position.set(playerState.x, 0, playerState.z);
-    g.rotation.y = playerState.yaw + Math.PI;
+
+    let moving = playerState.moving;
+    if (path) {
+      const phase = state.clock.elapsedTime * path.speed + path.offset;
+      const progress = (Math.sin(phase) + 1) / 2;
+      const x = THREE.MathUtils.lerp(path.from[0], path.to[0], progress);
+      const z = THREE.MathUtils.lerp(path.from[1], path.to[1], progress);
+      const direction = Math.cos(phase) >= 0 ? 1 : -1;
+      const dx = (path.to[0] - path.from[0]) * direction;
+      const dz = (path.to[1] - path.from[1]) * direction;
+      g.position.set(x, 0, z);
+      g.rotation.y = Math.atan2(dx, dz);
+      moving = true;
+    } else {
+      g.position.set(playerState.x, 0, playerState.z);
+      g.rotation.y = playerState.yaw + Math.PI;
+    }
 
     idle.current += delta;
-    if (playerState.moving) step.current += delta * 9;
-    const swing = playerState.moving ? Math.sin(step.current) * 0.6 : 0;
+    if (moving) step.current += delta * 9;
+    const swing = moving ? Math.sin(step.current) * 0.6 : 0;
     if (legL.current) legL.current.rotation.x = swing;
     if (legR.current) legR.current.rotation.x = -swing;
     if (armL.current) armL.current.rotation.x = -swing * 0.8;
     if (armR.current) armR.current.rotation.x = swing * 0.8;
 
-    const bob = playerState.moving
+    const bob = moving
       ? Math.abs(Math.sin(step.current)) * 0.05
       : Math.sin(idle.current * 2) * 0.015;
     g.position.y = bob;
     if (head.current) {
-      head.current.rotation.z = playerState.moving ? Math.sin(step.current) * 0.06 : Math.sin(idle.current * 1.6) * 0.05;
+      head.current.rotation.z = moving ? Math.sin(step.current) * 0.06 : Math.sin(idle.current * 1.6) * 0.05;
     }
   });
 

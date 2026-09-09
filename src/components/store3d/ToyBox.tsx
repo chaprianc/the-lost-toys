@@ -15,7 +15,7 @@ interface ToyBoxProps {
 }
 
 const CARD_W = 1.4;
-const CARD_H = 0.68;
+const CARD_H = 0.85;
 
 const Fallback = () => (
   <mesh position={[0, 0, 0.07]}>
@@ -92,7 +92,7 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
       )}
 
       {/* Price tag physically clipped to the shelf edge below the toy */}
-      <group position={[0, -0.4, 0.32]}>
+      <group position={[0, -0.5, 0.32]}>
         <mesh castShadow>
           <boxGeometry args={[1.3, 0.3, 0.04]} />
           <meshStandardMaterial color="#fffdf8" />

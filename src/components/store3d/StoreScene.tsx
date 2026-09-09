@@ -227,7 +227,9 @@ export const StoreScene = ({
           <div
             style={{
               direction: 'rtl',
-              whiteSpace: 'nowrap',
+              whiteSpace: 'normal',
+              minWidth: 230,
+              textAlign: 'center',
               background: '#2e7d32',
               color: '#fff',
               padding: '8px 18px',
@@ -237,7 +239,7 @@ export const StoreScene = ({
               cursor: 'pointer',
             }}
           >
-            💳 קופה
+            💛 הצעצועים שמעניינים אותי
           </div>
         </Html>
       </group>

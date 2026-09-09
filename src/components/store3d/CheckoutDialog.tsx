@@ -19,7 +19,8 @@ interface CheckoutDialogProps {
 
 const whatsappLink = (phone: string, names: string[]) => {
   const formatted = phone.replace(/^0/, '972');
-  const text = `היי, ראיתי בחנות את ${names.map((n) => `"${n}"`).join(', ')} ואשמח לפרטים נוספים`;
+  const toyList = names.map((name) => `• ${name}`).join('\n');
+  const text = `היי, ראיתי בפלטפורמת אוצרות אבודים את הצעצועים הבאים ואני מעוניין/ת בפרטים נוספים:\n${toyList}\n\nהאם הם עדיין זמינים?`;
   return `https://wa.me/${formatted}?text=${encodeURIComponent(text)}`;
 };
 
@@ -40,12 +41,12 @@ export const CheckoutDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md text-right max-h-[85vh] overflow-y-auto" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-right">💳 הקופה</DialogTitle>
+          <DialogTitle className="text-right">💛 הצעצועים שמעניינים אותי</DialogTitle>
         </DialogHeader>
 
         {items.length === 0 ? (
           <p className="text-muted-foreground py-6 text-center">
-            הסל ריק — הסתובבו בחנות והוסיפו צעצועים 🧸
+            הרשימה ריקה — הסתובבו בחנות והוסיפו צעצועים שמעניינים אתכם 🧸
           </p>
         ) : (
           <div className="space-y-5">
@@ -71,7 +72,7 @@ export const CheckoutDialog = ({
                   <button
                     onClick={() => onRemove(item.id)}
                     className="p-2 text-muted-foreground hover:text-destructive"
-                    aria-label={`הסר את ${item.toy_name} מהסל`}
+                    aria-label={`הסר את ${item.toy_name} מרשימת ההתעניינות`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -80,7 +81,7 @@ export const CheckoutDialog = ({
             </ul>
 
             <div className="flex items-center justify-between border-y border-border py-3">
-              <span className="font-semibold">סה"כ</span>
+              <span className="font-semibold">שווי הפריטים</span>
               <span className="text-xl font-bold">₪{total}</span>
             </div>
 
@@ -88,7 +89,7 @@ export const CheckoutDialog = ({
               {Object.entries(bySeller).map(([phone, sellerItems]) => (
                 <div key={phone} className="space-y-2">
                   <p className="text-sm text-muted-foreground">
-                    מוכר · {sellerItems.map((i) => i.toy_name).join(', ')}
+                    יצירת קשר עם המוכר · {sellerItems.map((i) => i.toy_name).join(', ')}
                   </p>
                   <div className="flex gap-2">
                     <a
@@ -112,12 +113,13 @@ export const CheckoutDialog = ({
             </div>
 
             <div className="bg-muted/50 rounded-xl p-4 space-y-2 text-sm text-muted-foreground">
-              <p>ℹ️ התשלום מתבצע ישירות מול המוכר — אין תשלום דרך האתר.</p>
+              <p>ℹ️ שווי הפריטים מוצג לנוחות בלבד. המחיר הסופי והתשלום נקבעים ומתבצעים ישירות מול כל מוכר.</p>
+              <p>🤝 הפלטפורמה אינה צד לעסקה ואינה מטפלת בתשלום, באיסוף או במשלוח.</p>
               <p>💡 טיפ: תמיד פגשו במקום ציבורי ובדקו את הצעצוע לפני הרכישה</p>
             </div>
 
             <Button variant="ghost" className="w-full" onClick={onClear}>
-              רוקן את הסל
+              נקה את הרשימה
             </Button>
           </div>
         )}

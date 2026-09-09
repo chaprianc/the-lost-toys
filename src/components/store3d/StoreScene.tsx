@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
 import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { ShelfUnit } from './ShelfUnit';
@@ -227,7 +226,30 @@ export const StoreScene = ({
       ))}
 
 
-      {/* Checkout counter */}
+      {/* Interest-list sign mounted permanently on the back wall. */}
+      <group
+        position={[0, 1.5, ROOM.minZ + 0.14]}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (dragState.dragging) return;
+          onCheckout();
+        }}
+      >
+        <mesh castShadow>
+          <boxGeometry args={[3.7, 0.92, 0.12]} />
+          <meshStandardMaterial color="#245c2a" roughness={0.7} />
+        </mesh>
+        <TextPlate
+          lines={['הצעצועים', 'שמעניינים אותי']}
+          width={3.4}
+          height={0.7}
+          position={[0, 0, 0.09]}
+          bg="#2e7d32"
+          color="#ffffff"
+        />
+      </group>
+
+      {/* Interest-list counter */}
       <group
         position={[COUNTER.x, 0, COUNTER.z]}
         onClick={(e) => {
@@ -244,25 +266,6 @@ export const StoreScene = ({
           <boxGeometry args={[COUNTER.w + 0.2, 0.1, COUNTER.d + 0.2]} />
           <meshStandardMaterial color="#fff4e4" />
         </mesh>
-        <Html position={[0, 1.75, 0]} center distanceFactor={8} occlude={false}>
-          <div
-            style={{
-              direction: 'rtl',
-              whiteSpace: 'normal',
-              minWidth: 230,
-              textAlign: 'center',
-              background: '#2e7d32',
-              color: '#fff',
-              padding: '8px 18px',
-              borderRadius: 12,
-              fontSize: 18,
-              fontWeight: 800,
-              cursor: 'pointer',
-            }}
-          >
-            💛 הצעצועים שמעניינים אותי
-          </div>
-        </Html>
       </group>
 
       {visitors.map((visitor) => (

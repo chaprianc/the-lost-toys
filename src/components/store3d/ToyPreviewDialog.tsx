@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, ShoppingCart, ExternalLink, Check } from 'lucide-react';
+import { MapPin, Heart, ExternalLink, Check } from 'lucide-react';
 import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CONDITION_LABELS } from '@/types/toy';
 import SellerRating from '@/components/SellerRating';
@@ -70,11 +70,11 @@ export const ToyPreviewDialog = ({
           >
             {inCart ? (
               <>
-                <Check className="w-5 h-5" /> כבר בסל
+                <Check className="w-5 h-5" /> כבר ברשימת ההתעניינות
               </>
             ) : (
               <>
-                <ShoppingCart className="w-5 h-5" /> הוסף לסל
+                <Heart className="w-5 h-5" /> הוסף לרשימת ההתעניינות
               </>
             )}
           </Button>

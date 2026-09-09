@@ -34,9 +34,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save, BarChart3 } from 'lucide-react';
+import { Trash2, Eye, ShieldCheck, Lock, Loader2, CheckCircle, Clock, AlertTriangle, LogOut, Ban, UserX, Plus, Settings, Mail, KeyRound, Save, BarChart3, RefreshCw, RotateCcw } from 'lucide-react';
 import AdminAnalytics from '@/components/AdminAnalytics';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -49,6 +50,8 @@ const Admin = () => {
   const updateStatus = useUpdateToyStatus();
   const deleteToy = useDeleteToy();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -113,6 +116,25 @@ const Admin = () => {
       onError: () => toast.error('שגיאה במחיקת הצעצוע'),
     });
   };
+
+  const handleRefreshData = async () => {
+    setIsRefreshing(true);
+    try {
+      await queryClient.invalidateQueries();
+      await queryClient.refetchQueries({ type: 'active' });
+      toast.success('הנתונים רועננו מהמסד');
+    } catch {
+      toast.error('שגיאה ברענון הנתונים');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const handleHardReload = () => {
+    toast.info('טוען מחדש את האתר...');
+    window.location.reload();
+  };
+
 
   if (!isAuthenticated) {
     return (
@@ -194,6 +216,26 @@ const Admin = () => {
               </p>
             </div>
           </div>
+          <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="default"
+            onClick={handleRefreshData}
+            disabled={isRefreshing}
+            className="flex items-center gap-2"
+            aria-label="רענון נתונים מהמסד"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+            רענון נתונים
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleHardReload}
+            className="flex items-center gap-2"
+            aria-label="טעינה מחדש של האתר"
+          >
+            <RotateCcw className="w-4 h-4" aria-hidden="true" />
+            טעינה מחדש
+          </Button>
           <Button
             variant="outline"
             onClick={() => {
@@ -208,6 +250,7 @@ const Admin = () => {
             <LogOut className="w-4 h-4" aria-hidden="true" />
             התנתק
           </Button>
+          </div>
         </div>
 
         {/* Alert banner for pending toys */}

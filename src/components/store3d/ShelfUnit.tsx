@@ -19,8 +19,8 @@ export interface ShelfUnitProps {
   onSignClick?: () => void;
 }
 
-const LEVELS = [0.95, 1.75];
-const COLUMNS = [-1.6, 1.6];
+const LEVELS = [0.9, 1.85];
+const COLUMNS = [-1.55, 1.55];
 
 export const ShelfUnit = ({
   position,
@@ -42,24 +42,24 @@ export const ShelfUnit = ({
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
       {/* Back panel */}
-      <mesh position={[0, 1.25, -0.45]} receiveShadow>
-        <boxGeometry args={[6, 2.5, 0.12]} />
+      <mesh position={[0, 1.35, -0.45]} receiveShadow>
+        <boxGeometry args={[6, 2.7, 0.12]} />
         <meshStandardMaterial color={color} />
       </mesh>
       {/* Side panels */}
       {[-3, 3].map((x) => (
-        <mesh key={x} position={[x, 1.25, 0]} receiveShadow>
-          <boxGeometry args={[0.14, 2.5, 1]} />
+        <mesh key={x} position={[x, 1.35, 0]} receiveShadow>
+          <boxGeometry args={[0.14, 2.7, 1]} />
           <meshStandardMaterial color={color} />
         </mesh>
       ))}
       {/* Bright inner backing so toys pop against the shelf */}
-      <mesh position={[0, 1.25, -0.38]}>
-        <boxGeometry args={[5.7, 2.2, 0.04]} />
+      <mesh position={[0, 1.35, -0.38]}>
+        <boxGeometry args={[5.7, 2.4, 0.04]} />
         <meshStandardMaterial color="#fffdf8" />
       </mesh>
       {/* Shelf boards */}
-      {[0.5, 1.3, 2.1].map((y) => (
+      {[0.4, 1.35, 2.3].map((y) => (
         <mesh key={y} position={[0, y, 0]} receiveShadow castShadow>
           <boxGeometry args={[6, 0.12, 1]} />
           <meshStandardMaterial color="#ffffff" />
@@ -68,7 +68,7 @@ export const ShelfUnit = ({
       {/* Shelf unit name crest across the top front */}
       {label && (
         <group
-          position={[0, 2.2, 0.52]}
+          position={[0, 2.5, 0.52]}
           onClick={(e) => {
             e.stopPropagation();
             if (dragState.dragging) return;
@@ -102,7 +102,7 @@ export const ShelfUnit = ({
 
 
       {/* Under-shelf strip lights */}
-      {[1.3, 2.1].map((y) => (
+      {[1.35, 2.3].map((y) => (
         <group key={`strip-${y}`}>
           <mesh position={[0, y - 0.09, 0.42]}>
             <boxGeometry args={[5.6, 0.05, 0.05]} />

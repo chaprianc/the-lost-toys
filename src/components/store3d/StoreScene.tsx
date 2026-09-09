@@ -25,10 +25,10 @@ const SHELVES: {
   color: string;
   category: ToyCategory;
 }[] = [
-  { position: [-4.5, 0, -6], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
-  { position: [-4.5, 0, 1], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
-  { position: [4.5, 0, -6], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
-  { position: [4.5, 0, 1], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
+  { position: [-4.3, 0, -4], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
+  { position: [-4.3, 0, 3.2], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
+  { position: [4.3, 0, -4], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
+  { position: [4.3, 0, 3.2], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
 ];
 
 

@@ -17,10 +17,19 @@ interface CheckoutDialogProps {
   onClear: () => void;
 }
 
-const whatsappLink = (phone: string, names: string[]) => {
-  const formatted = phone.replace(/^0/, '972');
-  const toyList = names.map((name) => `• ${name}`).join('\n');
-  const text = `היי, ראיתי בפלטפורמת אוצרות אבודים את הצעצועים הבאים ואני מעוניין/ת בפרטים נוספים:\n${toyList}\n\nהאם הם עדיין זמינים?`;
+const priceFormatter = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 2 });
+
+const sellerValue = (items: CartItem[]) =>
+  items.reduce((sum, item) => sum + Number(item.price), 0);
+
+const whatsappLink = (phone: string, items: CartItem[]) => {
+  const digits = phone.replace(/\D/g, '');
+  const formatted = digits.startsWith('0') ? `972${digits.slice(1)}` : digits;
+  const toyList = items
+    .map((item) => `• ${item.toy_name} — ₪${priceFormatter.format(Number(item.price))}`)
+    .join('\n');
+  const totalValue = priceFormatter.format(sellerValue(items));
+  const text = `היי, ראיתי בפלטפורמת אוצרות אבודים את הצעצועים הבאים ואני מעוניין/ת בפרטים נוספים:\n\n${toyList}\n\nשווי הפריטים: ₪${totalValue}\n\nהאם הם עדיין זמינים? המחיר הסופי, התשלום והאיסוף ייקבעו ישירות מולך.`;
   return `https://wa.me/${formatted}?text=${encodeURIComponent(text)}`;
 };
 
@@ -91,9 +100,12 @@ export const CheckoutDialog = ({
                   <p className="text-sm text-muted-foreground">
                     יצירת קשר עם המוכר · {sellerItems.map((i) => i.toy_name).join(', ')}
                   </p>
+                  <p className="text-sm font-medium text-foreground">
+                    שווי הפריטים אצל מוכר זה: ₪{priceFormatter.format(sellerValue(sellerItems))}
+                  </p>
                   <div className="flex gap-2">
                     <a
-                      href={whatsappLink(phone, sellerItems.map((i) => i.toy_name))}
+                      href={whatsappLink(phone, sellerItems)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1"

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import { adminRequest } from '@/lib/adminApi';
 
 export type Toy = Tables<'toys'>;
 export type ToyInsert = TablesInsert<'toys'>;
@@ -22,18 +23,14 @@ export const useToys = () => {
   });
 };
 
-export const useAllToys = () => {
+export const useAllToys = (enabled = true) => {
   return useQuery({
     queryKey: ['toys', 'all'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('toys')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
+      const data = await adminRequest<{ toys: Toy[] }>('list_toys');
+      return data.toys;
     },
+    enabled,
   });
 };
 
@@ -119,15 +116,8 @@ export const useUpdateToyStatus = () => {
   
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: 'available' | 'sold' | 'hidden' }) => {
-      const { data, error } = await supabase
-        .from('toys')
-        .update({ status })
-        .eq('id', id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+      const data = await adminRequest<{ toy: Toy }>('update_toy_status', { id, status });
+      return data.toy;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toys'] });
@@ -140,12 +130,7 @@ export const useDeleteToy = () => {
   
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('toys')
-        .delete()
-        .eq('id', id);
-      
-      if (error) throw error;
+      await adminRequest('delete_toy', { id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toys'] });

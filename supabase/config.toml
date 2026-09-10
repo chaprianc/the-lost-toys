@@ -1,1 +1,7 @@
 project_id = "qhkflwruevllzieegwog"
+
+[functions.create-toy]
+verify_jwt = true
+
+[functions.manage-toy]
+verify_jwt = true

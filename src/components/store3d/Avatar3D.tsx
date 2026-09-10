@@ -62,6 +62,7 @@ export const Avatar3D = ({
   const routeFinished = useRef(false);
 
   const isGirl = avatar.gender === 'girl';
+  const isPlayer = !path && !route && !fixedPosition;
   const appearanceKey = `${avatar.gender}-${avatar.shirt}-${avatar.name}`;
   const skin = SKIN_TONES[stableIndex(appearanceKey, SKIN_TONES.length)];
   const hair = HAIR_COLORS[stableIndex(`${appearanceKey}-hair`, HAIR_COLORS.length)];
@@ -297,7 +298,20 @@ export const Avatar3D = ({
         </mesh>
       </group>
 
-      {avatar.name && (
+      {avatar.name && isPlayer && (
+        <TextPlate
+          lines={[avatar.name]}
+          width={0.48}
+          height={0.15}
+          position={[0, 1.07, -0.155]}
+          rotation={[0, Math.PI, 0]}
+          bg="#fffdf8"
+          color="#4a2c14"
+          opacity={0.92}
+        />
+      )}
+
+      {avatar.name && !isPlayer && (
         <group ref={namePlate} position={[0, 1.96, 0]}>
           <TextPlate
             lines={[avatar.name]}

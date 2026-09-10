@@ -10,6 +10,7 @@ import { ToyCar } from './ToyCar';
 import { Decorations } from './Decorations';
 import { Entrance } from './Entrance';
 import { PublishKiosk } from './PublishKiosk';
+import { ServiceCounter } from './ServiceCounter';
 
 import { Avatar3D } from './Avatar3D';
 
@@ -33,6 +34,11 @@ const SHELVES: {
 
 
 const COUNTER = { x: 0, z: -10.5, w: 3.4, d: 1.2 };
+const CLERK_AVATAR: AvatarProfile = {
+  gender: 'girl',
+  name: '',
+  shirt: '#4f8f72',
+};
 
 const VISITOR_PATHS = [
   { from: [0, -7] as [number, number], to: [0, 6] as [number, number], speed: 0.22 },
@@ -118,13 +124,25 @@ export const StoreScene = ({
 
 
   return (
-    <Canvas shadows camera={{ fov: 70, near: 0.1, far: 100 }} dpr={[1, 1.5]}>
+    <Canvas
+      shadows
+      camera={{ fov: 70, near: 0.1, far: 100 }}
+      dpr={[1, 1.4]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
+    >
       <color attach="background" args={['#fdf6ec']} />
       <fog attach="fog" args={['#fdf6ec', 18, 40]} />
 
       <ambientLight intensity={0.62} />
       <hemisphereLight args={['#ffffff', '#ffd6a5', 0.45]} />
-      <directionalLight position={[6, 10, 6]} intensity={0.85} castShadow />
+      <directionalLight
+        position={[6, 10, 12]}
+        intensity={0.95}
+        color="#fff7e8"
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
       <directionalLight position={[-6, 8, 6]} intensity={0.5} />
       <pointLight position={[0, 3.2, -6]} intensity={26} color="#fff1dd" distance={20} />
       <pointLight position={[0, 3.2, 4]} intensity={26} color="#fff1dd" distance={20} />
@@ -144,6 +162,35 @@ export const StoreScene = ({
           color="#ffffff"
           distance={9}
         />
+      ))}
+
+      {/* Warm ceiling fixtures: emissive geometry adds detail without extra shadow lights. */}
+      {[-7, 0, 7].flatMap((z) =>
+        [-4.2, 4.2].map((x) => (
+          <group key={'ceiling-' + x + '-' + z} position={[x, 3.3, z]}>
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.34, 0.46, 0.14, 20]} />
+              <meshStandardMaterial color="#5f5147" roughness={0.5} />
+            </mesh>
+            <mesh position={[0, -0.09, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <circleGeometry args={[0.3, 20]} />
+              <meshStandardMaterial color="#fff7cf" emissive="#ffe7a0" emissiveIntensity={1.8} />
+            </mesh>
+          </group>
+        )),
+      )}
+
+      {/* Faint daylight pools below the display windows. */}
+      {[-5, 5].map((x) => (
+        <mesh
+          key={'sun-pool-' + x}
+          position={[x * 0.72, 0.025, 8.9]}
+          rotation={[-Math.PI / 2, 0, x > 0 ? 0.18 : -0.18]}
+          scale={[1.9, 1, 0.7]}
+        >
+          <circleGeometry args={[1.35, 32]} />
+          <meshBasicMaterial color="#fff2ba" transparent opacity={0.13} depthWrite={false} />
+        </mesh>
       ))}
 
       {/* Floor */}
@@ -249,24 +296,24 @@ export const StoreScene = ({
         />
       </group>
 
-      {/* Interest-list counter */}
-      <group
+      <TextPlate
+        lines={['התשלום והאיסוף', 'נקבעים ישירות מול המוכר']}
+        width={5.2}
+        height={0.68}
+        position={[4.8, 1.15, ROOM.minZ + 0.14]}
+        bg="#fff8e8"
+        color="#59371f"
+      />
+
+      <ServiceCounter
         position={[COUNTER.x, 0, COUNTER.z]}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (dragState.dragging) return;
-          onCheckout();
-        }}
-      >
-        <mesh position={[0, 0.55, 0]} castShadow receiveShadow>
-          <boxGeometry args={[COUNTER.w, 1.1, COUNTER.d]} />
-          <meshStandardMaterial color="#b5651d" />
-        </mesh>
-        <mesh position={[0, 1.14, 0]} castShadow>
-          <boxGeometry args={[COUNTER.w + 0.2, 0.1, COUNTER.d + 0.2]} />
-          <meshStandardMaterial color="#fff4e4" />
-        </mesh>
-      </group>
+        onOpenInterests={onCheckout}
+      />
+      <Avatar3D
+        avatar={CLERK_AVATAR}
+        fixedPosition={[0, -11.25]}
+        facingY={0}
+      />
 
       {visitors.map((visitor) => (
         <Avatar3D key={visitor.id} avatar={visitor.avatar} path={visitor.path} />
@@ -283,4 +330,3 @@ export const StoreScene = ({
     </Canvas>
   );
 };
-

@@ -1,8 +1,9 @@
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Html, useTexture } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { TextPlate } from './TextPlate';
+import { CONDITION_LABELS } from '@/types/toy';
 
 import type { Toy } from '@/hooks/useToys';
 import { dragState } from './PlayerControls';
@@ -60,12 +61,23 @@ const ToyImage = ({ url }: { url: string }) => {
 
 export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
   const [hovered, setHovered] = useState(false);
+  const root = useRef<THREE.Group>(null);
   const image = toy.images?.[0];
+  const createdAt = Date.parse(toy.created_at);
+  const isNew = Number.isFinite(createdAt) && Date.now() - createdAt < 14 * 24 * 60 * 60 * 1000;
+
+  useFrame((_, delta) => {
+    if (!root.current) return;
+    const target = hovered ? 1.065 : 1;
+    const scale = THREE.MathUtils.lerp(root.current.scale.x, target, 1 - Math.exp(-14 * delta));
+    root.current.scale.setScalar(scale);
+    root.current.position.y = position[1] + (hovered ? 0.055 : 0);
+  });
 
   return (
     <group
+      ref={root}
       position={position}
-      scale={hovered ? 1.06 : 1}
       onPointerOver={(e) => {
         e.stopPropagation();
         setHovered(true);
@@ -80,7 +92,11 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
       {/* Toy box body */}
       <mesh position={[0, 0, 0]} castShadow>
         <boxGeometry args={[CARD_W, CARD_H, 0.14]} />
-        <meshStandardMaterial color={inCart ? '#7bc47f' : hovered ? '#ffd6a5' : '#fffaf3'} />
+        <meshStandardMaterial
+          color={inCart ? '#7bc47f' : hovered ? '#ffd6a5' : '#fffaf3'}
+          emissive={hovered ? '#ffbf69' : '#000000'}
+          emissiveIntensity={hovered ? 0.18 : 0}
+        />
       </mesh>
 
       {image ? (
@@ -89,6 +105,17 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
         </Suspense>
       ) : (
         <Fallback />
+      )}
+
+      {(inCart || isNew) && (
+        <TextPlate
+          lines={[inCart ? 'נבחר 💛' : 'חדש']}
+          width={0.5}
+          height={0.18}
+          position={[0.43, 0.31, 0.082]}
+          bg={inCart ? '#2e7d32' : '#c1440e'}
+          color="#ffffff"
+        />
       )}
 
       {/* Price tag physically clipped to the shelf edge below the toy */}
@@ -110,19 +137,24 @@ export const ToyBox = ({ toy, position, onSelect, inCart }: ToyBoxProps) => {
       </group>
 
       {hovered && (
-        <Html position={[0, CARD_H / 2 + 0.2, 0.1]} center distanceFactor={6} style={{ pointerEvents: 'none' }}>
+        <Html position={[0, CARD_H / 2 + 0.28, 0.1]} center distanceFactor={6} style={{ pointerEvents: 'none' }}>
           <div
             style={{
               whiteSpace: 'nowrap',
               background: '#6b4423',
               color: '#fff',
-              borderRadius: 999,
-              padding: '4px 12px',
-              fontSize: 13,
+              borderRadius: 12,
+              padding: '7px 12px',
+              fontSize: 12,
               fontWeight: 700,
+              textAlign: 'center',
+              boxShadow: '0 6px 18px rgba(62, 36, 16, 0.28)',
             }}
           >
-            לחצו לצפייה
+            <div>{toy.toy_name} · ₪{toy.price}</div>
+            <div style={{ fontSize: 10, opacity: 0.82 }}>
+              {CONDITION_LABELS[toy.condition]} · {toy.city} · לחצו לפרטים
+            </div>
           </div>
         </Html>
       )}

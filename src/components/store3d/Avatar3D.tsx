@@ -16,6 +16,8 @@ interface VisitorPath {
 interface Avatar3DProps {
   avatar: AvatarProfile;
   path?: VisitorPath;
+  fixedPosition?: [number, number];
+  facingY?: number;
 }
 
 const SKIN_TONES = ['#f6d0ae', '#e5ad7d', '#bd7b52', '#815037'];
@@ -26,9 +28,10 @@ const stableIndex = (value: string, length: number) =>
   [...value].reduce((sum, char) => sum + char.charCodeAt(0), 0) % length;
 
 /** Lightweight, human-proportioned cartoon avatar for the player and store visitors. */
-export const Avatar3D = ({ avatar, path }: Avatar3DProps) => {
+export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DProps) => {
   const root = useRef<Group>(null);
   const head = useRef<Group>(null);
+  const eyes = useRef<Group>(null);
   const legL = useRef<THREE.Group>(null);
   const legR = useRef<THREE.Group>(null);
   const armL = useRef<THREE.Group>(null);
@@ -58,7 +61,11 @@ export const Avatar3D = ({ avatar, path }: Avatar3DProps) => {
       const dz = (path.to[1] - path.from[1]) * direction;
       character.position.set(x, 0, z);
       character.rotation.y = Math.atan2(dx, dz);
-      moving = true;
+      moving = Math.abs(Math.cos(phase)) > 0.14;
+    } else if (fixedPosition) {
+      character.position.set(fixedPosition[0], 0, fixedPosition[1]);
+      character.rotation.y = facingY;
+      moving = false;
     } else {
       character.position.set(playerState.x, 0, playerState.z);
       character.rotation.y = playerState.yaw + Math.PI;
@@ -82,6 +89,15 @@ export const Avatar3D = ({ avatar, path }: Avatar3DProps) => {
       head.current.rotation.z = moving
         ? Math.sin(step.current) * 0.025
         : Math.sin(idle.current * 1.4) * 0.025;
+      head.current.rotation.y = moving ? 0 : Math.sin(idle.current * 0.55) * 0.16;
+    }
+    if (eyes.current) {
+      const blinking = Math.sin(idle.current * 0.82) > 0.985;
+      eyes.current.scale.y = THREE.MathUtils.lerp(
+        eyes.current.scale.y,
+        blinking ? 0.12 : 1,
+        1 - Math.exp(-24 * delta),
+      );
     }
   });
 
@@ -186,18 +202,20 @@ export const Avatar3D = ({ avatar, path }: Avatar3DProps) => {
           </>
         )}
 
-        {[-0.07, 0.07].map((x) => (
-          <group key={x} position={[x, 0.015, 0.18]}>
-            <mesh scale={[1, 0.72, 0.45]}>
-              <sphereGeometry args={[0.03, 12, 10]} />
-              <meshStandardMaterial color="#ffffff" roughness={0.3} />
-            </mesh>
-            <mesh position={[0, 0, 0.017]}>
-              <sphereGeometry args={[0.014, 10, 8]} />
-              <meshStandardMaterial color="#2d221d" roughness={0.25} />
-            </mesh>
-          </group>
-        ))}
+        <group ref={eyes}>
+          {[-0.07, 0.07].map((x) => (
+            <group key={x} position={[x, 0.015, 0.18]}>
+              <mesh scale={[1, 0.72, 0.45]}>
+                <sphereGeometry args={[0.03, 12, 10]} />
+                <meshStandardMaterial color="#ffffff" roughness={0.3} />
+              </mesh>
+              <mesh position={[0, 0, 0.017]}>
+                <sphereGeometry args={[0.014, 10, 8]} />
+                <meshStandardMaterial color="#2d221d" roughness={0.25} />
+              </mesh>
+            </group>
+          ))}
+        </group>
 
         <mesh position={[0, -0.035, 0.195]} scale={[0.6, 1, 0.8]}>
           <sphereGeometry args={[0.026, 10, 8]} />

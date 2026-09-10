@@ -4,7 +4,7 @@ import { useToys, type Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { Joystick } from '@/components/store3d/Joystick';
 import { CartButton } from '@/components/store3d/CartButton';
 import { ToyPreviewDialog } from '@/components/store3d/ToyPreviewDialog';
@@ -13,6 +13,7 @@ import type { JoystickVector } from '@/components/store3d/PlayerControls';
 import { toast } from 'sonner';
 import { useAvatar } from '@/hooks/useAvatar';
 import { AvatarCreator } from '@/components/AvatarCreator';
+import { useStoreAmbience } from '@/hooks/useStoreAmbience';
 
 
 const StoreScene = lazy(() =>
@@ -40,6 +41,7 @@ const Store3D = () => {
   const [activeCategory, setActiveCategory] = useState<ToyCategory | null>(null);
   const { avatar } = useAvatar();
   const [avatarEditorOpen, setAvatarEditorOpen] = useState(false);
+  const { muted, startAmbience, toggleMuted } = useStoreAmbience();
 
 
   const webgl = useMemo(supportsWebGL, []);
@@ -56,6 +58,11 @@ const Store3D = () => {
     });
     toast.success(`${toy.toy_name} נוסף לרשימת ההתעניינות 💛`);
     setSelectedToy(null);
+  };
+
+  const handleEnterStore = () => {
+    startAmbience();
+    setEntered(true);
   };
 
   if (!webgl) {
@@ -121,7 +128,17 @@ const Store3D = () => {
           <ArrowRight className="w-4 h-4 ml-1" />
           יציאה לתצוגה הרגילה
         </Button>
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="shadow-card"
+            onClick={toggleMuted}
+            aria-label={muted ? 'הפעלת מוזיקת רקע' : 'השתקת מוזיקת רקע'}
+            title={muted ? 'הפעלת מוזיקת רקע' : 'השתקת מוזיקת רקע'}
+          >
+            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
           <CartButton count={items.length} onClick={() => setCheckoutOpen(true)} />
         </div>
       </div>
@@ -179,7 +196,7 @@ const Store3D = () => {
                 <Loader2 className="w-5 h-5 animate-spin" /> טוען צעצועים...
               </div>
             ) : (
-              <Button variant="default" size="lg" className="w-full" onClick={() => setEntered(true)}>
+              <Button variant="default" size="lg" className="w-full" onClick={handleEnterStore}>
                 כניסה לחנות
               </Button>
             )}

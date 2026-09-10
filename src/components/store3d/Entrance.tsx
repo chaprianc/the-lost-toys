@@ -153,16 +153,51 @@ export const Entrance = ({ room }: EntranceProps) => {
       {/* ---- Window displays flanking the doors ---- */}
       {[-5, 5].map((x) => (
         <group key={x} position={[x, 0, room.maxZ - 0.35]}>
+          {/* Soft outdoor backdrop visible through the display glass. */}
+          <mesh position={[0, 1.6, -0.09]}>
+            <planeGeometry args={[3.35, 1.85]} />
+            <meshBasicMaterial color="#bde4f3" />
+          </mesh>
+          {[-1.35, -0.75, -0.15, 0.5, 1.15].map((buildingX, index) => (
+            <mesh
+              key={buildingX}
+              position={[buildingX, 1.15 + (index % 3) * 0.13, -0.075]}
+            >
+              <boxGeometry args={[0.48, 0.72 + (index % 3) * 0.25, 0.025]} />
+              <meshStandardMaterial color={index % 2 ? '#d9c4a8' : '#c7b094'} roughness={0.9} />
+            </mesh>
+          ))}
           {/* window glass */}
           <mesh position={[0, 1.6, 0]}>
             <boxGeometry args={[3.4, 1.9, 0.06]} />
-            <meshStandardMaterial color={GLASS} transparent opacity={0.32} roughness={0.08} />
+            <meshStandardMaterial
+              color={GLASS}
+              transparent
+              opacity={0.2}
+              roughness={0.06}
+              metalness={0.08}
+            />
           </mesh>
-          {/* frame */}
-          <mesh position={[0, 1.6, -0.06]}>
-            <boxGeometry args={[3.7, 2.2, 0.08]} />
-            <meshStandardMaterial color="#6b4423" />
-          </mesh>
+          {/* Wooden frame bars leave the view open instead of covering it. */}
+          {[-1.78, 1.78].map((frameX) => (
+            <mesh key={frameX} position={[frameX, 1.6, 0.035]} castShadow>
+              <boxGeometry args={[0.14, 2.2, 0.1]} />
+              <meshStandardMaterial color="#6b4423" roughness={0.72} />
+            </mesh>
+          ))}
+          {[0.55, 2.65].map((frameY) => (
+            <mesh key={frameY} position={[0, frameY, 0.035]} castShadow>
+              <boxGeometry args={[3.7, 0.14, 0.1]} />
+              <meshStandardMaterial color="#6b4423" roughness={0.72} />
+            </mesh>
+          ))}
+          {/* Diagonal highlights suggest real reflected daylight. */}
+          {[-0.72, 0.72].map((shineX) => (
+            <mesh key={shineX} position={[shineX, 1.7, 0.055]} rotation={[0, 0, -0.42]}>
+              <planeGeometry args={[0.12, 1.55]} />
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.3} depthWrite={false} />
+            </mesh>
+          ))}
           {/* display ledge */}
           <mesh position={[0, 0.62, -0.22]} castShadow receiveShadow>
             <boxGeometry args={[3.4, 0.12, 0.6]} />

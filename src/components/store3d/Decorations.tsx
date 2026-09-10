@@ -121,27 +121,41 @@ const CeilingMobile = ({ position }: { position: [number, number, number] }) => 
 };
 
 /** Potted plant for a homely corner */
-const Plant = ({ position }: { position: [number, number, number] }) => (
-  <group position={position}>
-    <mesh position={[0, 0.22, 0]} castShadow>
-      <cylinderGeometry args={[0.26, 0.2, 0.44, 16]} />
-      <meshStandardMaterial color="#e07a5f" />
-    </mesh>
-    {[0, 1, 2, 3, 4].map((i) => {
-      const a = (i / 5) * Math.PI * 2;
-      return (
-        <mesh
-          key={i}
-          position={[Math.cos(a) * 0.16, 0.68, Math.sin(a) * 0.16]}
-          rotation={[Math.cos(a) * 0.5, 0, Math.sin(a) * 0.5]}
-        >
-          <sphereGeometry args={[0.22, 12, 12]} />
-          <meshStandardMaterial color={i % 2 ? '#57cc99' : '#38a3a5'} />
-        </mesh>
-      );
-    })}
-  </group>
-);
+const Plant = ({ position }: { position: [number, number, number] }) => {
+  const leaves = useRef<Group>(null);
+  const phase = position[0] * 0.31 + position[2] * 0.17;
+
+  useFrame(({ clock }) => {
+    if (!leaves.current) return;
+    const t = clock.getElapsedTime();
+    leaves.current.rotation.z = Math.sin(t * 0.55 + phase) * 0.035;
+    leaves.current.rotation.x = Math.cos(t * 0.42 + phase) * 0.018;
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.22, 0]} castShadow>
+        <cylinderGeometry args={[0.26, 0.2, 0.44, 16]} />
+        <meshStandardMaterial color="#e07a5f" />
+      </mesh>
+      <group ref={leaves}>
+        {[0, 1, 2, 3, 4].map((i) => {
+          const a = (i / 5) * Math.PI * 2;
+          return (
+            <mesh
+              key={i}
+              position={[Math.cos(a) * 0.16, 0.68, Math.sin(a) * 0.16]}
+              rotation={[Math.cos(a) * 0.5, 0, Math.sin(a) * 0.5]}
+            >
+              <sphereGeometry args={[0.22, 12, 12]} />
+              <meshStandardMaterial color={i % 2 ? '#57cc99' : '#38a3a5'} />
+            </mesh>
+          );
+        })}
+      </group>
+    </group>
+  );
+};
 
 interface DecorationsProps {
   room: { minX: number; maxX: number; minZ: number; maxZ: number };

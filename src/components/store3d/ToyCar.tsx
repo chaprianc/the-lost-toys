@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
 import type { Group } from 'three';
 
 interface ToyCarProps {
@@ -61,25 +60,6 @@ export const ToyCar = ({ position, rotationY = 0 }: ToyCarProps) => {
           <meshStandardMaterial color="#2b2d42" />
         </mesh>
       ))}
-      {/* Welcome flag */}
-      <Html position={[0, 1.95, 0]} center distanceFactor={9} occlude={false}>
-        <div
-          style={{
-            direction: 'rtl',
-            whiteSpace: 'nowrap',
-            background: '#e63946',
-            color: '#fff7ec',
-            border: '3px solid #ffd166',
-            padding: '6px 18px',
-            borderRadius: 14,
-            fontSize: 18,
-            fontWeight: 800,
-            boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
-          }}
-        >
-          🚗 ברוכים הבאים
-        </div>
-      </Html>
     </group>
   );
 };

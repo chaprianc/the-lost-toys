@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import type { Toy } from '@/hooks/useToys';
 import { CATEGORY_LABELS, CATEGORY_ICONS, type ToyCategory } from '@/types/toy';
@@ -13,10 +12,11 @@ import { PublishKiosk } from './PublishKiosk';
 import { ServiceCounter } from './ServiceCounter';
 import { SideWindows } from './SideWindows';
 import { StoreLifeDetails } from './StoreLifeDetails';
+import { StoreVisitors } from './StoreVisitors';
 
 import { Avatar3D } from './Avatar3D';
 
-import { SHIRT_COLORS, type AvatarProfile } from '@/hooks/useAvatar';
+import type { AvatarProfile } from '@/hooks/useAvatar';
 
 
 
@@ -41,13 +41,6 @@ const CLERK_AVATAR: AvatarProfile = {
   name: '',
   shirt: '#4f8f72',
 };
-
-const VISITOR_PATHS = [
-  { from: [0, -7] as [number, number], to: [0, 6] as [number, number], speed: 0.22 },
-  { from: [-2.8, -1] as [number, number], to: [2.8, -1] as [number, number], speed: 0.28 },
-  { from: [-6.3, -7] as [number, number], to: [-6.3, 6] as [number, number], speed: 0.18 },
-  { from: [6.3, -7] as [number, number], to: [6.3, 6] as [number, number], speed: 0.2 },
-];
 
 export const COLLIDERS: Collider[] = [
   ...SHELVES.map(({ position }) => ({
@@ -98,20 +91,6 @@ export const StoreScene = ({
 
   const width = ROOM.maxX - ROOM.minX;
   const depth = ROOM.maxZ - ROOM.minZ;
-  const visitors = useMemo(
-    () =>
-      VISITOR_PATHS.map((path, index) => ({
-        id: `visitor-${index}`,
-        avatar: {
-          gender: Math.random() > 0.5 ? ('girl' as const) : ('boy' as const),
-          name: '',
-          shirt: SHIRT_COLORS[Math.floor(Math.random() * SHIRT_COLORS.length)],
-        },
-        path: { ...path, offset: Math.random() * Math.PI * 2 },
-      })),
-    []
-  );
-
   const shelfCategories = SHELVES.map((s) => s.category) as string[];
   // Toys from categories without a dedicated shelf are spread across the shelves
   const leftovers = toys.filter((t) => !shelfCategories.includes(t.category));
@@ -319,9 +298,7 @@ export const StoreScene = ({
         facingY={0}
       />
 
-      {visitors.map((visitor) => (
-        <Avatar3D key={visitor.id} avatar={visitor.avatar} path={visitor.path} />
-      ))}
+      <StoreVisitors />
       {avatar && <Avatar3D avatar={avatar} />}
 
       <PlayerControls

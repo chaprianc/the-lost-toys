@@ -54,6 +54,31 @@ export const useToy = (id: string) => {
   });
 };
 
+export interface ManagedToyCreationResult {
+  toy: Toy;
+  managementToken: string;
+}
+
+export const useCreateManagedToy = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (toy: ToyInsert): Promise<ManagedToyCreationResult> => {
+      const { data, error } = await supabase.functions.invoke('create-toy', { body: toy });
+
+      if (error) throw error;
+      if (!data?.toy || !data?.managementToken) {
+        throw new Error(data?.error || 'לא ניתן ליצור קישור לניהול המודעה');
+      }
+
+      return data as ManagedToyCreationResult;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['toys'] });
+    },
+  });
+};
+
 export const useAddToy = () => {
   const queryClient = useQueryClient();
   

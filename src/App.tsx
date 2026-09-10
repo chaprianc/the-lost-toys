@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import Favorites from "./pages/Favorites";
 import Store3D from "./pages/Store3D";
 import NotFound from "./pages/NotFound";
+import ManageToy from "./pages/ManageToy";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
 import { AvatarOnboarding } from "./components/AvatarCreator";
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/browse" element={<Browse />} />
           <Route path="/publish" element={<Publish />} />
           <Route path="/toy/:id" element={<ToyDetail />} />
+          <Route path="/manage/:token" element={<ManageToy />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/terms" element={<Terms />} />

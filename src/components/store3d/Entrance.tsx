@@ -93,14 +93,21 @@ export const Entrance = ({ room }: EntranceProps) => {
           <boxGeometry args={[4.3, 0.35, 0.34]} />
           <meshStandardMaterial color="#6b4423" />
         </mesh>
-        <TextPlate
-          lines={['כניסה · ברוכים הבאים']}
-          width={3.9}
-          height={0.3}
-          position={[0, 2.6, -0.19]}
-          bg="#f7b267"
-          color="#4a2c14"
-        />
+        {/* Framed sign sits flush against the lintel instead of floating in front of it. */}
+        <group position={[0, 2.6, 0.22]}>
+          <mesh castShadow receiveShadow>
+            <boxGeometry args={[4.02, 0.52, 0.1]} />
+            <meshStandardMaterial color="#6b4423" roughness={0.72} />
+          </mesh>
+          <TextPlate
+            lines={['כניסה · ברוכים הבאים']}
+            width={3.78}
+            height={0.34}
+            position={[0, 0, 0.056]}
+            bg="#f7b267"
+            color="#4a2c14"
+          />
+        </group>
 
         {/* glass double doors */}
         <group ref={doorL} position={[-1.75, 0, 0]}>
@@ -226,15 +233,11 @@ export const Entrance = ({ room }: EntranceProps) => {
         <planeGeometry args={[3.2, 1.5]} />
         <meshStandardMaterial color="#c1440e" />
       </mesh>
-      <TextPlate
-        lines={['ברוכים הבאים']}
-        width={2.6}
-        height={0.7}
-        position={[0, 0.02, room.maxZ - 1.5]}
-        rotation={[-Math.PI / 2, 0, Math.PI]}
-        bg="#c1440e"
-        color="#fff6e5"
-      />
+      {/* A simple inset keeps the mat stable and avoids overlapping text planes. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.025, room.maxZ - 1.5]}>
+        <planeGeometry args={[2.72, 1.02]} />
+        <meshStandardMaterial color="#f3b26f" roughness={0.92} />
+      </mesh>
 
       {/* ---- Balloon arch just inside the door ---- */}
       {Array.from({ length: 11 }).map((_, i) => {

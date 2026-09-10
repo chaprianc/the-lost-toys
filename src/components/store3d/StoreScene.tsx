@@ -12,6 +12,7 @@ import { Entrance } from './Entrance';
 import { PublishKiosk } from './PublishKiosk';
 import { ServiceCounter } from './ServiceCounter';
 import { SideWindows } from './SideWindows';
+import { StoreLifeDetails } from './StoreLifeDetails';
 
 import { Avatar3D } from './Avatar3D';
 
@@ -247,6 +248,7 @@ export const StoreScene = ({
       <Decorations room={ROOM} />
       <Entrance room={ROOM} />
       <SideWindows room={ROOM} />
+      <StoreLifeDetails room={ROOM} />
 
       {/* Publish-your-toy kiosk on the left side of the entrance */}
       <PublishKiosk position={[-6.5, 0, 9]} rotationY={Math.PI / 2} onPublish={onPublish} />

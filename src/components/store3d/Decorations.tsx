@@ -257,8 +257,8 @@ export const Decorations = ({ room }: DecorationsProps) => {
       {/* Corner props */}
       <BlockStack position={[-6.6, 0, 8.4]} />
       <BlockStack position={[6.4, 0, 5.4]} />
-      <Plant position={[-6.8, 0, -10.6]} />
-      <Plant position={[6.8, 0, -10.6]} />
+      <Plant position={[-3, 0, -11.2]} />
+      <Plant position={[3, 0, -11.2]} />
 
       {/* Warm glow strips near the ceiling */}
       <mesh position={[0, 3.3, 0]} rotation={[Math.PI / 2, 0, 0]}>

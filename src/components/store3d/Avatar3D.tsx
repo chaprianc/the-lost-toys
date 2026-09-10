@@ -164,7 +164,7 @@ export const Avatar3D = ({
     if (namePlate.current) {
       namePlate.current.visible =
         !revealNameWhenNear ||
-        Math.hypot(character.position.x - playerState.x, character.position.z - playerState.z) < 3.2;
+        Math.hypot(character.position.x - playerState.x, character.position.z - playerState.z) < 1.7;
       if (namePlate.current.visible) namePlate.current.lookAt(state.camera.position);
     }
   });
@@ -298,13 +298,14 @@ export const Avatar3D = ({
       </group>
 
       {avatar.name && (
-        <group ref={namePlate} position={[0, 2.04, 0]}>
+        <group ref={namePlate} position={[0, 1.96, 0]}>
           <TextPlate
             lines={[avatar.name]}
-            width={1.1}
-            height={0.3}
+            width={0.78}
+            height={0.21}
             bg="#ffffff"
             color="#4a2c14"
+            opacity={0.86}
           />
         </group>
       )}

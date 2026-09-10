@@ -13,9 +13,18 @@ interface VisitorPath {
   offset: number;
 }
 
+export interface VisitorWaypoint {
+  position: [number, number];
+  pause?: number;
+}
+
 interface Avatar3DProps {
   avatar: AvatarProfile;
   path?: VisitorPath;
+  route?: VisitorWaypoint[];
+  routeSpeed?: number;
+  onRouteComplete?: () => void;
+  revealNameWhenNear?: boolean;
   fixedPosition?: [number, number];
   facingY?: number;
 }
@@ -28,7 +37,16 @@ const stableIndex = (value: string, length: number) =>
   [...value].reduce((sum, char) => sum + char.charCodeAt(0), 0) % length;
 
 /** Lightweight, human-proportioned cartoon avatar for the player and store visitors. */
-export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DProps) => {
+export const Avatar3D = ({
+  avatar,
+  path,
+  route,
+  routeSpeed = 0.9,
+  onRouteComplete,
+  revealNameWhenNear = false,
+  fixedPosition,
+  facingY = 0,
+}: Avatar3DProps) => {
   const root = useRef<Group>(null);
   const head = useRef<Group>(null);
   const eyes = useRef<Group>(null);
@@ -38,6 +56,10 @@ export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DP
   const armR = useRef<THREE.Group>(null);
   const step = useRef(0);
   const idle = useRef(0);
+  const namePlate = useRef<Group>(null);
+  const waypointIndex = useRef(1);
+  const pauseRemaining = useRef(0);
+  const routeFinished = useRef(false);
 
   const isGirl = avatar.gender === 'girl';
   const appearanceKey = `${avatar.gender}-${avatar.shirt}-${avatar.name}`;
@@ -51,7 +73,46 @@ export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DP
     if (!character) return;
 
     let moving = playerState.moving;
-    if (path) {
+    if (route && route.length > 1) {
+      const target = route[waypointIndex.current];
+      if (pauseRemaining.current > 0) {
+        pauseRemaining.current = Math.max(0, pauseRemaining.current - delta);
+        moving = false;
+        if (pauseRemaining.current === 0) {
+          if (waypointIndex.current === route.length - 1) {
+            if (!routeFinished.current) {
+              routeFinished.current = true;
+              onRouteComplete?.();
+            }
+          } else {
+            waypointIndex.current += 1;
+          }
+        }
+      } else if (target) {
+        const dx = target.position[0] - character.position.x;
+        const dz = target.position[1] - character.position.z;
+        const distance = Math.hypot(dx, dz);
+        if (distance <= 0.06) {
+          character.position.set(target.position[0], 0, target.position[1]);
+          if (target.pause) pauseRemaining.current = target.pause;
+          else if (waypointIndex.current === route.length - 1) {
+            if (!routeFinished.current) {
+              routeFinished.current = true;
+              onRouteComplete?.();
+            }
+          } else {
+            waypointIndex.current += 1;
+          }
+          moving = false;
+        } else {
+          const travel = Math.min(distance, routeSpeed * delta);
+          character.position.x += (dx / distance) * travel;
+          character.position.z += (dz / distance) * travel;
+          character.rotation.y = Math.atan2(dx, dz);
+          moving = true;
+        }
+      }
+    } else if (path) {
       const phase = state.clock.elapsedTime * path.speed + path.offset;
       const progress = (Math.sin(phase) + 1) / 2;
       const x = THREE.MathUtils.lerp(path.from[0], path.to[0], progress);
@@ -99,10 +160,19 @@ export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DP
         1 - Math.exp(-24 * delta),
       );
     }
+
+    if (namePlate.current) {
+      namePlate.current.visible =
+        !revealNameWhenNear ||
+        Math.hypot(character.position.x - playerState.x, character.position.z - playerState.z) < 3.2;
+      if (namePlate.current.visible) namePlate.current.lookAt(state.camera.position);
+    }
   });
 
+  const initialPosition = route?.[0]?.position;
+
   return (
-    <group ref={root}>
+    <group ref={root} position={initialPosition ? [initialPosition[0], 0, initialPosition[1]] : undefined}>
       <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.28, 20]} />
         <meshBasicMaterial color="#000000" transparent opacity={0.14} />
@@ -228,14 +298,15 @@ export const Avatar3D = ({ avatar, path, fixedPosition, facingY = 0 }: Avatar3DP
       </group>
 
       {avatar.name && (
-        <TextPlate
-          lines={[avatar.name]}
-          width={1.1}
-          height={0.3}
-          position={[0, 2.04, 0]}
-          bg="#ffffff"
-          color="#4a2c14"
-        />
+        <group ref={namePlate} position={[0, 2.04, 0]}>
+          <TextPlate
+            lines={[avatar.name]}
+            width={1.1}
+            height={0.3}
+            bg="#ffffff"
+            color="#4a2c14"
+          />
+        </group>
       )}
     </group>
   );

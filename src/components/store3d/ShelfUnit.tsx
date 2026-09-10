@@ -20,7 +20,8 @@ export interface ShelfUnitProps {
 }
 
 const LEVELS = [0.9, 1.85];
-const COLUMNS = [-1.55, 1.55];
+const COLUMNS = [-0.9, 0.9];
+const SHELF_WIDTH = 3.6;
 
 export const ShelfUnit = ({
   position,
@@ -43,11 +44,11 @@ export const ShelfUnit = ({
     <group position={position} rotation={[0, rotationY, 0]}>
       {/* Back panel */}
       <mesh position={[0, 1.35, -0.45]} receiveShadow>
-        <boxGeometry args={[6, 2.7, 0.12]} />
+        <boxGeometry args={[SHELF_WIDTH, 2.7, 0.12]} />
         <meshStandardMaterial color={color} />
       </mesh>
       {/* Side panels */}
-      {[-3, 3].map((x) => (
+      {[-SHELF_WIDTH / 2, SHELF_WIDTH / 2].map((x) => (
         <mesh key={x} position={[x, 1.35, 0]} receiveShadow>
           <boxGeometry args={[0.14, 2.7, 1]} />
           <meshStandardMaterial color={color} />
@@ -55,13 +56,13 @@ export const ShelfUnit = ({
       ))}
       {/* Bright inner backing so toys pop against the shelf */}
       <mesh position={[0, 1.35, -0.38]}>
-        <boxGeometry args={[5.7, 2.4, 0.04]} />
+        <boxGeometry args={[SHELF_WIDTH - 0.3, 2.4, 0.04]} />
         <meshStandardMaterial color="#fffdf8" />
       </mesh>
       {/* Shelf boards */}
       {[0.4, 1.35, 2.3].map((y) => (
         <mesh key={y} position={[0, y, 0]} receiveShadow castShadow>
-          <boxGeometry args={[6, 0.12, 1]} />
+          <boxGeometry args={[SHELF_WIDTH, 0.12, 1]} />
           <meshStandardMaterial color="#ffffff" />
         </mesh>
       ))}
@@ -82,16 +83,16 @@ export const ShelfUnit = ({
           }}
         >
           <mesh position={[0, 0, -0.02]} castShadow receiveShadow>
-            <boxGeometry args={[5.6, 0.7, 0.12]} />
+            <boxGeometry args={[SHELF_WIDTH - 0.25, 0.7, 0.12]} />
             <meshStandardMaterial color={active ? '#2e7d32' : '#6b4423'} />
           </mesh>
           <mesh position={[0, 0, 0.04]} castShadow>
-            <boxGeometry args={[5.35, 0.52, 0.06]} />
+            <boxGeometry args={[SHELF_WIDTH - 0.5, 0.52, 0.06]} />
             <meshStandardMaterial color="#fffdf8" />
           </mesh>
           <TextPlate
             lines={[label]}
-            width={5.2}
+            width={SHELF_WIDTH - 0.65}
             height={0.46}
             position={[0, 0, 0.08]}
             opacity={dimmed ? 0.55 : 1}
@@ -105,7 +106,7 @@ export const ShelfUnit = ({
       {[1.35, 2.3].map((y) => (
         <group key={`strip-${y}`}>
           <mesh position={[0, y - 0.09, 0.42]}>
-            <boxGeometry args={[5.6, 0.05, 0.05]} />
+            <boxGeometry args={[SHELF_WIDTH - 0.4, 0.05, 0.05]} />
             <meshStandardMaterial color="#fffbe8" emissive="#fff3cf" emissiveIntensity={1.4} />
           </mesh>
           <pointLight position={[0, y - 0.2, 0.55]} intensity={6} color="#fff6e0" distance={3.2} />

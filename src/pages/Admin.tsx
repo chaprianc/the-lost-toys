@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { useAllToys, useUpdateToyStatus, useDeleteToy } from '@/hooks/useToys';
 import { useBlockedPhones, useBlockPhone, useUnblockPhone } from '@/hooks/useBlockedPhones';
@@ -39,12 +39,21 @@ import AdminAnalytics from '@/components/AdminAnalytics';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-
-import { supabase } from '@/integrations/supabase/client';
+import {
+  adminRequest,
+  AdminApiError,
+  ADMIN_SESSION_EXPIRED_EVENT,
+  clearAdminSession,
+  getAdminSessionToken,
+  loginAdmin,
+  logoutAdmin,
+} from '@/lib/adminApi';
 
 const Admin = () => {
-  const { data: toys = [], isLoading } = useAllToys();
-  const { data: blockedPhones = [], isLoading: isLoadingBlocked } = useBlockedPhones();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const { data: toys = [], isLoading } = useAllToys(isAuthenticated);
+  const { data: blockedPhones = [], isLoading: isLoadingBlocked } = useBlockedPhones(isAuthenticated);
   const blockPhone = useBlockPhone();
   const unblockPhone = useUnblockPhone();
   const updateStatus = useUpdateToyStatus();
@@ -52,7 +61,6 @@ const Admin = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -71,37 +79,43 @@ const Admin = () => {
     setError('');
     
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('verify-admin-password', {
-        body: { password },
-      });
-
-      if (fnError) {
-        setError('שגיאה באימות. נסה שוב.');
-        return;
-      }
-
-      if (data?.success) {
-        setIsAuthenticated(true);
-        // Store session in sessionStorage (cleared when browser closes)
-        sessionStorage.setItem('adminAuthenticated', 'true');
-      } else {
-        setError('סיסמה שגויה');
-      }
+      await loginAdmin(password);
+      setPassword('');
+      setIsAuthenticated(true);
     } catch (err) {
       console.error('Login error:', err);
-      setError('שגיאה באימות. נסה שוב.');
+      setError(err instanceof Error ? err.message : 'שגיאה באימות. נסה שוב.');
     } finally {
       setIsVerifying(false);
     }
   };
 
-  // Check session on mount
-  useState(() => {
-    const stored = sessionStorage.getItem('adminAuthenticated');
-    if (stored === 'true') {
-      setIsAuthenticated(true);
-    }
-  });
+  useEffect(() => {
+    let active = true;
+    const handleExpiredSession = () => {
+      if (active) setIsAuthenticated(false);
+    };
+    window.addEventListener(ADMIN_SESSION_EXPIRED_EVENT, handleExpiredSession);
+    const validateSession = async () => {
+      if (!getAdminSessionToken()) {
+        if (active) setIsCheckingSession(false);
+        return;
+      }
+      try {
+        await adminRequest('validate');
+        if (active) setIsAuthenticated(true);
+      } catch {
+        clearAdminSession();
+      } finally {
+        if (active) setIsCheckingSession(false);
+      }
+    };
+    void validateSession();
+    return () => {
+      active = false;
+      window.removeEventListener(ADMIN_SESSION_EXPIRED_EVENT, handleExpiredSession);
+    };
+  }, []);
 
   const handleStatusChange = (id: string, status: 'available' | 'sold' | 'hidden') => {
     updateStatus.mutate({ id, status }, {
@@ -135,6 +149,18 @@ const Admin = () => {
     window.location.reload();
   };
 
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle">
+        <Header />
+        <main className="container mx-auto px-4 py-20 text-center">
+          <Loader2 className="w-10 h-10 animate-spin mx-auto text-primary" aria-hidden="true" />
+          <p className="text-muted-foreground mt-4">בודק הרשאת מנהל...</p>
+        </main>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
@@ -238,8 +264,8 @@ const Admin = () => {
           </Button>
           <Button
             variant="outline"
-            onClick={() => {
-              sessionStorage.removeItem('adminAuthenticated');
+            onClick={async () => {
+              await logoutAdmin();
               setIsAuthenticated(false);
               setPassword('');
               toast.success('התנתקת בהצלחה');
@@ -547,8 +573,8 @@ const Admin = () => {
                               setNewBlockPhone('');
                               setNewBlockReason('');
                             },
-                            onError: (err: any) => {
-                              if (err.code === '23505') {
+                            onError: (err: unknown) => {
+                              if (err instanceof AdminApiError && err.code === '23505') {
                                 toast.error('מספר זה כבר חסום');
                               } else {
                                 toast.error('שגיאה בחסימת המספר');
@@ -688,10 +714,10 @@ const Admin = () => {
                           }
                           setIsSavingSettings(true);
                           try {
-                            const { data, error } = await supabase.functions.invoke('update-admin-settings', {
-                              body: { type: 'email', value: newAdminEmail.trim() },
+                            await adminRequest('update_setting', {
+                              type: 'email',
+                              value: newAdminEmail.trim(),
                             });
-                            if (error) throw error;
                             toast.success('מייל המנהל עודכן בהצלחה');
                             setNewAdminEmail('');
                           } catch (err) {
@@ -755,8 +781,8 @@ const Admin = () => {
                             toast.error('יש להזין סיסמה חדשה');
                             return;
                           }
-                          if (newAdminPassword.length < 6) {
-                            toast.error('הסיסמה חייבת להכיל לפחות 6 תווים');
+                          if (newAdminPassword.length < 10) {
+                            toast.error('הסיסמה חייבת להכיל לפחות 10 תווים');
                             return;
                           }
                           if (newAdminPassword !== confirmPassword) {
@@ -765,13 +791,15 @@ const Admin = () => {
                           }
                           setIsSavingSettings(true);
                           try {
-                            const { data, error } = await supabase.functions.invoke('update-admin-settings', {
-                              body: { type: 'password', value: newAdminPassword },
+                            await adminRequest('update_setting', {
+                              type: 'password',
+                              value: newAdminPassword,
                             });
-                            if (error) throw error;
-                            toast.success('סיסמת המנהל עודכנה בהצלחה');
+                            clearAdminSession();
                             setNewAdminPassword('');
                             setConfirmPassword('');
+                            setIsAuthenticated(false);
+                            toast.success('הסיסמה עודכנה. יש להתחבר מחדש.');
                           } catch (err) {
                             console.error('Error updating password:', err);
                             toast.error('שגיאה בעדכון הסיסמה');

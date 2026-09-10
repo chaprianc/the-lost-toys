@@ -243,12 +243,12 @@ export const Entrance = ({ room }: EntranceProps) => {
       {Array.from({ length: 11 }).map((_, i) => {
         const t = i / 10;
         const angle = Math.PI * t;
-        const bx = -2.4 + t * 4.8;
-        const by = 0.4 + Math.sin(angle) * 2.5;
+        const bx = -2.85 + t * 5.7;
+        const by = 1.02 + Math.sin(angle) * 2.08;
         const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#4cc9f0', '#c77dff'];
         return (
-          <mesh key={i} position={[bx, by, room.maxZ - 2.6]} castShadow>
-            <sphereGeometry args={[0.24, 16, 16]} />
+          <mesh key={i} position={[bx, by, room.maxZ - 1.05]} castShadow>
+            <sphereGeometry args={[0.21, 16, 16]} />
             <meshStandardMaterial color={colors[i % colors.length]} roughness={0.25} />
           </mesh>
         );

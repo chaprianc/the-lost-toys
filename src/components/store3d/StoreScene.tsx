@@ -28,10 +28,10 @@ const SHELVES: {
   color: string;
   category: ToyCategory;
 }[] = [
-  { position: [-4.3, 0, -4], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
-  { position: [-4.3, 0, 3.2], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
-  { position: [4.3, 0, -4], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
-  { position: [4.3, 0, 3.2], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
+  { position: [-7.45, 0, -9.65], rotationY: Math.PI / 2, color: '#f7b267', category: 'vehicles' },
+  { position: [-7.45, 0, -1.5], rotationY: Math.PI / 2, color: '#8ecae6', category: 'dolls' },
+  { position: [7.45, 0, -9.65], rotationY: -Math.PI / 2, color: '#c8e6a0', category: 'board-games' },
+  { position: [7.45, 0, -1.5], rotationY: -Math.PI / 2, color: '#ffadad', category: 'educational' },
 ];
 
 
@@ -51,10 +51,10 @@ const VISITOR_PATHS = [
 
 export const COLLIDERS: Collider[] = [
   ...SHELVES.map(({ position }) => ({
-    minX: position[0] - 0.6,
-    maxX: position[0] + 0.6,
-    minZ: position[2] - 3,
-    maxZ: position[2] + 3,
+    minX: position[0] < 0 ? ROOM.minX : ROOM.maxX - 1.15,
+    maxX: position[0] < 0 ? ROOM.minX + 1.15 : ROOM.maxX,
+    minZ: position[2] - 1.9,
+    maxZ: position[2] + 1.9,
   })),
   {
     minX: COUNTER.x - COUNTER.w / 2,

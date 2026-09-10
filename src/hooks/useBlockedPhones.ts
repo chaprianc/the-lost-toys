@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { adminRequest } from '@/lib/adminApi';
 
 export interface BlockedPhone {
   id: string;
@@ -9,18 +10,14 @@ export interface BlockedPhone {
   blocked_by: string | null;
 }
 
-export const useBlockedPhones = () => {
+export const useBlockedPhones = (enabled = true) => {
   return useQuery({
     queryKey: ['blocked-phones'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('blocked_phones')
-        .select('*')
-        .order('blocked_at', { ascending: false });
-
-      if (error) throw error;
-      return data as BlockedPhone[];
+      const data = await adminRequest<{ blockedPhones: BlockedPhone[] }>('list_blocked_phones');
+      return data.blockedPhones;
     },
+    enabled,
   });
 };
 
@@ -29,14 +26,8 @@ export const useBlockPhone = () => {
 
   return useMutation({
     mutationFn: async ({ phone, reason }: { phone: string; reason?: string }) => {
-      const { data, error } = await supabase
-        .from('blocked_phones')
-        .insert({ phone, reason })
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
+      const data = await adminRequest<{ blockedPhone: BlockedPhone }>('block_phone', { phone, reason });
+      return data.blockedPhone;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blocked-phones'] });
@@ -49,12 +40,7 @@ export const useUnblockPhone = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('blocked_phones')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
+      await adminRequest('unblock_phone', { id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blocked-phones'] });

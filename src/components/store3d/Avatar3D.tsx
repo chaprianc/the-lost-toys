@@ -66,6 +66,7 @@ export const Avatar3D = ({
   const appearanceKey = `${avatar.gender}-${avatar.shirt}-${avatar.name}`;
   const skin = SKIN_TONES[stableIndex(appearanceKey, SKIN_TONES.length)];
   const hair = HAIR_COLORS[stableIndex(`${appearanceKey}-hair`, HAIR_COLORS.length)];
+  const girlHairStyle = stableIndex(`${appearanceKey}-girl-style`, 3);
   const pants = PANTS_COLORS[stableIndex(`${appearanceKey}-pants`, PANTS_COLORS.length)];
   const shoes = isGirl ? '#d94f7c' : '#294f8a';
 
@@ -262,14 +263,54 @@ export const Avatar3D = ({
 
         {isGirl && (
           <>
-            <mesh position={[-0.18, -0.05, -0.02]} scale={[0.65, 1.6, 0.75]}>
-              <sphereGeometry args={[0.095, 12, 10]} />
+            {/* A fuller back layer keeps female hairstyles visible from every camera angle. */}
+            <mesh position={[0, -0.075, -0.105]} scale={[1.02, 1.18, 0.78]} castShadow>
+              <sphereGeometry args={[0.218, 18, 16]} />
               <meshStandardMaterial color={hair} roughness={0.82} />
             </mesh>
-            <mesh position={[0.18, -0.05, -0.02]} scale={[0.65, 1.6, 0.75]}>
-              <sphereGeometry args={[0.095, 12, 10]} />
+
+            {/* Thick side sections frame the face instead of looking like a close-cropped cap. */}
+            <mesh position={[-0.185, -0.13, -0.005]} scale={[0.78, 1.9, 0.82]} castShadow>
+              <sphereGeometry args={[0.105, 14, 12]} />
               <meshStandardMaterial color={hair} roughness={0.82} />
             </mesh>
+            <mesh position={[0.185, -0.13, -0.005]} scale={[0.78, 1.9, 0.82]} castShadow>
+              <sphereGeometry args={[0.105, 14, 12]} />
+              <meshStandardMaterial color={hair} roughness={0.82} />
+            </mesh>
+
+            {girlHairStyle === 0 && (
+              <>
+                <mesh position={[-0.13, -0.34, -0.11]} castShadow>
+                  <capsuleGeometry args={[0.075, 0.34, 4, 10]} />
+                  <meshStandardMaterial color={hair} roughness={0.82} />
+                </mesh>
+                <mesh position={[0.13, -0.34, -0.11]} castShadow>
+                  <capsuleGeometry args={[0.075, 0.34, 4, 10]} />
+                  <meshStandardMaterial color={hair} roughness={0.82} />
+                </mesh>
+              </>
+            )}
+
+            {girlHairStyle === 1 && (
+              <group position={[0, -0.1, -0.24]} rotation={[0.28, 0, 0]}>
+                <mesh position={[0, -0.16, 0]} castShadow>
+                  <capsuleGeometry args={[0.09, 0.28, 4, 12]} />
+                  <meshStandardMaterial color={hair} roughness={0.82} />
+                </mesh>
+                <mesh position={[0, 0.045, 0]} castShadow>
+                  <torusGeometry args={[0.075, 0.022, 8, 16]} />
+                  <meshStandardMaterial color="#e8a64c" roughness={0.62} />
+                </mesh>
+              </group>
+            )}
+
+            {girlHairStyle === 2 && (
+              <mesh position={[0, 0.245, -0.075]} scale={[1.15, 1, 1]} castShadow>
+                <sphereGeometry args={[0.115, 16, 14]} />
+                <meshStandardMaterial color={hair} roughness={0.82} />
+              </mesh>
+            )}
           </>
         )}
 
